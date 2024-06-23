@@ -1,4 +1,5 @@
 <html><head></head><body>
+<title>GIT</title>
 <a href="https://git-scm.com/book/ru/v2/">Книга</a>
 
 <h3 align=center>Создание репозитория в <a href="https://github.com/"></a>Гитхабе</a></h3>
@@ -25,24 +26,39 @@
         fine-grained. В permissions, когда создавал токен, выбрал contents = only read and write и metadata также имел другое значение (но no access), оно не менялось.
 <li> После этого выполнил команду <b>git push -u origin master</b>. Результат получен, на гитхаб в мой репозиторий скачались локальные файлы.
 
-<h2 align="center">Создание локального и удаленного репозитория task5</h2>
-<ol>
-<li>Общие настройки git'а<font color=green>git config --global user.name "Дмитрий Зубков"<br>
-        dmitriy@945G-M3:~/task5$ git config --global user.email "userdmitriy@mail.ru"</font></li>
-<li>Папка task5 уже была создана, просто перейдём в нее. Далее<br>
-<b>git init</b> - в папке task5 создали пустой репозиторий.
-<b>git add *</b> - добавили в индекс все папки файлы из каталога  task5.<br>
-<b>git commit -m "Первый коммит"</b> - сделали первый снимок ветки в локальном репозитории.</li>
-<li>Создали удаленный репозиторий ttps://github.com/DmitriyZubkov41/task5. Далее
+<h2 align="center"><a href="https://github.com/DmitriyZubkov41/guide">Удаленный репозиторий guide</a></h2>
+Создаем локальный репо для каталога Учебник и пушим на предварительно созданный пока ещё пустой удалённый  git@github.com:DmitriyZubkov41/guide.git<br>
+Взято из подсказки удалённого репозитория<br>
+<font color="brought">
+echo "# guide" >> README.md<br>
+git init<br>
+git add README.md<br>
+git commit -m "first commit"<br>
+git branch -M main<br>
+git remote add origin git@github.com:DmitriyZubkov41/guide.git<br>
+git push -u origin main</font>
 <p>
-<b></b>dmitriy@945G-M3:~/task5$</b> <font color="green"></font>git remote add origin https://github.com/DmitriyZubkov41/task5</font> - связываем наш локальный репозиторий в task5 с удаленным репозиторием origin (=task5).</li>
-<li>Если еще не создали ssh-key или токен в удаленном репозитории, то создаём.</li>
-<li>echo "# -" >> README.md
-        git init
-        git add README.md
-        git commit -m "first commit"
-        git branch -M main
-        git remote add origin https://github.com/DmitriyZubkov41/-.git
-        git push -u origin main</li>
-</ol>
+Как я сделал:
+<p>
+<font color="green">
+dmitriy@945G-M3:~$ cd Учебник<br>
+dmitriy@945G-M3:~/Учебник$ git init</font><br>
+Инициализирован пустой репозиторий Git в /home/dmitriy/Учебник/.git/<br>
+<font color="green">
+dmitriy@945G-M3:~/Учебник$ git add *<br>
+dmitriy@945G-M3:~/Учебник$ git commit -m "Первый - 23.06.2024"<br>
+dmitriy@945G-M3:~/Учебник$ git branch -M main  #Переименовали ветку master в main<br>
+mitriy@945G-M3:~/Учебник$ git remote add origin git@github.com:DmitriyZubkov41/guide.git<br>
+dmitriy@945G-M3:~/Учебник$ git push -u origin main<br>
+* [new branch]      main -> main<br>
+Ветка «main» отслеживает внешнюю ветку «main» из «origin».</font>
+<p>Создал локальный репо, переименовал ветку в main и без проблем запушил на удалённый.</p>
+</p>
+<h2 align="center">https://github.com/DmitriyZubkov41/task5</h2>
+dmitriy@945G-M3:~/task5$ git add *<br>
+dmitriy@945G-M3:~/task5$ git commit -m "23.06.2024"<br>
+dmitriy@945G-M3:~/task5$ git push -u git@github.com:DmitriyZubkov41/task5.git main
+
+
+
 </body></html>

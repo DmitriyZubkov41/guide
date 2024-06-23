@@ -1,4 +1,5 @@
 <html><head></head><body>
+<title>Docker</title>
 <h3 align="center">Установка и настройка Docker</h3>
 <b>Установка Docker Engine</b><br>
 <ol>
@@ -96,11 +97,62 @@ To avoid issues with overusing disk for log data, consider one of the following 
 <a href="https://1cloud.ru/help/docker/dockerfile_work">Инструкции</a>, <a href="https://habr.com/ru/companies/ruvds/articles/439980/">Изучаем Docker, часть 3: файлы Dockerfile</a>
 
 <h2 align="center">Команды Docker</h2>
-<font color="red">Все команды выполняются в хосте.</font>
+<a href="https://github.com/eon01/DockerCheatSheet/blob/master/README.ru.md">Шпаргалка по командам</a><br>
+<a href="https://devops.org.ru/docker-summary">Шпаргалка по Docker</a>
+<p>
+<font color="red">Все команды выполняются в хосте.</font><p>
 Сборка образа с помощью Dockerfile:
 <p><font color=green>docker build -t name_image .</font></p>
 Здесь name_image - имя создаваемого образа<br>
-Точка означает, что dockerfile, на основе которого собираем образ, находится в текущем каталоге. Если этот файл находится в каком-то другом месте, его расположение можно указать с использованием флага - f.
+Точка означает, что dockerfile, на основе которого собираем образ, находится в текущем каталоге. Если этот файл находится в каком-то другом месте, его расположение можно указать с использованием флага - f:<p>
+<font color="green">docker build -t name_image -f path_to_image <b>.</b></font><br>
+<font color="red">Несмотря на то, что пишем путь к образу, все равно нужно в конце после путь пробел, поставить точку. Наверное точка - это место (текущая папка) для инструкций dockerfile.</font>
+<p>
+    <b>Запуск контейнера:</b><p>
+<font color="green">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</font>
+<p>
+    <a href="https://docs.docker.com/reference/cli/docker/container/run/">Опции docker run</a>
+
+    <ul>
+    <li><b>IMAGE</b> — имя образа, на основе которого создают контейнер.
+    <li><b>COMMAND</b> — команда.
+    <li><b>ARG</b> — аргументы команды, которые будут выполнены в контейнере. Если они не указаны, по умолчанию действует команда из Dockerfile.<br>
+    </ul>
+    Некоторые ключевые параметры:
+<ul>
+    <li>-d, --detach запускает контейнер в фоновом режиме.
+    <li>--name присваивает имя контейнеру.
+    <li>-p, --publish переводит порты из контейнера на хост-машину. Формат: <порт на хосте>:<порт в контейнере>.
+    <li>-v, --volume монтирует том или папку хоста в контейнер.
+    <li>-e, --env устанавливает переменные окружения в контейнере.
+    <li>--rm автоматически удаляет контейнер при его завершении.
+    <li>--network задаёт сетевой режим для контейнера. Например, --network host использует сеть хоста.
+    <li>--privileged запускает контейнер в привилегированном режиме, что позволяет контейнеру иметь все преимущества хоста.
+</ul>
+<p>
+<b>Запустить контейнер из образа name_image в интерактивном режиме:</b><br>
+<font color="green">docker run -it name_image</font>
+<p>
+Войти в запущенный контейнер:<br>
+<font color="green">docker exec -it &lt;id_контейнера&gt;</font>
+<br>
+id контейнера можно увидеть командой: <font color="green">docker ps</font>
+</p>
+Создать новый образ на основе контейнера с внесёнными изменениями:<br>
+    <font color="green">docker commit &lt;id_контейнераgt&gt; name_image:tag</font>
+<p>
+    Удалить образ:<br>
+        <font color="green">docker rmi &lt;имя_образа или id_образаgt;</font>
+</p>
+<p><b>Монтирование папки</b><br>
+Когда вы запускаете контейнер, можно вмонтировать в него папку (или файл) с хоста. Так контейнер получит доступ к файлам и сможет сохранять данные на хосте. Представьте, что на компьютере есть папка /host_folder . Чтобы она была доступна
+внутри контейнера по пути /app/data, необходимо использовать такой метод:
+<p>
+<font color=green>docker run -v /host_folder:/app/data &lt;имя_образа></font>
+<p>
+Теперь любые изменения в /app/data внутри контейнера появятся в /home/user/data
+на вашем хосте и наоборот.
+
 
 
 <br><br><br><br><br><br></body></html>
