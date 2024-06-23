@@ -1,0 +1,106 @@
+<html><head></head><body>
+<h3 align="center">Установка и настройка Docker</h3>
+<b>Установка Docker Engine</b><br>
+<ol>
+    <li>Добавляем официальный GPG-ключ в Docker:
+<p>
+    <font color="green">sudo apt-get update</font>
+<p>
+    <font color="green">sudo apt-get install ca-certificates curl gnupg</font>
+<p>
+<font color="green">sudo install -m 0755 -d /etc/apt/keyrings
+<p>
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+<p>
+sudo chmod a+r /etc/apt/keyrings/docker.asc</font>
+<li> Добавьте репозиторий Docker в источники Apt:
+<p>
+<font color="green">echo \<br>
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \<br>
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \<br>
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+<p>
+   sudo apt-get update</font>
+<li> Установим пакеты Docker:<p>
+<font color="green">sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</font>
+<p>
+Проверим успешность установки:
+<p>
+<font color="green">sudo docker run hello-world</font>
+<p>Выполнив эту команду, увидим подтверждение успешной установки и запуска Docker Engine.
+
+<h3 align="center">Удаление Docker Engine</h3>
+<ol>
+    <li>Uninstall the Docker Engine, CLI, containerd, and Docker Compose packages:
+        <p><font color=green>sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras</font></p>
+    </li>
+    <li>Images, containers, volumes, or custom configuration files on your host aren't automatically removed. To delete all images, containers, and volumes:
+        <p><font color=green>sudo rm -rf /var/lib/docker<p>
+            sudo rm -rf /var/lib/containerd</font></p>
+    </li>
+</ol>
+
+<h3 align="center"><a href="https://docs.docker.com/engine/install/linux-postinstall/">Постустановочные шаги для Docker Engine на Linux</a></h3>
+По умолчанию демон Docker привязан к Unix-сокету, которым владеет пользователь root, а не к TCP-порту. Другие пользователи могут получить доступ к нему только через команду sudo. Чтобы не использовать команду docker с префиксом sudo, создайте Unix-группу с именем docker и добавьте в неё пользователей.
+<p>
+    <font color="green">sudo groupadd docker</font>
+<p>Добавление пользователя в созданную группу:
+<p>
+<font color="green">sudo usermod -aG docker $USER</font>
+<p>Выйдите из системы и войдите снова, чтобы изменения вступили в силу. Также можно активировать изменения группы с помощью:<p>
+<font color="green">newgrp docker</font>
+</p>
+Проверим что работает без sudo: <font color="green">docker run hello-world</font>
+<p>
+Если возникают проблемы с правами доступа из-за применения sudo, исправьте это:
+<p><font color=green>sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+<p>
+    sudo chmod g+rwx "$HOME/.docker" -R</font></p>
+<b>Настройка автозапуска Docker при загрузке системы с systemd</b>
+<br>Включить автозапуск:
+<p>
+<font color="green">sudo systemctl enable docker.service<p>
+    sudo systemctl enable containerd.service</font>
+</p>
+Отключить автозапуск:
+<p><font color=green>sudo systemctl disable docker.service<p>
+    sudo systemctl disable containerd.service</font></p>
+
+<h3 align="center">Настройка драйвера журналирования по умолчанию</h3>
+Docker предоставляет драйверы для сбора и просмотра логов со всех контейнеров. По умолчанию используется драйвер json-file. Чтобы диск не переполнился логами, стоит настроить их ротацию. Также можно использовать другой драйвер, который автоматически ротирует логи или отправляет их на удалённый сервер. Подробнее об этом вы можете узнать в <a href="https://docs.docker.com/engine/install/linux-postinstall/#configure-default-logging-driver">документации</a>.<p>
+
+To avoid issues with overusing disk for log data, consider one of the following options:
+<ul>
+    <li>Configure the json-file logging driver to turn on log rotation.
+    <li>Use an alternative logging driver such as the "local" logging driver that performs log rotation by default.
+    <li>Use a logging driver that sends logs to a remote logging aggregator.
+</ul>
+
+<h2 align="center">Установка Docker Compose</h2>
+Можете ознакомиться с установкой подробнее в  <a href="https://github.com/docker/compose">документации на GitHub</a> или  <a href="https://losst.pro/ispolzovanie-docker-dlya-chajnikov">здесь и не только установка</a>.
+<p>
+Выбираем релиз на <a href="https://github.com/docker/compose/releases">этой странице</a>
+Запустить команду, чтобы загрузить последнюю версию и сохранить исполняемый файл в /usr/local/bin/docker-compose (вместо v2.27.1 пишем номер версии, какая сейчас последняя):
+<p>
+<font color="green">sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</font>
+<p>Другой способ:   <a href="https://github.com/docker/compose/releases">на странице релизов</a> нажимаем на <a href="https://github.com/docker/compose/tags">Tags</a>.  Далее на нужном релизе нажимаем на Downloads.  Копируем путь и вставляем в команду между кавычками:<p>
+    <font color="green">sudo curl -L
+        "https://github.com/docker/compose/releases/download/v2.27.2/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose</font>
+</p>
+<p>Установите права на исполнение для файла docker-compose:
+<p><font color=green>sudo chmod +x /usr/local/bin/docker-compose</font></p>
+<p>чтобы проверить версию Docker Compose:
+<p><font color=green>docker-compose --version</font> или <font color=green></font>docker-compose version</font></p>
+
+<h2 align="center">Dockerfile</h2>
+<a href="https://1cloud.ru/help/docker/dockerfile_work">Инструкции</a>, <a href="https://habr.com/ru/companies/ruvds/articles/439980/">Изучаем Docker, часть 3: файлы Dockerfile</a>
+
+<h2 align="center">Команды Docker</h2>
+<font color="red">Все команды выполняются в хосте.</font>
+Сборка образа с помощью Dockerfile:
+<p><font color=green>docker build -t name_image .</font></p>
+Здесь name_image - имя создаваемого образа<br>
+Точка означает, что dockerfile, на основе которого собираем образ, находится в текущем каталоге. Если этот файл находится в каком-то другом месте, его расположение можно указать с использованием флага - f.
+
+
+<br><br><br><br><br><br></body></html>

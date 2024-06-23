@@ -1,0 +1,48 @@
+<html><head></head><body>
+<a href="https://git-scm.com/book/ru/v2/">Книга</a>
+
+<h3 align=center>Создание репозитория в <a href="https://github.com/"></a>Гитхабе</a></h3>
+    Создадим репозиторий в <a href="https://github.com/">Гитхабе</a>.
+<ol>
+<li> Сначало нужно зарегистрироваться. Я создал username=DmitriyZubkov41, password: dimaz_z41.<br>
+    При создании username были проблемы: пробелы не разрешают, просто Dmitriy и даже DmitriyZubkov не доступны. 
+    Пароль простой также не разрешён.
+<li> После регистрации, ответов на вопросы можно создавать репозиторий. Просто заполняем анкету. 
+        Имя репозитория, кто может видеть репозиторий. В итоге создал по адресу 
+        https://github.com/DmitriyZubkov41/test_repository.git/ с именем test_repository.git
+<li> Далее в терминале команда:<p>
+    <font color="green"><b>git remote add origin https://github.com/DmitriyZubkov41/test_repository.git</b></font>
+    <p>
+    Как бы создал удаленный репозиторий под именем origin по указанному адресу.
+<li> Далее, чтобы с терминала иметь доступ к репозиторию нужно создать пароль, потому что пароль от учетной 
+        записи на сайте не действует. Есть 2 способа создания пароля. С помощью SSH и https. Я выбрал вариант в 
+        https с помощью токена beta. Заходим в settings в profyle, далее developer settings, в разделе personal 
+        access tokens выбираем тип создаваемого токена. Нажимаем кнопку generate new token. Я выбрал и создал 
+        токен beta. Токен - это набор символов.
+<li> Далее попробовал выполнить команду: git fetch origin. Получил ошибку: Write access to repository not 
+        granted (Доступ на запись в репозиторий не предоставлен).
+<li> Снова в правом верхнем углу (мой профиль) зашел в settings/develop settings. Удалил токен. Создал новый 
+        fine-grained. В permissions, когда создавал токен, выбрал contents = only read and write и metadata также имел другое значение (но no access), оно не менялось.
+<li> После этого выполнил команду <b>git push -u origin master</b>. Результат получен, на гитхаб в мой репозиторий скачались локальные файлы.
+
+<h2 align="center">Создание локального и удаленного репозитория task5</h2>
+<ol>
+<li>Общие настройки git'а<font color=green>git config --global user.name "Дмитрий Зубков"<br>
+        dmitriy@945G-M3:~/task5$ git config --global user.email "userdmitriy@mail.ru"</font></li>
+<li>Папка task5 уже была создана, просто перейдём в нее. Далее<br>
+<b>git init</b> - в папке task5 создали пустой репозиторий.
+<b>git add *</b> - добавили в индекс все папки файлы из каталога  task5.<br>
+<b>git commit -m "Первый коммит"</b> - сделали первый снимок ветки в локальном репозитории.</li>
+<li>Создали удаленный репозиторий ttps://github.com/DmitriyZubkov41/task5. Далее
+<p>
+<b></b>dmitriy@945G-M3:~/task5$</b> <font color="green"></font>git remote add origin https://github.com/DmitriyZubkov41/task5</font> - связываем наш локальный репозиторий в task5 с удаленным репозиторием origin (=task5).</li>
+<li>Если еще не создали ssh-key или токен в удаленном репозитории, то создаём.</li>
+<li>echo "# -" >> README.md
+        git init
+        git add README.md
+        git commit -m "first commit"
+        git branch -M main
+        git remote add origin https://github.com/DmitriyZubkov41/-.git
+        git push -u origin main</li>
+</ol>
+</body></html>
