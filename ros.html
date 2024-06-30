@@ -1,0 +1,111 @@
+<html><head></head><body>
+<title>ROS</title>
+<a href="https://wiki.ros.org/ru">ROS Tutorials</a>
+<h3 align="center">Установка ROS</h3>
+<a href="https://wiki.ros.org/Distributions">Список дистрибутивов ROS</a><br>
+Страницы установок ROS2: <a href="http://docs.ros.org/en/humble/Installation.html">Humble</a>, <a href="http://docs.ros.org/en/iron/Installation.html">Iron</a>, and <a href="http://docs.ros.org/en/rolling/Installation.html">Rolling</a>.<br>
+<a href="https://wiki.ros.org/noetic/Installation">Выбор установки ROS Noetic Ninjemys в зависимости от ОС</a><br>
+<a href="https://wiki.ros.org/noetic/Installation/Ubuntu">Установка ROS на ubuntu</a>
+<p>
+<ol>
+<li>Setup your sources.list<br>
+    Setup your computer to accept software from packages.ros.org.<p>
+    
+<font color="green">sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'</font>
+    
+<li>Set up your keys
+<p>
+<font color="green">sudo apt install curl # if you haven't already installed curl
+        curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -</font>
+    
+<li>Installation<br>
+Убедитесь, что ваш индекс пакетов Debian обновлен:
+<p><font color="green">sudo apt update</font>
+<p>
+Выберите в каком комплектации установить:<p>
+<b>Desktop-Full Install: (Recommended)</b> : Everything in Desktop plus 2D/3D simulators and 2D/3D perception packages
+<ul>   
+<li><font color="green">sudo apt install ros-noetic-desktop-full</font>
+<li><b>Desktop Install</b>: Everything in <b>ROS-Base</b> plus tools like rqt and rviz
+<p>    
+<font color="green">sudo apt install ros-noetic-desktop</font>
+<li><b>ROS-Base:</b> (Bare Bones) ROS packaging, build, and communication libraries. No GUI tools.
+<p>    
+<font color="green">sudo apt install ros-noetic-ros-base</font>
+</ul>    
+В ROS доступно еще больше пакетов. Вы всегда можете установить определенный пакет напрямую.
+<p>
+<font color="green">sudo apt install ros-noetic-PACKAGE</font>
+<p>   
+Например:
+<p>    
+<font color="green">sudo apt install ros-noetic-slam-gmapping</font>
+<p>    
+To find available packages, see <a href="https://index.ros.org/packages/page/1/time/#noetic">ROS Index</a> or use:
+<p>    
+<font color="green">apt search ros-noetic</font>
+    
+<li>Environment setup
+<p>    
+You must source this script in every bash terminal you use ROS in.
+<p>    
+<font color="green">source /opt/ros/noetic/setup.bash</font>
+<p>    
+It can be convenient to automatically source this script every time a new shell is launched. These commands will do that for you.
+<p>
+<font color="green">echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+<p>
+    source ~/.bashrc</font>
+<li>Dependencies for building packages
+<p>    
+    На данный момент вы установили все необходимое для запуска основных пакетов ROS. Для создания собственных рабочих пространств ROS и управления ими существуют различные инструменты и требования, которые распространяются отдельно. Например, rosinstall - это часто используемый инструмент командной строки, который позволяет вам легко загружать множество деревьев исходных репозиториев для пакетов ROS с помощью одной команды.<br>
+
+    Чтобы установить этот инструмент и другие зависимости для создания пакетов ROS, запустите:
+<p>    
+<font color="green">sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential</font>
+<p>    
+Initialize rosdep<br>
+Прежде чем вы сможете использовать многие инструменты ROS, вам необходимо инициализировать rosdep. rosdep позволяет легко устанавливать системные зависимости для исходного кода, который вы хотите скомпилировать, и необходим для запуска некоторых основных компонентов в ROS. Если вы еще не установили rosdep, сделайте это следующим образом.
+<p>
+<font color="green">sudo apt install python3-rosdep</font>
+<p>    
+With the following, you can initialize rosdep.
+<p>    
+<font color="green">sudo rosdep init
+<p>
+rosdep update</font>
+<p>Установка закончена.
+</ol>
+
+<h3 align=center><b>Настройка ROS:</b></h3>
+Пункты 4 и 5 из установки ROS.
+<p>
+<b>Создание рабочей области catkin:</b><br>
+Catkin — это система сборки, используемая в ROS для управления исходным кодом.<br>
+Рабочая область catkin представляет собой каталог, в котором вы можете создавать или изменять собственные пакеты ROS.
+<p>
+<font color="green">mkdir -p ~/catkin_ws/src
+    <p>
+    cd ~/catkin_ws/</font><p>
+    Это создаст новый каталог catkin_ws в вашем домашнем каталоге, а также каталог src внутри catkin_ws.
+    <p>
+<b>Инициализация рабочей области:</b><p>
+<font color="green">catkin_init_workspace src</font><p>
+Это создаст ссылку на CMakeLists.txt в каталоге src, который необходим для компиляции исходного кода.
+<p>
+<b>Сборка рабочей области:</b>
+<p>
+    <font color="green">catkin_make</font>
+<p>
+Это создаст два дополнительных каталога в каталоге catkin_ws: build и devel, которые содержат продукты сборки и среды сборки соответственно.
+<p>
+<b>Добавление рабочей области в .bashrc:</b><br>
+Чтобы обеспечить доступ к созданным пакетам, добавьте следующую строку в ваш .bashrc:
+<p>
+<font color=green>echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc<p>
+source ~/.bashrc</font>
+<p>
+Теперь вы готовы к созданию и управлению вашими собственными пакетами ROS в рабочей области catkin.
+
+
+<br><br><br><br><br><br></body></html>

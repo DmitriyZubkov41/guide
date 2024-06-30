@@ -94,12 +94,23 @@ To avoid issues with overusing disk for log data, consider one of the following 
 <p><font color=green>docker-compose --version</font> или <font color=green></font>docker-compose version</font></p>
 
 <h2 align="center">Dockerfile</h2>
-<a href="https://1cloud.ru/help/docker/dockerfile_work">Инструкции</a>, <a href="https://habr.com/ru/companies/ruvds/articles/439980/">Изучаем Docker, часть 3: файлы Dockerfile</a>
+<a href="https://1cloud.ru/help/docker/dockerfile_work">Инструкции</a><br>
+<a href="https://habr.com/ru/companies/ruvds/articles/439980/">Изучаем Docker, часть 3: файлы Dockerfile</a>
+<p>Инструкции:
+<ol>
+    <li>Entrypoint
+    <li><b>CMD:</b><br>
+     Если добавить команду <b>CMD ["/bin/bash"]</b>, то в команде входа в контейнер в интерактивном режиме не нужно будет в конце писать /bin/bash, пример из задания№5:
+     <p>
+        <font color="green">docker run -v $HOME/task5:/home/dmitriy/task5 -it rosgazebo4</font>
+    <p><i>Если вы используете Dockerfile для образа и CMD в Dockerfile, этот параметр не будет работать; однако вы можете использовать параметр entrypoint в файле compose, который удаляет CMD из файла Dockerfile.</i>
+</ol>
+
 
 <h2 align="center">Команды Docker</h2>
-<a href="https://github.com/eon01/DockerCheatSheet/blob/master/README.ru.md">Шпаргалка по командам</a><br>
 <a href="https://devops.org.ru/docker-summary">Шпаргалка по Docker</a><br>
-<a href="https://losst.pro/zapusk-kontejnera-docker?ysclid=lxsojxv3j9177850318">Запуск контейнера Docker</a>
+<a href="https://losst.pro/zapusk-kontejnera-docker?ysclid=lxsojxv3j9177850318">Запуск контейнера Docker</a><br>
+<a href="https://habr.com/ru/companies/kokocgroup/articles/802039/">Большая шпаргалка по Docker: как распилить монолитный проект на части</a>
 <p>
 <font color="red">Все команды выполняются в хосте.</font><p>
 Сборка образа с помощью Dockerfile:
@@ -107,7 +118,7 @@ To avoid issues with overusing disk for log data, consider one of the following 
 Здесь name_image - имя создаваемого образа<br>
 Точка означает, что dockerfile, на основе которого собираем образ, находится в текущем каталоге. Если этот файл находится в каком-то другом месте, его расположение можно указать с использованием флага - f:<p>
 <font color="green">docker build -t name_image -f path_to_image <b>.</b></font><br>
-<font color="red">Несмотря на то, что пишем путь к образу, все равно нужно в конце после путь пробел, поставить точку. Наверное точка - это место (текущая папка) для инструкций dockerfile.</font>
+<font color="red">Несмотря на то, что пишем путь к образу, все равно нужно в конце после путь пробел, поставить точку.</font>
 <p>
     <b>Запуск контейнера:</b><p>
 <font color="green">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</font>
@@ -135,7 +146,7 @@ To avoid issues with overusing disk for log data, consider one of the following 
 <font color="green">docker run -it name_image</font>
 <p>
 Войти в запущенный контейнер:<br>
-<font color="green">docker exec -it &lt;id_контейнера&gt;</font>
+<font color="green">docker exec -it &lt;id_контейнера&gt; &lt;command&gt;</font>
 <br>
 id контейнера можно увидеть командой: <font color="green">docker ps</font>
 </p>
@@ -160,11 +171,20 @@ id контейнера можно увидеть командой: <font color=
 Скрипт выполняется, но сам контейнер почему-то не открылся.<br>
 Потому-что контейнер работает (виден) пока в нем работает программа. У меня в данном случае скрипт выполнился мгновенно, поэтому и контейнер, не видел. Чтобы контейнер был постоянно, нужно в нем запустить бесконечную программу, обычно /bin/bash. Потом в самом контейнере выполнить скрипт.
 
-<h2 align="center">Docker Compose</h2>
+<p>
+    <b>Просмотр и удаление всех контейнеров:</b>
+<p>
+    <font color="green">docker ps -a</font> - список всех остановленных контейнеров.
+<p>
+    <font color="green">docker rm $(docker ps -a -q)</font> - удалить все остановленные контейнеры
+
+                         <h2 align="center">Docker Compose</h2>
 
 <h3 align="center">docker-compose.yml</h3>
 <a href="https://www.dmosk.ru/miniinstruktions.php?mini=docker-compose-examples">Шпаргалка по работе с docker-compose</a><br>
-<a href="https://docs.docker.com/compose/compose-file/">Официальная документация</a>
+<a href="https://docs.docker.com/compose/compose-file/">Официальная документация</a><br>
+<a href="https://translated.turbopages.org/proxy_u/en-ru.ru.5aa65659-667fd5a8-61dea5c5-74722d776562/https/www.baeldung.com/ops/docker-compose-multiple-commands">Выполнение нескольких команд в Docker Compose</a><br>
+<a href="https://1cloud.ru/help/docker/manual_yaml">Краткий мануал по YAML</a>
 <p>
 Структура файла docker-compose.yml:<ul>
 <li><b>version</b> указывает версию формата файла docker-compose.yml. Например, '2', '3' или '3.8'. Выбор версии зависит от функций и используемой версии Docker Compose.
@@ -190,9 +210,11 @@ id контейнера можно увидеть командой: <font color=
 <li><b>docker-compose pull</b> загружает последние версии образов для всех сервисов из Docker Hub или другого реестра.
 <li><b>docker-compose exec</b> выполняет команды в запущенном контейнере. Например, чтобы выполнить команду bash в контейнере talker, выполните <b>docker-compose exec talker bash</b>.
 <li><b>docker-compose stop</b> останавливает запущенные сервисы, не удаляя их. Позже вы можете запустить их снова с помощью <b>docker-compose start</b>.
+<li><b><a href="https://translated.turbopages.org/proxy_u/en-ru.ru.1a383b39-668129fb-19bc55a5-74722d776562/https/docs.docker.com/reference/cli/docker/compose/run/">docker compose run</a></b>
 </ul>
 <p>
     <a href="https://jhooq.com/docker-compose-execute-multiple-commands/">Одновременное выполнение нескольких команд в контейнере</a><br>
-    <a href="https://habr.com/ru/articles/804331/">Docker для новичков — #3 Что нужно знать о Docker compose</a>
+    <a href="https://habr.com/ru/articles/804331/">Docker для новичков — #3 Что нужно знать о Docker compose</a><br>
+    <a href="https://www.golinuxcloud.com/docker-compose-multiple-commands/">Run Multiple Commands in Docker Compose [4 Methods]</a>
 
 <br><br><br><br><br><br></body></html>
