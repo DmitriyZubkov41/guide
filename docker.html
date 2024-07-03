@@ -2,12 +2,13 @@
 <title>Docker</title>
 <h3 align="center">Установка и настройка Docker</h3>
 <b>Установка Docker Engine</b><br>
+<a href="https://docs.docker.com/engine/install/ubuntu/">Официальная страница установки Docker Engine</a>
 <ol>
     <li>Добавляем официальный GPG-ключ в Docker:
 <p>
     <font color="green">sudo apt-get update</font>
 <p>
-    <font color="green">sudo apt-get install ca-certificates curl gnupg</font>
+    <font color="green">sudo apt-get install ca-certificates curl</font>
 <p>
 <font color="green">sudo install -m 0755 -d /etc/apt/keyrings
 <p>
@@ -190,7 +191,7 @@ id контейнера можно увидеть командой: <font color=
 <li><b>version</b> указывает версию формата файла docker-compose.yml. Например, '2', '3' или '3.8'. Выбор версии зависит от функций и используемой версии Docker Compose.
 <li><b>services</b> — основной раздел с описанием всех контейнеров (или сервисов), которые нужно запустить. У каждого сервиса есть имя (например, talker или listener) и параметры поведения.
 <li><b>image</b> указывает на Docker-образ для создания контейнера. В примере мы используем osrf/ros:humble-desktop.
-<li><b>command</b> выполняется внутри контейнера после его запуска. В нашем примере ros2 run demo_nodes_cpp talker — это команда сервиса talker.
+<li><b>command</b> выполняется внутри контейнера после его запуска. command переопределяет команду по умолчанию, объявленную в Dockerfile, например, с помощью команды Dockerfile CMD.
 <li><b>depends_on</b> указывает на зависимости между сервисами. Если один сервис зависит от другого, то будет запущен только после того, от которого зависит. В нашем примере listener зависит от talker, поэтому talker будет запущен
 первым.
 <li><b>ports</b> позволяет пробросить порты из контейнера на хост-машину. Формат обычно такой: <порт на хосте>:<порт в контейнере>. 
