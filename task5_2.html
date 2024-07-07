@@ -1,0 +1,120 @@
+<html><head></head><body>
+<title>Задание по docker</title>
+Связь между хостом с Head через сеть, порт 80 на хосте с портом 8000 на Head, Modul1 подключается к Head через usb, Modul2 пускай через свой порт 8002 подсоединён к порту 8000 на Head.
+<p>
+Код docker-compose2.yml:
+<p>
+<pre>
+    version: '4'
+    services:
+      head:
+        container_name: head
+        image: rosgazebo
+        networks: 
+          - host
+          - net1
+          - net2
+        ports:
+          - 80:8000        #80 порт на хосте связан с 8000 на head
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
+        volumes: 
+          - $HOME/task5:/task5
+        command: tmux new window
+    
+    
+      modul1:
+        container_name: modul1
+        image: imagemodul1
+        #build:
+          #context: ../
+          #dockerfile: docker/Dockerfile1  # Path to the Dockerfile relative to the context
+        volumes: 
+          - $HOME/task5:/task5
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
+        networks: 
+          - net1
+        ports:
+          - 80:8001        #80 порт на хосте связан с 8001 на modul1
+        command: tmux new window
+    
+    
+      modul2:
+        container_name: modul2
+        image: imagemodul2
+        volumes: 
+          - $HOME/task5:/task5
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
+        networks: 
+          - net2
+        ports:
+          - 80:8002       #80 порт на хосте связан с 8002 на modul2
+        command: tmux new window
+    networks:
+      host:
+      net1:
+      net2:
+</pre>
+<p>
+    <font color="green">cd task5/docker<br>
+        docker build -t imagemodul1 -f Dockerfile1 .</font> создал образ imagemodul1 для контейнера modul1
+<br>
+    <font color="green">docker build -t imagemodul1 -f Dockerfile1 .</font> - создал образ imagemodul2 для контейнера modul2
+<p>
+образ rosgazebo был создан в предыдущем задании
+<p>
+<font color="green">docker-compose -f docker-compose2.yml up</font>
+<p>
+    <font color="red">Error response from daemon: driver failed programming external connectivity on endpoint head<br>(fcc81b859f6ada4a73db17f5791730d173c53a899874eafdc5ccae070acd9da4): Bind for 0.0.0.0:80 failed: port is already allocated</font>
+<p>Есть предположение, что какой-то контейнер уже использует порт 80.
+<font color="green">docker rm $(docker ps -a -q)</font> - удалил все контейнеры.
+<p>
+    Повторил:
+<p><font color="green">docker-compose -f docker-compose2.yml up</font><br>
+<img src="./images/dockercompose.png">
+<br>Не помогло. Теперь идея, что 80 порт должен связан с одним контейнером. Оставим в контейнере head, <font color=red>но тогда как в других контейнерах?</font> Поменял, ошибка повторилась.<br>
+Видимо порт 80 занят на хосте, поменял его на 2000 (head), 2001 (modul1), 2002 (modul2).<br>
+Теперь команда: <font color="green">docker-compose -f docker-compose2.yml up</font> выполнилась без ошибок, но результата, я не увидел.<br>
+<img src="./images/dockercompose1.png"><br>
+
+Тогда в docker-compose2.yml значение command изменил на /bin/bash<br>
+  <font color="green">docker-compose -f docker-compose2.yml up</font><br>
+  Результат:<br>
+  <img src="./images/dockercompose2.png"><br>
+  В фоне есть мои контейнеры и порты.
+<p>
+    <font color="green">docker exec -it 7f283c42a4f6 /bin/bash</font>
+<p>
+Запустил командную строку контейнера head.<br>
+<img src="./images/dockerexec.png">
+<p>
+  Запустил командную строку контейнера modul1.<br>
+  <img src="./images/dockerexec1.png">
+<p>
+  Запустил командную строку контейнера modul2 через его имя.<br>
+  <img src="./images/dockerexec2.png">
+
+<h3><font color=red>Проблема с volumes</font></h3>
+Очередная проблема: чтобы посмотреть какие каталоги прикреплены контейнерам, выполнил команду ls. В head нет прикреплённого каталога из хоста. В контейнерах modul* наоборот прикреплен корневой каталог из хоста и заодно там находится task5. Дальше home опуститься нельзя.<br>В docker-compose2.yml, во всех контейнерах:
+  <br><font color=brought><pre>
+  volumes: 
+    - $HOME/task5:/task5
+  </pre></font>
+<br><img src="./images/dockerls.png">
+<br>
+Предлагаемое решение: во всех dockerfile поменять значение WORKDIR на /task5. На dockerfile (rosgazebo) так сразу было установлено, но возможно не обновил образ rosgazebo. Пересоберём все образы.<p>
+Удалил контейнеры, собрал образы. Теперь:
+<font color="green">docker-compose -f docker-compose2.yml up</font>
+<p>
+  Создал 3 attaching контейнера. Далее команда: <b>tmux</b>. Дважды <b>tmux split-window -v</b> - разделил окно на 3 панельки.
+В каждой панельке ввёл команду:
+<p>
+  <font color="green">docker exec -it name_conteiner /bin/bash</font>
+В результате в каждой панели командная строка своевого контейнера:<br>
+<img src="./images/dockertmux.png">
+
+<h3 align="center"><font color="red">Теперь задача передать данные от хоста с порта 200* в порт контейнера 800* и наоборот</font></h3>
+
+<br><br><br><br><br></body></html>
