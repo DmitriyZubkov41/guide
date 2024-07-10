@@ -115,6 +115,47 @@
 В результате в каждой панели командная строка своевого контейнера:<br>
 <img src="./images/dockertmux.png">
 
-<h3 align="center"><font color="red">Теперь задача передать данные от хоста с порта 200* в порт контейнера 800* и наоборот</font></h3>
+<h3 align="center"><font color="red">Теперь задача передать данные от хоста с порта 200* в порт контейнера 8000* и наоборот</font></h3>
+<p>
+  cd task5/docker<br>
+  docker-compose -f docker-compose2.yml up
+  <p>Получились 3 attachung контейнера. Команда: Ctrl+z, чтобы получить командную строку. При этом контейнеры остались рабочими.
+  <p>
+  Далее командами утилиты tmux делю окно горизонтально на 3 окна, одно на хост, среднее на head. Нижнее разделю еще на два по вертикали:
+  <br>
+    <font color="green">tmux</font><br>
+  Два раза: <b>префикс</b> + <b>"</b><br>
+  Нижнее окно делю на два вертикалью:
+  <font color=green>tmux split-window -h</font><br>
+  Или <b>префикс</b> + <b>%</b><br>
+  Устанавливаю размер окон: <b>префикс</b> + <b>Alt + стрелка</b>.
+<p>Открываю контейнеры:
+<p>
+  <font color="green">docker exec -it name_container /bin/bash</font> в каждом контейнере, name_container меняем на своё имя.<br>
+  <img src="./images/dockerexec3.png">
+<p>
+В контейнере head: <i>nc -l 8000</i><br>
+В окне хоста: <i>nc 127.0.0.1 2000</i><br>
+Теперь пишем сообщения в хосте, они появляются в head. Наоборот также справедливо, получилась двухнаправленная передача данных.
+<p>
+  В контейнере modul1:<br>
+  <i>nc -l 8001</i><br>
+  В окне хоста после закрытия сеанса с head, если напишем: <i>nc 127.0.0.1 2001</i> , то получим сообщение: <font color="red">nc: missing port number</font> .<br>
+  Проблем не будет, если напишем: <i>nc localhost 2001</i><br>
+  <img src="./images/dockernc.png">
+  <br>Все работает.
+<h4>Общение между хостом и head через сеть по ip-адресу</h4>
+В head даём команду: <b>nc -l number_port</b><br>
+В хосте команда: <b>nc IP-adres number_port</b><br>
+IP-adres - это ip контейнера head, number_port - любой порт, лишь бы они совпадали на хосте и head. IP можно узнать командой ifconfig.<br>
+<img src="./images/dockernc1.png">
+<p>
+  Передача данных по ip (через сеть) между head и modul1 также работает.<br>
+  <img src="./images/dockernc2.png">
+<p><font color=red>Непонятно только почему это работает между хостом и modul1, когда сети между ними в настройках docker-compose.yml нет.</font><br>
+И второе: почему ip-адреса по командам ifconfig и docker network inspect name_net не совпадают. 
+
+<h3 align="center"><font color="red">Теперь задача отключить сеть между head и modul1, соединение только по портам.</font></h3>
+  
 
 <br><br><br><br><br></body></html>
