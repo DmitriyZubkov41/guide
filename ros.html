@@ -1,112 +1,6 @@
 <html><head></head><body>
 <title>ROS</title>
 <a href="https://wiki.ros.org/ru">ROS Tutorials</a>
-<h3 align="center">Установка ROS</h3>
-<a href="https://wiki.ros.org/Distributions">Список дистрибутивов ROS</a><br>
-Страницы установок ROS2: <a href="http://docs.ros.org/en/humble/Installation.html">Humble</a>, <a href="http://docs.ros.org/en/iron/Installation.html">Iron</a>, and <a href="http://docs.ros.org/en/rolling/Installation.html">Rolling</a>.<br>
-<a href="https://wiki.ros.org/noetic/Installation">Выбор установки ROS Noetic Ninjemys в зависимости от ОС</a><br>
-<a href="https://wiki.ros.org/noetic/Installation/Ubuntu">Установка ROS на ubuntu</a>
-<p>
-<ol>
-<li>Setup your sources.list<br>
-    Setup your computer to accept software from packages.ros.org.<p>
-    
-<font color="green">sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'</font>
-    
-<li>Set up your keys
-<p>
-<font color="green">sudo apt install curl # if you haven't already installed curl
-        curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -</font>
-    
-<li>Installation<br>
-Убедитесь, что ваш индекс пакетов Debian обновлен:
-<p><font color="green">sudo apt update</font>
-<p>
-Выберите в каком комплектации установить:<p>
-<b>Desktop-Full Install: (Recommended)</b> : Everything in Desktop plus 2D/3D simulators and 2D/3D perception packages
-<ul>   
-<li><font color="green">sudo apt install ros-noetic-desktop-full</font>
-<li><b>Desktop Install</b>: Everything in <b>ROS-Base</b> plus tools like rqt and rviz
-<p>    
-<font color="green">sudo apt install ros-noetic-desktop</font>
-<li><b>ROS-Base:</b> (Bare Bones) ROS packaging, build, and communication libraries. No GUI tools.
-<p>    
-<font color="green">sudo apt install ros-noetic-ros-base</font>
-</ul>    
-В ROS доступно еще больше пакетов. Вы всегда можете установить определенный пакет напрямую.
-<p>
-<font color="green">sudo apt install ros-noetic-PACKAGE</font>
-<p>   
-Например:
-<p>    
-<font color="green">sudo apt install ros-noetic-slam-gmapping</font>
-<p>    
-To find available packages, see <a href="https://index.ros.org/packages/page/1/time/#noetic">ROS Index</a> or use:
-<p>    
-<font color="green">apt search ros-noetic</font>
-    
-<li>Environment setup
-<p>    
-You must source this script in every bash terminal you use ROS in.
-<p>    
-<font color="green">source /opt/ros/noetic/setup.bash</font>
-<p>    
-It can be convenient to automatically source this script every time a new shell is launched. These commands will do that for you.
-<p>
-<font color="green">echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-<p>
-    source ~/.bashrc</font>
-<li>Dependencies for building packages
-<p>    
-    На данный момент вы установили все необходимое для запуска основных пакетов ROS. Для создания собственных рабочих пространств ROS и управления ими существуют различные инструменты и требования, которые распространяются отдельно. Например, rosinstall - это часто используемый инструмент командной строки, который позволяет вам легко загружать множество деревьев исходных репозиториев для пакетов ROS с помощью одной команды.<br>
-
-    Чтобы установить этот инструмент и другие зависимости для создания пакетов ROS, запустите:
-<p>    
-<font color="green">sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential</font>
-<p>    
-Initialize rosdep<br>
-Прежде чем вы сможете использовать многие инструменты ROS, вам необходимо инициализировать rosdep. rosdep позволяет легко устанавливать системные зависимости для исходного кода, который вы хотите скомпилировать, и необходим для запуска некоторых основных компонентов в ROS. Если вы еще не установили rosdep, сделайте это следующим образом.
-<p>
-<font color="green">sudo apt install python3-rosdep</font>
-<p>    
-With the following, you can initialize rosdep.
-<p>    
-<font color="green">sudo rosdep init
-<p>
-rosdep update</font>
-<p>Установка закончена.
-</ol>
-
-<h3 align=center><b>Настройка ROS:</b></h3>
-Пункты 4 и 5 из установки ROS.
-<p>
-<b>Создание рабочей области catkin:</b><br>
-Catkin — это система сборки, используемая в ROS для управления исходным кодом.<br>
-Рабочая область catkin представляет собой каталог, в котором вы можете создавать или изменять собственные пакеты ROS.
-<p>
-<font color="green">mkdir -p ~/catkin_ws/src
-    <p>
-    cd ~/catkin_ws/</font><p>
-    Это создаст новый каталог catkin_ws в вашем домашнем каталоге, а также каталог src внутри catkin_ws.
-    <p>
-<b>Инициализация рабочей области:</b><p>
-<font color="green">catkin_init_workspace src</font><p>
-Это создаст ссылку на CMakeLists.txt в каталоге src, который необходим для компиляции исходного кода.
-<p>
-<b>Сборка рабочей области:</b>
-<p>
-    <font color="green">catkin_make</font>
-<p>
-Это создаст два дополнительных каталога в каталоге catkin_ws: build и devel, которые содержат продукты сборки и среды сборки соответственно.
-<p>
-<b>Добавление рабочей области в .bashrc:</b><br>
-Чтобы обеспечить доступ к созданным пакетам, добавьте следующую строку в ваш .bashrc:
-<p>
-<font color=green>echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc<p>
-source ~/.bashrc</font>
-<p>
-Теперь вы готовы к созданию и управлению вашими собственными пакетами ROS в рабочей области catkin.
-
 <h2 align="center">Основные концепции системы ROS</h2>
 Ссылки: <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-2/osnovnye-koncepcii-sistemy-ros">Основные концепции системы ROS</a>
 
@@ -117,11 +11,16 @@ source ~/.bashrc</font>
 <li> <b>Пакеты (Packages)</b>: Пакет – основная единица файловой системы ROS. В основном пакет содержит выполняемые процессы ROS (узлы или ноды - nodes), библиотеки на основе ROS, наборы данных, конфигурационные файлы и прочие полезные данные. Пакет – это минимальная единица для компиляции и релиза в ROS.<br>
 <b>Команды для работы с пакетами:</b>
 <ul>
-    <li>Поиск пакета: <font color="green">rospack find [package_name]</font>    
-    <li><b>roscd:</b> <font color="green">roscd <package-or-stack>[/subdir]</font> переход к указанному пакету.
+    <li>Поиск пакета: <font color="green">rospack find [package_name]</font><br>
+        <img src="./images/rospack1.png">   
+    <li><b>roscd:</b> <font color="green">roscd &lt;package-or-stack&gt;[/subdir]</font> переход к указанному пакету.<br>
+        <img src="./images/roscd.png">
     <li>Чтобы увидеть список каталогов, где находятся пакеты, служит команда: <font color="green">echo $ROS_PACKAGE_PATH</font>
     <li><font color="green">roscd log</font>  приведет вас к папке, в которой хранятся файлы журнала ROSS. Обратите внимание, что если вы еще не запускали какие-либо программы для ROM, это приведет к ошибке, указывающей на то, что они еще не существуют.
-    <li><font color="green">rosls <package-or-stack>[/subdir]</font> показывает состав пакета, обращаясь к нему по имени, а не по абсолютному пути.
+    <li><font color="green">rosls &lt;package-or-stack&gt;[/subdir]</font> показывает состав пакета, обращаясь к нему по имени, а не по абсолютному пути.<br>
+        <img src="./images/rosls.png"><br>
+    Клавиша TAB выполняет функцию автозаполнения или если дважды, то список вариантов. Например напишем ros и нажмем дважды TAB, выведутся все команды ros'а.<br>
+    <b>rosls</b> и дважды TAB, то выведет список установленных пакетов.
 </ul>
 <li> <b>Метапакеты (Metapackages)</b>: Метапакеты – это специализированные Пакеты, используемые для группировки других взаимосвязанных Пакетов. Используются также для обратной совместимости.
 
@@ -219,10 +118,6 @@ source ~/.bashrc</font>
 Далее мы можем добавить роботу другой лазерный дальномер, поэтому нужно переконфигурировать систему. Всё что нужно при этом – переназначить (remap) используемые имена. При запуске ноды hokuyo_node мы можем вместо имени scan переназначить имя base_scan. B то же самое сделать с нодой – фильтром. Теперь обе эти ноды будут связаны с использованием топика base_scan, и перестанут обрабатывать сообщение тописа scan. После этого мы можем запустить ещё одну ноду hokuyo_node для нового лазерного дальномера.
 
 <h2 align="center"><a href="https://wiki.ros.org/ru/ROS/Tutorials">Из официальной документации</a></h3>
-<ul>
-    <li> Клавиша TAB выполняет функцию автозаполнения или если дважды, то список вариантов. Например напишем ros и нажмем дважды TAB, выведутся все команды ros'а.<br>
-    <b>rosls</b> и дважды TAB, то выведет список установленных пакетов.
-</ul>
 <h3><a href="http://wiki.ros.org/ROS/Tutorials/CreatingPackage">Создание пакетов</a></h3>
 <ol>
     <li><h3>Что такое catkin пакет?</h3>
@@ -237,44 +132,48 @@ source ~/.bashrc</font>
 <img src="./images/catkin_ws.png">
 <li>Создание catkin-пакета.<br>
     Общий синтаксис команды создания пакета:<br>
-    <font color="green">catkin_create_pkg <package_name> [depend1] [depend2] [depend3]</font><br>
+    <font color="green">catkin_create_pkg &lt;package_name&gt; [depend1] [depend2] [depend3]</font><br>
 catkin_create_pkg требует, чтобы вы указали ему имя пакета и, возможно, список зависимостей, от которых зависит этот пакет.<br>
 Пример:<br>
     <font color="green">cd ~/catkin_ws/src</font> переходим в каталог src<br>
-    <font color="green">catkin_create_pkg my_packet std_msgs rospy roscpp</font><br>
-    Создаем пакет my_packet, который зависит от нод std_msgs, rospy и roscpp.В результате будет создана папка my_packet, содержащая файлы package.xml и CMakeLists.txt, которые были частично заполнены информацией, которую вы предоставили catkin_create_pkg.
-<li><h3>Построение рабочего пространства catkin (catkin workspace) и исполнение setup файла</h3>
+    <font color="green">catkin_create_pkg beginner_tutorials std_msgs rospy roscpp</font><br>
+    <img src="./images/catkin_create_pkg.png"><br>
+    Создаем пакет beginner_tutorials, который зависит от нод std_msgs, rospy и roscpp.В результате будет создана папка beginner_tutorials, содержащая файлы package.xml и CMakeLists.txt, которые были частично заполнены информацией, которую вы предоставили catkin_create_pkg.
+<li><h3>Изменение рабочего пространства catkin (catkin workspace) с учетом нового пакета и исполнение setup файла</h3>
     <font color="green">cd ~/catkin_ws<br>
-        $ catkin_make</font><br>
-    Будут созданы папки devel и build<br>
-    Чтобы добавить переменные, нужно выполнить команду:
+    catkin_make</font><br>
+    После создания рабочей области в подпапке devel будет создана аналогичная структура, которую вы обычно находите в /opt/ros/noetic<br>
+    Чтобы добавить переменные, нужно выполнить команду:<br>
     <font color="green">. ~/catkin_ws/devel/setup.bash</font>
 <li><b>Пакетные зависимости:</b><br>
     <ul>
     <li> <b>Зависимости первого порядка</b><br>
             При использовании catkin_create_pkg ранее были предоставлены несколько зависимостей от пакетов. Эти зависимости первого порядка теперь можно просмотреть с помощью инструмента rospack:<br>
-            <font color="green">rospack depends1 <package_name></font><br>
-           Выдаст список зависимостей, которые были установлены во время выполнения команды catkin_create_pkg. Эти зависимости хранятся в файле package.xml.
+            <font color="green">rospack depends1 &lt;package_name&gt;</font><br>
+           Выдаст список зависимостей, которые были установлены во время выполнения команды catkin_create_pkg. Эти зависимости хранятся в файле package.xml.<br>
+        <img src="./images/rospack_depends1.png">
     <li> <b>Косвенные зависимости</b><br>
-            Во многих случаях у зависимостей также будут свои собственные зависимости. Например, у rospy есть другие зависимости.<br>
-            <img src="./images/rospack.png">
-    <li> <b>Файл package.xml содержит:</b><br>
-тег description<br>
-теги maintainer<br>
-теги лицензии<br>
+        Во многих случаях у зависимостей также будут свои собственные зависимости. Например, у rospy есть другие зависимости.<br>
+        <img src="./images/rospack_depends2.png"><br>
+        Пакет может иметь много косвенных зависимостей:<br>
+        <font color="green">rospack depends &lt;package_name&gt;</font> - выведет все зависимости.
+    <li> <b>Файл package.xml содержит:</b>
+<ul>
+<li>тег description<br>
+    <img src="./images/description.png">
+<li> тег maintainer<br>
+    Это обязательный и важный тег для package.xml потому что он позволяет другим пользователям узнать, к кому обратиться по поводу пакета. Требуется как минимум один специалист по сопровождению, но вы можете нанять их много, если хотите. Имя сопровождающего указано в тексте тега, но также есть атрибут электронной почты, который необходимо заполнить<br>
+    <img src="./images/maintainer.png">
+<li> теги лицензий<br> Обязательный. Наиболее распространенными лицензиями с открытым исходным кодом являются BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1 и LGPLv3. Вы можете прочитать о некоторых из них в разделе Open Source Initiative. В этом руководстве мы будем использовать лицензию BSD, поскольку остальные компоненты core RODS уже используют ее
 теги зависимостей<br>
-тег конца файла "</package>"
-<li> CMakeLists.txt
+<img src="./images/license.png">
+<li> тег зависимостей<br>
+    Следующий набор тегов описывает зависимости вашего пакета. Зависимости разделены на build_depend, build tool_depend, exe c_depend, test_depend. Более подробное объяснение этих тегов приведено в документации о зависимостях Catkin. Поскольку мы передали std_msgs, roscpp и rospy в качестве аргументов для catkin_create_pkg, зависимости будут выглядеть следующим образом:
+    <img src="./images/tag_depends.png">
+<li> тег конца файла <b>&lt;/package&gt;</b>
+</ul>
 </ul>
 </ol>
-<h3>Использование команды catkin_make</h3>
-catkin_make - это инструмент объединяет вызовы cmake и make в стандартном рабочем процессе CMake.<br>
-Синтаксис:<br>
-catkin_make [make_targets] [-DCMAKE_VARIABLES=...]<br>
-Для тех, кто не знаком со стандартным рабочим процессом CMake, он выглядит следующим образом:<br>
-<img src="./images/cmake.png"><br>
-Чтобы выполнить команду catkin_make, сперва переходим в папку src и в ней выполняем catkin_make. В результате в папке catkin_ws будут созданы папки devel и build.<br>
-Папка build - это расположение пространства сборки по умолчанию, в котором вызываются cmake и make для настройки и сборки ваших пакетов. Папка devel - это расположение пространства разработки по умолчанию, в которое помещаются исполняемые файлы и библиотеки перед установкой пакетов.
 
 <h2 align="center">Ноды (узлы)</h2>
 Узел на самом деле представляет собой не более чем исполняемый файл в пакете ROS. Узлы ROS используют клиентскую библиотеку ROS для взаимодействия с другими узлами. Узлы могут публиковать топики (opic) или подписываться на них. Узлы также могут предоставлять или использовать службы (service).
@@ -283,42 +182,51 @@ catkin_make [make_targets] [-DCMAKE_VARIABLES=...]<br>
     rospy = клиентская библиотека python<br>
     roscpp = клиентская библиотека c++
 <p>
+    Прежде чем выполнять команды над нодами, следует вызвать мастера ROS, команда: <font color="green">roscore</font><br>
+    И после этого в другом терминале выполнять команды. 
+<p>
     <font color="green">rosnode list</font> - выводит список этих активных узлов.<br>
 Если не запускали какую-нибудь ноду, то покажет только rosout. Он всегда запущен, поскольку собирает и регистрирует выходные данные отладки узлов.
 <p>
-    <font color="green">rosnode info &lt;name_node&gt;</font> - покажет информацию о ноде
+    <font color="green">rosnode info &lt;name_node&gt;</font> - покажет информацию о ноде.<br>
+    Пример:<br>
+    <img src="./images/info_my_turtl.png">
 <p>
-    <font color="green">rosrun [package_name] [node_name]</font> - позволит выполнить ноду node_name внутри пакета package_name без указания пути к этому пакету.
+    <font color="green">rosrun [package_name] [node_name]</font> - позволит выполнить ноду node_name внутри пакета package_name без указания пути к этому пакету.<br>
+    Например выполнить turtlesin_node внутри пакета turtlesim.<br>
+    <img src="./images/turtlesim_node.png">
 <p>
     <font color="green">rosrun [package_name] [node_name] __name:=[new_node_name]</font> - изменили имя ноды node_name на new_node_name.
 <p>
     <font color="green">rosnode ping [node_name]</font> - пингуем ноду, чтобы проверить, что она запущена.
 <h3>Использование rqt_graph</h3>
+Запустили две ноды: turtlesim_node, которая является подписчиком на топик и turtle_teleop_key, которая является публикатором на тот же самый топик. Графически мы можем это увидитеть с помощью утилиты rqt_graph.
+<p>
 Программа rqt_graph показывает связи между топиками и нодами.<br>
 Чтобы установить эту программу:<br>
 <font color="green">sudo apt-get install ros-&lt;distro&gt;-rqt</font><br>
 <font color="green">sudo apt-get install ros-&lt;distro&gt;-rqt-common-plugins</font><br>
-<distro> заменить на название дистрибутива ROS: (noetic, kinetic и т.подобное).
+&lt;distro&gt; заменить на название дистрибутива ROS: (noetic, kinetic и т.подобное).
 <p>
     Чтобы выполнить эту программу, команда:<br>
-    <font color="green">$ rosrun rqt_graph rqt_graph</font>
-<h3>>Команды rostopic:</h3>
-<ul>
-    <li> rostopic bw     display bandwidth used by topic
-    <li>  rostopic echo [topic]   - показывает данные, публикуемые в топик.
-    <li>  rostopic hz     display publishing rate of topic    
-    <li>  rostopic list   - возвращает список всех топиков, на которые в данный момент подписаны и которые опубликованы.<br>
+    <font color="green">rosrun rqt_graph rqt_graph</font><br>
+    <img src="./images/rqt_graf.png">
+
+<h3>Команды rostopic:</h3>
+<font color="green">rostopic echo [topic]</font> - показывает данные, публикуемые в топик.
+<p>
+    <font color="green">rostopic list</font> - возвращает список всех топиков, на которые в данный момент подписаны и которые публикуют.<br>
         Опции этой команды:
         <ul>
             <li>-h, --help            show this help message and exit
             <li>    -b BAGFILE, --bag=BAGFILE  список топиков в .bag file
-            <li>    -v, --verbose         list full details about each topic
+            <li>    -v, --verbose  дополнительно показывает сколько подписчиков и публицистов на топики завязано.
             <li>    -p                    list only публицистов
             <li>    -s                    list only подписчиков
         </ul>
-    <li>  rostopic pub    publish data to topic
-    <li>  rostopic type   print topic type
-</ul>    
+    <img src="./images/rostopic_list.png">
+
+<h3>Команды с Messages (сообщения)</h3>    
 Ноды общаются между собой с помошью messages (сообщений). Чтобы ноды понимали друг друга, сообщения должны иметь одинаковый тип. Чтобы узнать тип сообщений, служит команда:<br>
 <font color="green">rostopic type [topic]</font><br>
 Вернёт тип (имя) сообщений, используемого для топика.
@@ -344,4 +252,49 @@ catkin_make [make_targets] [-DCMAKE_VARIABLES=...]<br>
 <p>
     <b>rqt_plot</b> - эта утилита отображает график времени прокрутки данных, опубликованных в топиках.<br>
     Сперва нужно выполнить команду: <font color="green">$ rosrun rqt_plot rqt_plot</font>
+
+<h3>Services</h3>
+Сервисы - это еще один способ, с помощью которого узлы могут взаимодействовать друг с другом. Сервисы позволяют узлам отправлять запрос и получать ответ.<br>
+Команды:
+<ul>
+    <li> rosservice list         print information about active services
+<li> rosservice call         call the service with the provided args
+<li> rosservice type         print service type
+<li> rosservice find         find services by service type
+<li> rosservice uri          print service ROSRPC uri
+</ul>
+<ul>
+    <li> <font color="green">$ rosservice list</font> - выводит список сервисов
+    <li> <font color="green">rosservice type [service]</font> - выводит тип службы
+    <li> <font color="green">rosservice call [service] [args]</font> - вызывает службу [service]
+</ul>
+<h3>Команды rosparam:</h3>
+rosparam позволяет хранить данные на сервере параметров ROS и манипулировать ими. Сервер параметров может хранить целые числа, значения с плавающей запятой, логические значения, словари и списки. Для синтаксиса rosparam использует язык разметки YAML. В простых случаях YAML выглядит очень естественно: 1 - целое число, 1.0 - число с плавающей точкой, единица - строка, true - логическое значение, [1, 2, 3] - список целых чисел, а {a: b, c: d} - словарь. в программе rosparam есть множество команд, которые можно использовать для работы с параметрами, как показано ниже:
+<ul>
+    <li> rosparam set            set parameter
+    <li>    rosparam get            get parameter
+    <li>    rosparam load           load parameters from file
+    <li>    rosparam dump           dump parameters to file
+    <li>    rosparam delete         delete parameter
+    <li>    rosparam list           list parameter names
+</ul>
+<ul>
+    <li> <font color="green">rosparam list</font> - список параметров
+    <li> <font color="green">rosparam set [param_name]</font><br>
+        Пример: <i>$ rosparam set /turtlesim/background_r 150</i><br>
+        <font color="green">rosparam get [param_name]</font> - выводит значение параметра<br>
+        Команда <b>$ rosparam get /</b> выведет значения всех параметров на сервере параметров.
+    <li> <font color="green">rosparam dump [file_name] [namespace]</font> - записываем все параметры в файл [file_name]<br>
+</ul>
+<h3>Использование rqt_console and roslaunch</h3>
+<font color="green">$ sudo apt-get install ros-<distro>-rqt ros-<distro>-rqt-common-plugins</font> - установка rqt
+<p>
+    rqt_console подключается к Ross logging framework для отображения выходных данных с узлов. rqt_logger_level позволяет нам изменять уровень детализации (DEBUG, WARN, INFO и ERROR) узлов по мере их запуска.
+<p>
+    <b>Использование roslaunch</b><br>
+    roslaunch запускает ноды, определённые в launch-файле.<br>
+    <font color="green">$ roslaunch [package] [filename.launch]</font><br>
+    файл.launch находится в папке launch, она находится в каталоге пакета.<br>
+    <i>ПРИМЕЧАНИЕ: Каталог, в котором хранятся файлы launch, необязательно должен называться launch. На самом деле вам даже не нужно сохранять их в каталоге. Команда roslaunch автоматически просматривает переданный пакет и обнаруживает доступные файлы запуска. Однако это считается хорошей практикой.</i>
+
 <br><br><br><br><br><br></body></html>

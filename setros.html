@@ -1,0 +1,142 @@
+<html><head></head><body>
+<title>Установка и настройка ROS</title>
+<h3 align="center">Установка ROS</h3>
+<a href="https://wiki.ros.org/Distributions">Список дистрибутивов ROS</a><br>
+Страницы установок ROS2: <a href="http://docs.ros.org/en/humble/Installation.html">Humble</a>, <a href="http://docs.ros.org/en/iron/Installation.html">Iron</a>, and <a href="http://docs.ros.org/en/rolling/Installation.html">Rolling</a>.<br>
+<a href="https://wiki.ros.org/noetic/Installation">Выбор установки ROS Noetic Ninjemys в зависимости от ОС</a><br>
+<a href="https://wiki.ros.org/noetic/Installation/Ubuntu">Установка ROS noetic на ubuntu</a><br>
+<a href="https://habr.com/ru/articles/551944/">Установка ROS noetic на ubuntu на русском</a>
+<p>
+<ol>
+<li>Установка sources.list<br>
+    Настройте свой компьютер так, чтобы он мог принимать программное обеспечение от packages.ros.org:
+<p>
+<font color="green">sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'</font>
+    
+<li>Установить ключи:
+<p>
+    <font color="green">sudo apt install curl</font> # if you haven't already installed curl
+<p>
+    <font color="green">curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -</font>
+    
+<li>Installation<br>
+Убедитесь, что ваш индекс пакетов Debian обновлен:
+<p><font color="green">sudo apt update</font>
+<p>
+Выберите в каком комплектации установить:<p>
+<b>Desktop-Full Install: (Recommended)</b> : Everything in Desktop plus 2D/3D simulators and 2D/3D perception packages
+<ul>   
+<li><font color="green">sudo apt install ros-noetic-desktop-full</font>
+<li><b>Desktop Install</b>: Everything in <b>ROS-Base</b> plus tools like rqt and rviz
+<p>    
+<font color="green">sudo apt install ros-noetic-desktop</font>
+<li><b>ROS-Base:</b> (Bare Bones) ROS packaging, build, and communication libraries. No GUI tools.
+<p>    
+<font color="green">sudo apt install ros-noetic-ros-base</font>
+</ul>
+
+<h3>Я выбрал: <font color=red>sudo apt install ros-noetic-desktop-full</font></h3>
+Не удалось загрузить некоторые архивы, <font color="red">connect (101: Сеть недоступна) [IP: 213.180.204.183 80]</font><br>
+Решение этой проблемы нашел в статье <a href="https://habr.com/ru/articles/551944/">Как установить ROS NOETIC на UBUNTU 20.04</a>: в программе "Программы и обновления" поменял сервер (был сервер РФ, стал основной) и поставил галочки кое-где.
+<p>
+    Чтобы убедиться, что установили ROS, достаточно ввести <b>ros</b> и раза два нажать клавишу Tab, должны вывести список команд ROS.
+
+<h3>Поиск и установка отдельных пакетов ROS</h3>
+В ROS доступно еще больше пакетов. Вы всегда можете установить определенный пакет напрямую.
+<p>
+<font color="green">sudo apt install ros-noetic-PACKAGE</font>
+<p>   
+Например:
+<p>    
+<font color="green">sudo apt install ros-noetic-slam-gmapping</font>
+<p>    
+To find available packages, see <a href="https://index.ros.org/packages/page/1/time/#noetic">ROS Index</a> or use:
+<p>    
+<font color="green">apt search ros-noetic</font>
+
+    
+
+<h3 align=center><b>Настройка ROS:</b></h3>
+
+<li>Настройка:
+    <p>    
+        Устанавливаем переменные окружения.
+    <p>    
+    <font color="green">source /opt/ros/noetic/setup.bash</font>
+    <p>    
+        Может оказаться удобным автоматически создавать этот скрипт при каждом запуске новой оболочки.
+    <p>
+    <font color="green">echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+    <p>
+        source ~/.bashrc</font>
+    <li>Инструменты для создания пакетов:
+    <p>    
+        На данный момент вы установили все необходимое для запуска основных пакетов ROS. Для создания собственных рабочих пространств ROS и управления ими существуют различные инструменты и требования, которые распространяются отдельно. Например, <b>rosinstall</b> - это часто используемый инструмент командной строки, который позволяет вам легко загружать множество деревьев исходных репозиториев для пакетов ROS с помощью одной команды.
+    <p>
+        <i>rosinstall, например, для многих пользователей на начальном этапе просто не нужен, хотя бы потому что он больше интересен при чистой установке окружения на новых роботов, а при разработке люди либо используются бинарными пакетами, устанавливая их ручками через apt. Другой пример — при обычном пользовании совершенно не важно знать разницу между инсталяциями ros-noetic-desktop и ros-noetic-desktop-full, хотя бы потому что для компьютера разработчика чаще всего просто ставится full (благо машины разработчиков обычно почти бездонные), а вот на роботах лучше ставить base, а доустановку зависимостей производить тем же rosinstal (и в этот момент он начинает быть нужен на компе разработчика, ведь файлы описаний нужно еще написать и проверить).</i>
+    <p>
+        Чтобы установить этот инструмент и другие зависимости для создания пакетов ROS, запустите:
+    <p>    
+    <font color="green">sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential</font>
+    <p>    
+    <b>Установка rosdep</b>:<br>
+    Прежде чем вы сможете использовать многие инструменты ROS, вам необходимо инициализировать rosdep. rosdep позволяет легко устанавливать системные зависимости для исходного кода, который вы хотите скомпилировать, и необходим для запуска некоторых основных компонентов в ROS. Если вы еще не установили rosdep, сделайте это следующим образом:
+    <p>
+    <font color="green">sudo apt install python3-rosdep</font>
+    <p>    
+    With the following, you can initialize rosdep.
+    <p>    
+    <font color="green">sudo rosdep init
+    <p>
+    rosdep update</font>
+    <p>Установка закончена.
+    </ol>
+    
+<p>
+<b>Создание рабочей области ROS:</b><br>
+Catkin — это система сборки, используемая в ROS для управления исходным кодом.<br>
+Рабочая область catkin представляет собой каталог, в котором вы можете создавать или изменять собственные пакеты ROS.
+<p>
+    Сперва создадим рабочее пространство catkin_ws с внутренней папкой src.
+<p>
+<font color="green">mkdir -p ~/catkin_ws/src
+<p>
+    cd ~/catkin_ws/</font><p>
+    Это создаст новый каталог catkin_ws в домашнем каталоге, а также каталог src внутри catkin_ws.
+<p>
+<b>Сборка рабочей области:</b>
+<p>
+    <font color="green">catkin_make</font>
+<p>
+Это создаст два дополнительных каталога в каталоге catkin_ws: build и devel, которые содержат продукты сборки и среды сборки соответственно. Также внутри src создастся файл CMakeLists.txt.
+<p>
+    catkin_make - это инструмент командной строки, который используется для создания пакетов ROS. Он является оболочкой команды make и предоставляет ряд функций, которые упрощают создание пакетов ROS. Например, catkin_make может автоматически загружать зависимости, параллельно создавать несколько пакетов и создавать манифест пакета.
+<p>
+    <font color="red">Пытался выполнить команду catkin_make, получил ответ, что catkin еще не установлен. Когда пытаюсь установить, то получаю:</font><br>
+    <img src="./images/catkin_make.png"><br>
+    Не знаю, что помогло, выполнил только команды:<br>
+    <img src="./images/catkin_make1.png"><br>
+    Но мне помогло. А вообще в <a href="https://wiki.ros.org/ru/ROS/Tutorials/InstallingandConfiguringROSEnvironment">Установка и настройка рабочего окружения ROS</a> пишут, что если установлен Python 3, как у меня, то в первый раз нужно выполнить команду:<br>
+    <font color="green">$ catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3</font><br>
+    Эта команда позволит настроить catkin_make с помощью Python 3. Затем вы можете использовать только catkin_make для последующих сборок.<br>
+    Как бы там ни было, но в catkin_ws создал build , devel, а внутри src CMakeLists.txt.
+
+<p>
+    Далее нужно выполнить команду в catkin_ws:<br>
+    <font color="green">$ source devel/setup.bash</font>
+<br>
+Чтобы каждый раз не выполнять эту команду при запуске терминала, добавим эту команду в автозагрузочный файл терминала .bashrc:
+<p>
+<font color=green>echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc<p>
+source ~/.bashrc</font>
+<p>
+    Чтобы убедиться, что setup.bash правильно распределил ваше рабочее пространство, убедитесь, что переменная окружения ROS_PACKAGE_PATH содержит каталог, в котором вы находитесь, команда:<br>
+    <font color="green">echo $ROS_PACKAGE_PATH</font><br>
+    <img src="./images/package_path.png">
+<p>
+Теперь вы готовы к созданию и управлению вашими собственными пакетами ROS в рабочей области catkin.
+
+
+
+
+<br><br><br><br><br></body></html>
