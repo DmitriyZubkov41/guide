@@ -1,0 +1,154 @@
+<html><head></head><body>
+<title>Отладка и мониторинг в ROS</title>
+
+<h2 align=center>RViz</h2>
+RViz — инструмент для 3D-визуализации данных и состояния робота в ROS.
+<p>
+Запуск: <b>rviz</b> или <b>rosrun rviz</b>
+<p>
+Изучение RViz будем рассматривать на примере робота <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/">Turtlebot 3</a>.
+<ol>
+<li> Для начала установим необходимые пакеты, зависимости, выполняя пункты 3.1.2 - 3.1.4 из <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/">этой страницы</a> 
+<p>
+Потом со <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/">страницы Turtlebot3 simulation</a>  выполняем пункт 6.1.1:<br>
+<b>cd ~/catkin_ws/src/<br>
+git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git<br>
+cd ~/catkin_ws && catkin_make</b>
+<p>
+<font color=red>Возникала ошибка, что ros не видел нужный мне уже установленный пакет turtlebot3_gazebo и вообще все пакеты из catkin_ws/src.</font><br>
+Ошибку устранил после того как в файле ~/.bashrc расположил строки в правильном порядке:<br>
+<img src="./images/setup.bash.png"><br>
+Если эти строки в другом порядке расположить, тогда возникает ошибка, что ros не видит пакеты в catkin_ws/src.
+<li> Скачиваем модель burger:<br>
+<b>export TURTLEBOT3_MODEL=burger</b>
+<p>
+Запускаем в gazebo файл.launch:<br>
+<b>roslaunch turtlebot3_gazebo turtlebot3_world.launch</b>
+<p>
+Из-за того что не выполнил вначале export TURTLEBOT3_MODEL=burger возникает ошибка:<br>
+<img src="./images/roslaunch_mistake.png">
+<p>
+Выполнил обе команды, но теперь ошибка:<br>
+<img src="./images/roslaunch_mistake1.png">
+<p>
+Сказали, что проблема в видеокарте. Я всё-же решил установить отдельно gazebo на ubuntu и проверить, как он будет запускаться.
+<h3>Установка Gazebo</h3>
+Устанавливать буду классический gazebo11 со страницы <a href="https://classic.gazebosim.org/tutorials?tut=install_ubuntu">Install Gazebo using Ubuntu packages</a>.<br>
+Есть несколько способов установки Gazebo:
+<ol>
+<li> Как написано, используя ubuntu пакеты <a href="https://packages.ubuntu.com/source/jammy/gazebo">на этой странице</a> скачиваем архивы и потом распаковываем в бинарные пакеты.
+<li> Одной командой:<b>curl -sSL http://get.gazebosim.org | sh</b> и потом выполнить команду <b>gazebo</b>
+<li> Шаг за шагом, буду его использовать:
+<ol>
+<li> Установим доступ к репозиторию packages.osrfoundation.org:<br>
+<font color=green>sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'</font>
+<p>
+Можем проверить, что путь к репозиторию записан и правильно:<br>
+<b>cat /etc/apt/sources.list.d/gazebo-stable.list</b><br>
+Если всё верно, то увидим:<br>
+<img src="./images/repositoriy.png">
+<li> Установка ключей на свой компьютер:<br>
+<font color=green>wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -</font><br>
+<img src="./images/gazebo.key.png">
+<li> Установка Gazebo:<br>
+Обновим debian базу данных:<b>sudo apt-get update</b>
+<p>
+Теперь установим Gazebo 11:<br>
+<b>sudo apt-get install gazebo11</b><br>
+Будет установлен пакет gazebo11 самой новой версии (11.14.0-1~focal)<br>
+Дополнительно нужно установить еще один пакет:<br>
+<b>sudo apt-get install libgazebo11-dev</b><br>
+У меня был уже установлен пакет libgazebo11-dev самой новой версии (11.14.0-1~focal)
+<li> Проверяем: <b>gazebo</b><br>
+У меня не открылся:<br>
+<img src="./images/gazebo_mistake.png">
+<p>
+<font color=red>Видимо всё же проблема в видеокарте.</font>
+</ol>
+</ol>
+
+
+
+
+
+
+
+
+<h2 align=center>Использование rqt_graph</h2>
+Запустили две ноды: turtlesim_node, которая является подписчиком на топик и turtle_teleop_key, которая является публикатором на тот же самый топик. Графически мы можем это увидитеть с помощью утилиты rqt_graph.
+<p>
+Программа rqt_graph показывает связи между топиками и нодами.<br>
+Чтобы установить эту программу:<br>
+<font color="green">sudo apt-get install ros-&lt;distro&gt;-rqt</font><br>
+<font color="green">sudo apt-get install ros-&lt;distro&gt;-rqt-common-plugins</font><br>
+&lt;distro&gt; заменить на название дистрибутива ROS: (noetic, kinetic и т.подобное).
+<p>
+    Чтобы выполнить эту программу, команда:<br>
+    <font color="green">rosrun rqt_graph rqt_graph</font><br>
+    <img src="./images/rqt_graf.png">
+    
+    
+<h2 align=center>rqt_plot</h2>
+    <b>rqt_plot</b> - эта утилита отображает график времени прокрутки данных, опубликованных в топиках.<br>
+    Сперва нужно выполнить команду: <font color="green">rosrun rqt_plot rqt_plot</font>
+    
+    
+<h2 align=center>Использование rqt_console и rqt_logger_level</h2>
+rqt_console подключается к Ross logging framework, чтобы вывести выходные данные с узлов.<br>
+rqt_logger_level позволяет нам изменять уровень детализации (DEBUG, WARN, INFO и ERROR) узлов по мере их запуска.<br>
+Чтобы вызвать rqt_console, служит команда:<br>
+<font color="green">rosrun rqt_console rqt_console</font>
+<p>
+    <img src="./images/rqt_console.png">
+<p>
+    Чтобы вызвать консоль rqt_logger_level, служит команда:<br>
+    <font color="green">rosrun rqt_logger_level rqt_logger_level</font>
+<p>
+    <img src="./images/rqt_logger_level.png">
+    
+    
+    
+           
+<h2 align=center>Работа с roswtf</h2>
+Ссылки: <a href="https://wiki.ros.org/ROS/Tutorials/Getting%20started%20with%20roswtf">Getting started with roswtf</a>
+<p>
+В Linux вы можете проверить, запущен ли roscore по-прежнему или нет, с помощью чего-то вроде этого (если вы видите строку, подобную этой, которая включает rosmaster, который запускается как часть roscore, значит, roscore запущен).:<br>
+<b>ps -ef | grep -i rosmaster</b>
+<p>
+roswtf исследует вашу систему, чтобы попытаться найти проблемы. Давайте попробуем это сделать:<br>
+<b>roscd rosmaster<br>
+roswtf</b><br>
+<img src="./images/ros_wtf.png">
+<ul>
+<li> <b>Package: rosmaster</b> в этом выводе сообщается, что вы запустили roswtf в каталоге основного пакета ros.
+<li> <b>Static checks summary:</b> это отчет о любых проблемах с файловой системой или о любых проблемах, не связанных с выполнением (т.е. для запуска не требуется roscore). В нем сообщается, что ошибок не было.
+<li> <b>ROS Master does not appear to be running.</b> программа roscoe не запущена. roswtf не проводил никаких онлайн-проверок.
+</ul>
+<p>
+Для следующего шага нам нужно, чтобы был подключен ведущий сервер, поэтому откроем второй терминал и:<br>
+<b>roscore</b><br>
+В первом терминале выполним ту же последовательность действий еще раз:
+<br>
+<b>roscd rosmaster<br>
+roswtf</b><br>
+<img src="./images/ros_wtf1.png">
+<p>
+Теперь, когда запущен roscore, roswtf провел онлайн-проверку вашего графика. В зависимости от того, сколько узлов ROS у вас запущено, это может занять много времени. Как вы можете видеть, на этот раз было выдано предупреждение:<br>
+<pre>
+WARNING The following node subscriptions are unconnected:
+ * /rosout:
+   * /rosout
+</pre>
+ros wtf предупреждает вас о том, что корневой узел подписан на раздел, в котором никто ничего не публикует. В данном случае это ожидаемо, поскольку больше ничего не запущено, поэтому мы можем проигнорировать это.
+<p>
+roswtf будет предупреждать вас о том, что выглядит подозрительно, но может быть нормальным для вашей системы. Он также может сообщать об ошибках при возникновении проблем, которые, по его мнению, являются неправильными.
+<p>
+В этой части мы установим в ROS_PACKAGE_PATH неверное значение. Мы также остановим наш roscoe, чтобы упростить вывод, который вы видите.<br>
+<b>roscd</b>
+ROS_PACKAGE_PATH=bad:$ROS_PACKAGE_PATH roswtf</b><br>
+<img src="./images/ros_faile.png">
+<p>
+Есть много других типов проблем, которые может обнаружить roswtf. Если вы оказались в тупике из-за проблем со сборкой или связью, попробуйте запустить его и посмотреть, сможет ли это направить вас в правильном направлении.
+
+
+<br><br><br><br><br><br><br><br></body></html>

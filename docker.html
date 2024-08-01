@@ -78,6 +78,7 @@ To avoid issues with overusing disk for log data, consider one of the following 
     <li>Use a logging driver that sends logs to a remote logging aggregator.
 </ul>
 
+
 <h2 align="center">Установка Docker Compose</h2>
 Можете ознакомиться с установкой подробнее в  <a href="https://github.com/docker/compose">документации на GitHub</a> или  <a href="https://losst.pro/ispolzovanie-docker-dlya-chajnikov">здесь и не только установка</a>.
 <p>
@@ -96,8 +97,51 @@ To avoid issues with overusing disk for log data, consider one of the following 
 
 
 
-<h2 align="center">Dockerfile</h2>
+<h2 align=center><a href="https://go.skillbox.ru/profession/proffesion-mobile-robot-programmer-2/linux-creators-robotics/ac17c750-f260-4098-9a33-57d196c20d51">Урок 5.4 Создание контейнеров и управление ими с помощью Docker</a></h2>
+Для начала скачаем какой-нибудь образ, например на базе ROS2:<br>
+<font color=green>docker pull osrf/ros:humble-desktop</font>
+<p>
+Запустим контейнер в интерактивном режиме на базе этого образа:<br>
+<font color=green>docker run -it osrf/ros:humble-desktop /bin/bash</font>
+<p>
+Теперь настроим наши переменные окружения в контейнере, чтобы выполнять команды:<br>
+<font color=green>source /opt/ros/humble/setup.bash</font>
+<p>
+Далее в контейнере выполнил команду gazebo, получил ответ: <i>bash: gazebo: command not found</i>
+<p>
+Далее я сам по файлу, прикладываему к этому видеоуроку:<br>
+<b>apt update<br>
+apt install xpra xterm net-tools nano<br>
+apt install ros-$ROS_DISTRO-turtlebot3*</b><br>
+<b>source /opt/ros/$ROS_DISTRO/setup.bash</b><br>
+Устанавливаем дополнительный пакет ROS2:<br>
+<b>sudo apt install ros-humble-rmw-cyclonedds-cpp</b><br>
+<b>export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp</b>
+<p>
+Используйте Xpra, чтобы создать графическую сессию:<br>
+<b>xpra start --start=xterm --bind-tcp=0.0.0.0:9009</b><br>
+Пожаловался: <font color=red>No module named 'pyinotify'</font><br>
+Но в общем то запустился.
+<p>
+На хосте:<br>
+<b>xpra attach ws://172.17.0.2:9009</b>
+<p>
+Далее в контейнере выполнил команду <b>gazebo</b>. Результат:<br>
+<img src="./images/gazebo.png"><br>
+И почему-то открылись окна xterm и xpra.
+<p>
+Выполнил сначало в контейнере запуск ланч.файла:<br>
+<b>ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</b><br>
+Ответ:<br>
+<img src="./images/ros2_launch.png"><br>
+<p>
+Потом в xterm, как и написано в руководстве выполнил эту команду (вставка осуществляется средней клавишей мыши):<br>
+<b>ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</b><br>
+Сначало в xterm был получен такой же ответ, как и в терминале контейнера, но через пару минут открылся все-же Gazebo<br>
+<img src="./images/open_gazebo.png">
 
+
+<h2 align="center">Dockerfile</h2>
 <a href="https://1cloud.ru/help/docker/dockerfile_work">Инструкции</a><br>
 <a href="https://habr.com/ru/companies/ruvds/articles/439980/">Изучаем Docker, часть 3: файлы Dockerfile</a>
 

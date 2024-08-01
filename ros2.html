@@ -87,7 +87,137 @@ ros2 action list</b> список действий
 <p>
 Другое отличие: для building пакета теперь используется команда <b>colcon</b> вместо catkin_make и в результате будут создаваться каталоги install, build и log. devel не будет.
 
+<h2 align=center><a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#source-the-setup-file">Создание пакетов вручную в ROS2</a></h2>
+В ROS2 пакеты бывают Cmake и Python. Рассмотрим как создавать Cmake пакеты.<br>
+Структура Cmake пакета:<br>
+<img src="./images/ros2_packet.png">
+<ul>
+<li> CMakeLists.txt файл, описывающий, как создать код внутри пакета
+<li> include/&lt;package_name&gt; каталог, содержащий публичные заголовки пакета
+<li> package.xml файл, содержащий мета информацию о пакете
+<li> src - каталог, содержащий исходный код пакета
+</ul>
+Одно рабочее пространство может содержать столько пакетов, сколько вы хотите, каждый в своей папке. В одном рабочем пространстве также могут быть пакеты разных типов сборки (CMake, Python и т.д.). Пакеты не могут быть вложенными в каталог другого пакета.
+<p>
+Рекомендуется создать папку src в рабочей области и создавать пакеты в ней. Это позволяет поддерживать “чистоту” верхнего уровня рабочей области.
+<p>
+Обычная рабочая область может выглядеть следующим образом:<br>
+<img src="./images/ros2_ws.png">
+<h3>Шаги по созданию пакета Cmake</h3>
+<ol>
+<li> Перейти в каталог src, <font color=brought>пакеты создаются всегда из папки src</font>:<br>
+<i>cd ~/ros2_ws/src</i>
+<li> Даём команду на создание пакета, ее синтаксис:<br>
+<font color=green>ros2 pkg create --build-type ament_cmake --license Apache-2.0 &lt;package_name&gt;</font><br>
+В этом руководстве вы будете использовать необязательные аргументы --node-name и --license. -параметр -node-name создает простой исполняемый файл типа Hello World в пакете, а параметр -license объявляет информацию о лицензии для пакета.<br>
+Пример:<br>
+<i>ros2 pkg create --build-type ament_cmake --license Apache-2.0 --node-name my_node my_package</i>
+<p>
+Внутри src п появится новая папка my_package. Внутри my_package файл package.xml и ещё один src.
+</ol>
+<h3>Далее building пакета</h3>
+Вернуться в корневую ws:<br>
+<i>cd ~/ros2_ws</i>
+<p>
+Теперь можно сделать building пакета:<br>
+<i>colcon build</i>
+<p>
+Будут build все пакеты в ros2_ws. Это нормально, когда в вашем рабочем пространстве всего несколько пакетов, но когда пакетов много, сборка colcon может занять много времени. Чтобы build один пакет, служит команда:<br>
+<i>colcon build --packages-select my_package</i>
 
+<h3>Теперь Source the setup file</h3>
+Чтобыиспользовать новый пакет и ноды в нём, сперва открыть новый терминал и <font color=red>source your main ROS 2 installation</font>. Затем внутри ros2_ws выполнить команду:<br>
+<i>source install/local_setup.bash</i>
+<p>
+Чтобы запустить ноду внутри пакета есть команда:<br>
+<i>ros2 run my_package my_node</i>
+<p>
+Далее возможно потребуется редактирование package.xml в ros2_ws/src/my_package.
+<p>
+Пакет создали.<br>
+Пакет был автоматически заполнен необходимыми файлами, а затем использовали colcon для его сборки, чтобы могли использовать его исполняемые файлы в своей локальной среде.
+
+
+ <h2 align=center><a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Writing-A-Simple-Py-Service-And-Client.html">Написание простой службы и клиента (Python)</a></h2>
+Когда узлы взаимодействуют с помощью служб, узел, отправляющий запрос на получение данных, называется клиентским узлом, а узел, отвечающий на запрос, - сервисным узлом. Структура запроса и ответа определяется с помощью файла .srv.
+<p>
+Перейти в ros2_ws/src. Там выполнить команду создания пакета:<br>
+<i>ros2 pkg create --build-type ament_python --license Apache-2.0 <b>py_srvcli</b> --dependencies rclpy example_interfaces</i>
+<p>
+В отличии от команды создания простого пакета здесь вместо ament_cmake используется ament_python.
+<p>
+Будет создан каталог пакета py_srvcli  и все необходимые другие каталоги и файлы.
+<p>
+example_interfaces - это пакет, который включает в себя файл .srv, который вам понадобится для структурирования ваших запросов и ответов.
+<p>
+<b>package.xml</b><br>
+Поскольку через опцию --dependencies указали какие зависимости есть у пакета, они автоматически запишутся в файл package.xml. Но все равно нужно будет проверить и заполнить как минимум теги description maintainer license.
+<p>
+Это же самое сделать для файла setup.py
+
+<h3>Создание ноды службы</h3>
+Внутри ros2_ws/src/py_srvcli/py_srvcli создаем ноду службы: service_member_function.py
+<p>
+Чтобы команда ros2 run  могла запускать ноду службы, нужно в файле setup.py создать entry point (точку входа).
+
+<h3>Создание ноды клиента</h3>
+В ros2_ws/src/py_srvcli/py_srvcli создать файл client_member_function.py
+<p>
+Чтобы могли запустить ноду клиента, также нужно отредактировать setup.py
+
+<h3>Build</h3> 
+Прежде чем выполнить build пакета нужно установить какие-то нехватающие зависимости:<br>
+<i>rosdep install -i --from-path src --rosdistro jazzy -y</i>
+<p>
+После этого выполнить build:<br>
+<i>colcon build --packages-select py_srvcli</i><br>
+В другом терминале:<br>
+<i>source install/setup.bash</i>
+<p>
+Служба и клиент созданы, теперь можно их проверять.
+
+
+<h2 align=center><a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Custom-ROS2-Interfaces.html">Создание пользовательских msg and srv files</a></h2>
+В предыдущих учебниках мы создавали запускали ноды, службы, топики. Пользовательский интерфейс был предоопределён.
+<p>
+Несмотря на то, что рекомендуется использовать предопределенные определения интерфейса, иногда вам, вероятно, потребуется также определять свои собственные сообщения и сервисы. В этом руководстве вы познакомитесь с простейшим методом создания пользовательских определений интерфейса.
+<p>
+В этом руководстве вы создадите пользовательские файлы .msg и .srv в их собственном пакете, а затем будете использовать их в отдельном пакете. Оба пакета должны находиться в одной рабочей области.
+<p>
+Создаём новый пакет в ros2_ws/src:<br>
+<i>ros2 pkg create --build-type ament_cmake --license Apache-2.0 <b>tutorial_interfaces</b></i>
+<p>
+В <b>tutorial_interfaces</b> создать каталоги msg и srv.
+<p>
+В tutorial_interfaces/msg создать файл Num.msg и Sphere.msg
+<p>
+В tutorial_interfaces/srv создать файл AddThreeInts.srv
+<p>
+Чтобы преобразовать определенные вами интерфейсы в код для конкретных языков (например, C++ и Python), чтобы их можно было использовать на этих языках, отредактировать CMakeLists.txt
+<p>
+Также отредактировать package.xml
+<p>
+Теперь, когда все части вашего пакета пользовательских интерфейсов готовы, вы можете создать (built) пакет. В корневом каталоге вашего рабочего пространства (~/ros2_ws) выполните следующую команду:<br>
+<i>colcon build --packages-select tutorial_interfaces</i><br>
+В новом терминале:<br>
+<i>source install/setup.bash</i>
+<p>
+Все выполнено, можно проверять.
+<p>
+Теперь внести изменения в ноды созданных пакетов в предыдущих уроках, в CMakeLists.txt, package.xml.
+<p>
+После внесения всех изменений сделать снова build:<br>
+<i>colcon build --packages-select py_pubsub</i>
+<p>
+Можно теперь запускать ноды.
+
+<h2><a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Single-Package-Define-And-Use-Interface.html">Implementing custom interfaces</a></h2>
+
+<h2><a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Using-Parameters-In-A-Class-Python.html">Using parameters in a class (Python)</a></h2>
+
+<h2>Средний уровень:</h2>
+<h2><a href="https://docs.ros.org/en/jazzy/Tutorials/Intermediate/URDF/URDF-Main.html">URDF</a></h2>
+<h2><a href="https://docs.ros.org/en/jazzy/Tutorials/Intermediate/RViz/RViz-Main.html">RViz</a></h2>
 
 
 
