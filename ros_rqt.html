@@ -67,7 +67,78 @@ cd ~/catkin_ws && catkin_make</b>
 </ol>
 </ol>
 
+<h3 align=center>Запуск gazebo через xterm</h3>
+Попытаюсь запустить gazebo через xterm, как запустил в <a href="./docker.html">Docker</a>, раздел Урок 5.4 Создание контейнеров и управление ими с помощью Docker.
+<ol>
+<li> xterm в хосте не был установлен, установил: <b>sudo apt install xterm</b>
+<li> Команда: <b>xterm</b><br>
+Открылось окно (терминал) xterm.
+<li> <b>export TURTLEBOT3_MODEL=burger<br>
+roslaunch turtlebot3_gazebo turtlebot3_world.launch</b><br>
+<img src="./images/xterm.png"><br>
+Никакой разницы с выполнением этих команд в терминале GNOME.
+</ol>
 
+<h3 align=center><a href="https://answers.gazebosim.org/question/21170/how-to-run-gazebo-with-a-specific-graphic-card-or-no-graphic-card/">Запуск gazebo через xvfb</a></h3>
+Xvfb — это X11 сервер, который выполняет все графические операции в памяти без вывода на экран.
+<p>
+Установка: sudo apt-get install xvfb<br>
+Запуск: xvfb-run -s "-screen 0 1400x900x24" bash<br>
+export TURTLEBOT3_MODEL=burger<br>
+roslaunch turtlebot3_gazebo turtlebot3_world.launch<br>
+<img src="./images/xvfb.png">
+<p>
+В другом терминале:<br>
+gzclient<br>
+Ошибка сегментирования<br>
+rosnode list<br>
+rosrun rqt_graph rqt_graph<br>
+<img src="./images/gzclient.png"><br>
+Я так и не понял, что запустил, какой-то gazebo поцоканный. В любом случае не подходит поскольку не видно мультиков.
+
+<h3 align=center>Запуск gazebo через ros2 в xterm</a></h3>
+Открыл контейнер на базе ros2<br>
+Выполнил команду xterm.<br>
+Получен ответ: Xt error: Can't open display: %s<br>
+xterm: DISPLAY is not set<br>
+Если выполнить команду: gazebo<br>
+<img src="./images/ros2_gazebo.png">
+<p>
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py<br>
+<img src="./images/ros2_launc_gazebo.png">
+<p>
+В общем нужно делать, как в <a href="./docker.html">Docker</a>, раздел Урок 5.4 Создание контейнеров и управление ими с помощью Docker.
+<p>
+
+
+<h2 align=center><a href="https://blog.sedicomm.com/2022/07/27/zapusk-graficheskih-prilozhenij-x11-po-ssh-na-udalennom-linux-servere/">через MobaXterm</a></h2>
+<ol>
+<li> На windows-компьютер скачиваем zip-архив программы по <a href="https://download.mobatek.net/2422024061715901/MobaXterm_Installer_v24.2.zip">этой ссылке</a> Скачал на ubuntu, потом через флэшку скопировал на windows.
+<li> Установка. Запустил файл внутри пакета, в процессе установки сообщил, что не нашел файл.dat. Проигнорировал.
+<li> Нажал в правом верхнем углу x server, остановил его. 
+<li> Нажал кнопку Session. Заполнил поля host и specify username. Убедился, что X11-Forvarding, галочка стоит.<br>
+<img src="./images/mobaxterm.jpg">
+<li> Теперь на ubuntu-компьютере:<br>
+Установка X11:<br>
+sudo apt-get install xauth xfonts-base<br>
+Уже было всё установлено.<br>
+<img src="./images/x11.png">
+<li> nano /etc/ssh/sshd_config<br>
+Пустой и в записи запрещён.<br>
+Нашел файл /etc/ssh/ssh_config:<br>
+sudo chmod ugo+w /etc/ssh/ssh_config<br>
+nano /etc/ssh/ssh_config<br>
+<img src="./images/ssh_config.png">
+<p>
+Который создал (sshd_config), чтобы он не вносил путаницу, удалил.<br>
+Перезагрузился.
+<li> Для демонстрации установил X11-приложения:<br>
+sudo apt install x11-apps<br>
+У меня уже были установлены.
+<li> mobaxterm:<br>
+<img src="./images/moba_mistake.jpg"><br>
+адрес 192.168.0.8 пингуется.
+</ol>
 
 
 

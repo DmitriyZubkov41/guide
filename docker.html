@@ -109,7 +109,7 @@ To avoid issues with overusing disk for log data, consider one of the following 
 <p>
 Далее в контейнере выполнил команду gazebo, получил ответ: <i>bash: gazebo: command not found</i>
 <p>
-Далее я сам по файлу, прикладываему к этому видеоуроку:<br>
+Далее я сам по руководству, прикладываему к этому видеоуроку, выполнил команды в контейнере:<br>
 <b>apt update<br>
 apt install xpra xterm net-tools nano<br>
 apt install ros-$ROS_DISTRO-turtlebot3*</b><br>
@@ -139,6 +139,17 @@ apt install ros-$ROS_DISTRO-turtlebot3*</b><br>
 <b>ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</b><br>
 Сначало в xterm был получен такой же ответ, как и в терминале контейнера, но через пару минут открылся все-же Gazebo<br>
 <img src="./images/open_gazebo.png">
+
+
+<h3>Сохранение изменений контейнера в новый образ</h3>
+Cоздайте новый образ на основе этого контейнера:<br>
+<font color=green>docker commit &lt;id_контейнера&gt; custom_ros_image:configured</font><br>
+Вместо &lt;id_контейнера&gt; нужно указать ID вашего контейнера, который выдаёт команда
+docker ps.<br>
+Теперь у вас есть новый образ custom_ros_image:configured с изменениями и установками из контейнера. Используйте его в следующем запуске, чтобы не вносить изменения заново.
+<p>
+Чтобы запустить контейнер из нового образа, используйте:<br>
+<font color=green>docker run -it custom_ros_image:configured</font>
 
 
 <h2 align="center">Dockerfile</h2>
