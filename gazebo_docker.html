@@ -1,0 +1,246 @@
+<html><head></head><body>
+<title>Запуск gazebo через docker-контейнер</title>
+<h2 align=center>Запуск gazebo через docker-контейнер на базе ros1</h2>
+Образ создаю на базе dockerfile из <a href="docker_task5.html">Отчет по практической работе №5.7</a><br>
+Только раскомментировал строки из блока nvidia-container-runtime и не стал устанавливать gazebo11. Почему-то у меня установка gazebo11 выдавала ошибку и в dockerfile из <a href="https://github.com/AntonSHBK/mobile_robot_base_ros1">Простая имитационная модель мобильного робота в ROS и Gazebo</a> также нет gazebo11.
+<p>
+Код Dockerfile:<br>
+-------------------------------------------------------------------------------------
+<pre>
+FROM osrf/ros:noetic-desktop
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1 # Предотвращает создание .pyc файлов
+ENV PYTHONUNBUFFERED 1        # Предотвращает буферизацию вывода Python, улучшая логирование
+
+
+#nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES \
+  ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+  ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+# set work directory
+#RUN mkdir /workspace/src/mobile_robot_base_ros1 -p
+WORKDIR /task5
+
+# Additional commands (installing dependencies)
+RUN apt-get update && \
+    apt-get install -y \
+    curl \                
+    wget \                
+    python3-pip \         
+    python3-tk            # Пакеты длля tkinter
+
+# Gazebo 11
+RUN sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+RUN wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+RUN sudo apt-get install -y libgazebo11-dev
+# RUN sudo apt-get install -y ros-noetic-gazebo-ros
+# RUN sudo apt-get install -y gazebo11
+
+# Дополнительные пакеты Gazebo для работы с ROS
+# RUN curl -sSL http://get.gazebosim.org | sh
+RUN apt-get update && \
+    apt-get install -y \
+#     gazebo11 \
+#     libgazebo11-dev 
+    ros-noetic-gazebo-ros \
+    ros-noetic-gazebo-ros-pkgs \
+    ros-noetic-gazebo-ros-control
+
+# Установка дополнительных пакетов ROS для управления и работы с роботами
+RUN apt-get update && \
+    apt-get install -y \
+    ros-noetic-control-toolbox \
+    ros-noetic-realtime-tools \
+    ros-noetic-ros-controllers \
+    ros-noetic-xacro \
+    python3-wstool \
+    ros-noetic-tf-conversions \
+    ros-noetic-kdl-parser \
+    liburdfdom-tools
+
+# Установка инструментов для разработки
+# net-tools содержит сетевую утилиту ifconfig
+# curl служит для закачки файлов по url-адресу
+# iputils-ping содержит команду ping
+RUN apt-get update && \
+    apt-get install -y \
+    nano \
+    git \
+    tmux \
+    tree \
+    net-tools \
+    socat \
+    netcat \
+    curl \
+    iputils-ping \
+    iproute2
+
+
+# Установка зависимостей Python
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r /tmp/requirements.txt
+
+# Настройка bashrc
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+RUN echo "alias dros='source devel/setup.bash'" >> ~/.bashrc
+
+RUN echo "Конец сборки"
+</pre>
+----------------------------------------------------------------------------------<p>
+Перешёл в task5, команда: docker build -t rosgazebo1 -f docker/Dockerfile .<br>
+Создан образ rosgazebo1 на базе ros noetic с пакетами gazebo.
+<p>
+Запуск контейнера: <b>docker run -it rosgazebo1 /bin/bash</b>
+<p>
+Пакет turtlebot3_gazebo не установлен.<br>
+Установить невозможно.<br>
+<img src="./images/ros_install_mistake.png">
+<p>
+06.08.2024:<br>
+Изменил Dockerfile: <b>WORKDIR /workspace</b><br>
+Добавил установку утилит xpra и xterm
+<p>
+Удалил сначало контейнер, а потом образ rosgazebo1<br>
+<img src="./images/docker_rmi.png">
+<p>
+Снова создаю образ rosgazebo1 на основе изменённого Dockerfile:<br>
+Перешел в task5 и команда: <b>docker build -t rosgazebo1 -f docker/Dockerfile .</b>
+Убрал xpra из установки, поскольку в ходе сборки возникли из-за неё проблемы.<br>
+Собрал образ.
+<p>
+Запустил контейнер: <b>docker run -it rosgazebo1 /bin/bash</b><br>
+Все дальнейшие команды выполняю в контейнере.
+<p>
+Сразу установил xpra: <b>apt install xpra</b><br>
+В ходе установки запросил настройки клавиатуры, я выбрал 78 (страна клавиатуры), 1 (раскладка клавиатуры Russian) и 8 (переключение языков - Shift+Ctrl) варианты.
+<p>
+Далее выполняю пункты 3.1.2 по 3.1.4 из <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/">TurtleBot3 PC Setup</a>:<br>
+3.1.2 Установка ROS на компьютер (наверное не надо было):<br>
+sudo apt update<br>
+sudo apt upgrade<br>
+wget https://raw.githubusercontent.com/ROBOTIS-GIT/robotis_tools/master/install_ros_noetic.sh<br>
+chmod 755 ./install_ros_noetic.sh<br>
+bash ./install_ros_noetic.sh
+<p>
+3.1.3 Install Dependent ROS Packages:<br>
+<pre>
+sudo apt-get install ros-noetic-joy ros-noetic-teleop-twist-joy \
+  ros-noetic-teleop-twist-keyboard ros-noetic-laser-proc \
+  ros-noetic-rgbd-launch ros-noetic-rosserial-arduino \
+  ros-noetic-rosserial-python ros-noetic-rosserial-client \
+  ros-noetic-rosserial-msgs ros-noetic-amcl ros-noetic-map-server \
+  ros-noetic-move-base ros-noetic-urdf ros-noetic-xacro \
+  ros-noetic-compressed-image-transport ros-noetic-rqt* ros-noetic-rviz \
+  ros-noetic-gmapping ros-noetic-navigation ros-noetic-interactive-markers
+</pre>
+<p>
+3.1.4 Install TurtleBot3 Packages<br>
+sudo apt install ros-noetic-dynamixel-sdk<br>
+sudo apt install ros-noetic-turtlebot3-msgs<br>
+sudo apt install ros-noetic-turtlebot3
+<p>
+В терминале хоста выполнил сразу сохранение изменений образа: <b>docker commit 6a0fe6a80126 rosgazebo1</b>
+<p>
+Снова в контейнере выполняю симуляцию по странице <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/">Gazebo simulation</a><br>
+Пункт 6.1.1 (Install Simulation Package):<br>
+cd ~/catkin_ws/src/<br>
+cd ~/catkin_ws && catkin_make
+<p>
+Пункт 6.1.2 (Launch Simulation World):<br>
+export TURTLEBOT3_MODEL=burger<br>
+roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch<br>
+<img src="./images/roslaunch_mistake2.png"><br>
+Эта ошибка (не видит launch.файл) вызвана тем, что не выполнил команду: <b>source ~/.bashrc</b>
+<p>
+Выполнил её, теперь:<br>
+<img src="./images/roslaunch_mistake3.png"><br>
+В общем те же проблемы, что при запуске из хоста.
+<p>
+Попробуем выполнить через xpra.<br>
+xpra start --start=xterm --bind-tcp=0.0.0.0:9009<br>
+В хосте: xpra attach ws://172.17.0.2:9009<br>
+<img src="./images/xpra_attach.png">
+<p>
+Выполнил в хосте последнюю команду с отключением OpenGL:<br>
+<b>xpra attach --opengl=no ws://172.17.0.2:9009</b><br>
+<img src="./images/xpra_attach1.png">
+<p>
+Сохранил изменения в образе: <b>docker commit 6a0fe6a80126 rosgazebo1</b>
+<p>
+07.08.2024:<br>
+После того как установил ssh-server, снова в контейнере выполнил export и roslaunch, ничего не изменилось. Тогда установил ssh-server в контейнере:<br>
+apt-get install openssh-server<br>
+sudo systemctl restart ssh - команда не выполнилкась, видимо в контейнере нельзя.<br>
+В хосте выполнил команду сохранения изменений в контейнере: docker commit 71389537cf5f rosgazebo1<br>
+Вышел из контейнера и снова зашёл.<br>
+exit<br>
+docker run -it rosgazebo1 /bin/bash
+<p>
+xpra start --start=xterm --bind-tcp=0.0.0.0:9009<br>
+В хосте, как советует Сергей:<br>
+<img src="./images/ssh_x.png">
+<p>
+Проверил файл настроек в контейнере, нормальный, сервер установлен.
+<p>
+Закрыл на всякий случай MobaXterm, повторил команды. Попрежнему connection refused.
+<p>
+Выполнил ssh -X root@78e54dd8a6b1, теперь <font color=red>ssh: Could not resolve hostname 78e54dd8a6b1: Temporary failure in name resolution</font>
+<h4 align=center>08.08.2024:</h4>
+Далее по статье <a href="https://vmblog.ru/ssh-vhod-v-docker-kontejner/">Подключаемся в контейнер Docker по SSH</a>
+<p>В контейнере:<br>
+<b>nano /etc/ssh/sshd_config</b><br>
+изменил строку <b># PermitRootLogin prohibited-password</b> на  <b>PermitRootLogin yes</b><br>
+Я так сделал, потом сохранил образ, перезагрузил контейнер, но подключение по ssh все равно не получилось.
+<p>
+Только после того как выполнил команду:<br>
+<b>/etc/init.d/ssh start</b><br>
+появился диалог по ssh-соединению, затребовал пароль.
+<p>
+Правильные действия в контейнере, команды:<br>
+<b>passwd</b><br>
+Раскоментируйте строку PermitRootLogin = yes, чтобы разрешить SSH вход под root.<br>
+<b>/etc/init.d/ssh start</b>
+<p>Выполнил эти действия, далее в хосте команда: <b>ssh -X root@172.17.0.2</b><br>
+В результате получаю 2 панель контейнера.
+<p>
+Делаю по алгоритму Романа, в этом втором контейнере: xpra start --start=xterm --bind-tcp=0.0.0.0:9009<br>
+Открываю терминал для хоста. В нем: xpra attach ws://172.17.0.2:9009<br>
+<img src="./images/xpra_mistake.png">
+<h3 align=center>09.08.2024</h3>
+Начну всё сначало. Сначала с формулировки задачи, цели, как я понимаю.
+<p>
+В докер-компьютере (контейнер, IP=172.17.0.2) с помощью команды xpra start создаём сервер X11. В компьютере (IP=192.168.0.108) создаём xpra-клиент с помощью команды xpra attach. Это позволит перекидывать выполнение gazebo из докер-компьютера в компьютер (IP=192.168.0.108). Существует 2 способа в xpra это сделать: с помощью сокетов TCP --bind-tcp (как у Романа) и с помощью ssh. Это всё теория.
+<p>
+Теперь практика:
+<p>
+docker run -it rosgazebo1 /bin/bash<br>
+passwd<br>
+/etc/init.d/ssh start<br>
+xpra start
+<p>
+Помоему без двух предпоследних команд не получится подключиться к ssh-клиенту в докер-компьютере.<br>
+Последней командой создаём xpra-server или X11-server. По смыслу вроде одинаково.
+<p>
+Далее по <a href="https://www.altlinux.org/Xpra">статье Xpra</a>.
+<p>
+В терминале 192.168.0.108 выполним команду:<br>
+<b>xpra attach ssh://root@172.117.0.2</b>
+<p>
+<img src="./images/xpra_attach_mistake.png">
+<p>
+Лог-файл:
+<p>
+<img src="./images/log.png">
+
+
+
+
+
+
+
+
+<br><br><br><br><br><br><br></body></html>

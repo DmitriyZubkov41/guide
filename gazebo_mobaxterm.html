@@ -1,0 +1,93 @@
+<html><head></head><body>
+<title>Запуск gazebo через MobaXterm</title>
+<h2 align=center><a href="https://blog.sedicomm.com/2022/07/27/zapusk-graficheskih-prilozhenij-x11-po-ssh-na-udalennom-linux-servere/">через MobaXterm</a></h2>
+MobaXterm представляет собой приложение из операционной системы Windows для удаленного подключения к компьютеру и выполнения локально (на компьютере Windows) приложений из удаленного компьютера. 
+<ol>
+<li> На windows-компьютер скачиваем zip-архив программы по <a href="https://download.mobatek.net/2422024061715901/MobaXterm_Installer_v24.2.zip">этой ссылке</a> Скачал на ubuntu, потом через флэшку скопировал на windows.
+<li> Установка. Запустил файл внутри пакета, в процессе установки сообщил, что не нашел файл.dat. Проигнорировал.
+<li> Нажал в правом верхнем углу x server, остановил его. 
+<li> Нажал кнопку Session. Заполнил поля host и specify username. Убедился, что X11-Forvarding, галочка стоит.<br>
+<img src="./images/mobaxterm.jpg">
+<li> Теперь на ubuntu-компьютере:<br>
+Установка X11:<br>
+sudo apt-get install xauth xfonts-base<br>
+Уже было всё установлено.<br>
+<img src="./images/x11.png">
+<li> nano /etc/ssh/sshd_config<br>
+Пустой и в записи запрещён.<br>
+Нашел файл /etc/ssh/ssh_config:<br>
+sudo chmod ugo+w /etc/ssh/ssh_config<br>
+nano /etc/ssh/ssh_config<br>
+<img src="./images/ssh_config.png">
+<p>
+Который создал (sshd_config), чтобы он не вносил путаницу, удалил.<br>
+Перезагрузился.
+<li> Для демонстрации установил X11-приложения:<br>
+sudo apt install x11-apps<br>
+У меня уже были установлены.
+<li> mobaxterm:<br>
+<img src="./images/moba_mistake.jpg"><br>
+адрес 192.168.0.8 пингуется.
+<p>
+Нашёл ошибку в /etc/ssh/ssh_config, её видно на самой верхней строке на 2 скрине сверху. Исправил её. перезагрузился. Все равно mobaxterm не работает.
+<p>
+04.08.2024<br>
+Скачал плагин к mobaxterm, установил. Теперь в mobaxterm появился собственный терминал.<br>
+В терминале GNOME дал команду на прослушку порта 8000: <i>nc -l 8000</i><br>
+В терминале Moba команда на передачу сообщений в 192.168.0.108 порт 8000: <i>nc 192.168.0.108 8000</i><br>
+Теперь печатаю текст в терминале Moba, этот текст выводится в gnome. То есть сетевых проблем нет, проблема в чём-то другом.
+<li> Предположил, что все же настройки в ssh-клиенте должны находиться в /etc/ssh/sshd_config.<br>
+sudo nano /etc/ssh/sshd_config<br>
+Пустой файл. Добавил строки:
+<pre>
+host *
+X11Forwarding yes
+</pre>
+Сохранил, перезагрузил компьютер.<br>
+Не помогло.<br>
+Пинговал, непонятно причем тут 192.168.0.106.<br>
+<img src="./images/mobaxterm1.jpg"><br>
+Проверил через nc, работает.
+<li> 07.08.2024<br>
+<font color=green>Вчера понял, что не установлен SSH-server. Сегодня установил:</font><br>
+<b>sudo apt-get install openssh-server</b><br>
+Далее посмотрел: <b>nano /etc/ssh/sshd_config</b><br>
+Полноценный файл и строка X11Forwarding yes была активной.
+Перезагрузил его:<br>
+<b>sudo systemctl restart ssh</b>
+<li> Далее в mobaxterm снова открыл соединение с 192.168.0.108. Пришлось зачем-то создавать еще master-password. После этого соединение наконец-то установилось.<br>
+<img src="./images/mobaxterm2.jpg">
+<li> Выполнил:<br>
+<b>export TURTLEBOT3_MODEL=burger<br>
+roslaunch turtlebot3_gazebo turtlebot3_world.launch</b><br>
+<img src="./images/mobaxterm3.jpg">
+<p>
+<font color=red>Но через минуту соединение сбрасывается и окно с gazebo исчезает.</font>
+</ol>
+<p>
+10.08.2024<br>
+В настройках поставил OpenGL=hardware, dpi=auto и газебо держится уже больше 18 минут. При этом все другие программы выключены. Но почему-то карта очень маленьких размеров стала. Нужно разбираться.<br>
+<img src="./images/mobaxterm4.jpg"><br>
+Проработал 24 минуты, вырубился только, когда я открыл графический редактор. Не знаю случайно это совпало или нет.
+<p>
+И ещё одна проблема, очень медленный. Нажимаешь на кнопку, проходит наверное секунд 5-10 только, чтобы кнопка активировалась, а действие непонятно вообще происходит, наверное через секунд 20-40.
+<p>
+Возможно из-за того что при каждом соединении с удаленным ubuntu происходит 2 соединения:<br>
+<img src="./images/mobaxterm.png">
+<p>
+И при обрыве соединения эти соединения не удаляются и например если в третий раз устанавливаю соединение, то как бы будет 6 соединений между windows-компьютером и ubuntu-компьютером. Из-за этого мне кажется очень сильно mobaxterm тормозит. Чтобы закрыть эти соединения, нашел способ только с помощью перезагрузки ubuntu-компьютера.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><br><br><br><br></body></html>
