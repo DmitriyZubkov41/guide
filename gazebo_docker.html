@@ -235,6 +235,23 @@ xpra start
 Лог-файл:
 <p>
 <img src="./images/log.png">
+<h3 align=center>11.08.2024</h3>
+Контейнер:<br>
+docker run -it rosgazebo1 /bin/bash<br>
+passwd<br>
+/etc/init.d/ssh start<br>
+xpra start
+<p>
+В другом терминале (хост 192.168.0.108):<br>
+DISPLAY=172.17.0.2:0.0 ; export DISPLAY<br>
+xpra attach ssh://root@172.117.0.2<br>
+<img src="./images/xpra_mistake1.png">
+<p>
+В контейнере <b>DISPLAY=:0.0</b><br>
+Снова xpra start attach, снова <font color=red>cannot open display: 172.17.0.2:0.0</font>
+<p>
+Выполнил <b>xpra attach --opengl=no ssh://root@172.117.0.2</b>. Ожидаемо <font color=red>cannot open display: 172.17.0.2:0.0</font>. Думаю проблема не в opengl.
+
 
 
 
