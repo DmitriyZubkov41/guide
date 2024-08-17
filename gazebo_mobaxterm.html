@@ -77,7 +77,21 @@ roslaunch turtlebot3_gazebo turtlebot3_world.launch</b><br>
 <p>
 И при обрыве соединения эти соединения не удаляются и например если в третий раз устанавливаю соединение, то как бы будет 6 соединений между windows-компьютером и ubuntu-компьютером. Из-за этого мне кажется очень сильно mobaxterm тормозит. Чтобы закрыть эти соединения, нашел способ только с помощью перезагрузки ubuntu-компьютера.
 
-
+<h3>12.08.2024</h3>
+Проблему запуска gazebo похоже решил в компьютере с windows7 программой <a href="gazebo_mobaxterm.html">mobaxterm</a>. Она устанавливает соединение с linux-компьютером и позволяет выполнить gazebo на windows-компьютере.
+<p>
+В терминале mobaxterm:<br>
+export TURTLEBOT3_MODEL=burger<br>
+roslaunch turtlebot3_gazebo turtlebot3_world.launch
+<p>
+Далее <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/nav_simulation/">пункт 6.3.2 Run Navigation Node</a> (запускаем RVIZ):<br>
+export TURTLEBOT3_MODEL=burger<br>
+roslaunch turtlebot3_navigation turtlebot3_navigation.launch
+<p>
+Если выполнить эти пункты в терминале gnome, то получим ошибку, видимо также из-за косяка с видеокартой. Поэтому эти команды выполним в терминале mobaxterm.
+<p>
+Без газебо открывается, а с ним не получилось.
+<p>
 
 
 

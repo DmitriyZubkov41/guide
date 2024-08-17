@@ -1,0 +1,38 @@
+<html><head></head><body>
+<title>Запуск Gazebo</title>
+
+<h2 align=center>Запуск Gazebo</h2>
+<p>
+Изучение RViz будем рассматривать на примере робота <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/">Turtlebot 3</a>.
+<ol>
+<li> Для начала установим необходимые пакеты, зависимости, выполняя пункты 3.1.2 - 3.1.4 из <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/">этой страницы</a> 
+<p>
+Потом со <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/">страницы Turtlebot3 simulation</a>  выполняем пункт 6.1.1:<br>
+<b>cd ~/catkin_ws/src/<br>
+git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git<br>
+cd ~/catkin_ws && catkin_make</b>
+<p>
+<font color=red>Возникала ошибка, что ros не видел нужный мне уже установленный пакет turtlebot3_gazebo и вообще все пакеты из catkin_ws/src.</font><br>
+Ошибку устранил после того как в файле ~/.bashrc расположил строки в правильном порядке:<br>
+<img src="./images/setup.bash.png"><br>
+Если эти строки в другом порядке расположить, тогда возникает ошибка, что ros не видит пакеты в catkin_ws/src.
+<li> Скачиваем модель burger:<br>
+<b>export TURTLEBOT3_MODEL=burger</b>
+<p>
+Запускаем в gazebo файл.launch:<br>
+<b>roslaunch turtlebot3_gazebo turtlebot3_world.launch</b>
+<p>
+Из-за того что не выполнил вначале export TURTLEBOT3_MODEL=burger возникает ошибка:<br>
+<img src="./images/roslaunch_mistake.png">
+<p>
+Выполнил обе команды, но теперь ошибка:<br>
+<img src="./images/roslaunch_mistake1.png">
+<p>
+Сказали, что проблема в видеокарте.<br>
+<a href="gazebo_mobaxterm.html">Запуск Gazebo через MobaXterm</a> в компьютере с ОС Windows7.<br>
+<a href="gazebo_docker.html">Запуск Gazebo через docker-контейнер</a><br>
+<a href="gazebo_app.html">Запуск Gazebo через другие программы</a>
+
+
+
+<br><br><br><br><br><br><br><br></body></html>
