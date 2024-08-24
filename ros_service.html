@@ -1,0 +1,367 @@
+<html><head></head><body>
+<title>Сервисы</title>
+<h2 align="center">Services (сервисы)</h2>
+Сервисы - это еще один способ, с помощью которого узлы могут взаимодействовать друг с другом. Сервисы позволяют узлам отправлять запрос и получать ответ.<br>
+Команды:
+<ul>
+    <li> Список активных сервисов:<br>
+    <font color="green">rosservice list</font>
+    <p>
+    <img src="./images/rosservice_list.png">
+<p>
+Похожая команда:<br>
+<font color="green">rossrv list</font><br>
+выведет весь список существующих сервисов в ROS.
+<li> Вывести тип сообщения, используемый сервисом:<br>
+    <font color="green">rosservice type [service]</font>
+    <p>
+    <img src="./images/rosservice_type.png">
+    <li> Выполнить сервис:<br>
+    <font color="green">rosservice call [service] [args]</font>
+    <p>
+    Вызовем службу /clear: <i>rosservice call /clear</i><br>
+    В результате эта служба очистит поле черепахи от пройденной траектории.<br>
+    Другой пример:<br>
+    <img src="./images/rosservice_type1.png"><br>
+    Здесь мы 1 командой вывели формат сообщения службы, если бы просто как в 3 команде, то выдаст только имя службы. Вторая команда: я вызываю эту службу с заданными аргументами, чтобы она выполнила свою работу. В результате получу новую черепаху с координатами, заданными в аргументах.
+</ul>
+Другие команды rosservice:
+<ul>
+<li> rosservice find Поиск сервиса по типу
+<li> rosservice info Выводит информацию о сервисе
+<li> rosservice uri  Выводит RPC URL сервиса
+</ul>
+
+<h3 align="center">Знакомство с файлами srv</h3>
+Ссылки: <a href="https://stepik.org/lesson/50467/step/1?unit=28875">Понятие и создание собственного сервиса</a>
+<p>
+файл srv описывает сервисы. Он состоит из двух частей: запроса и ответа. Хранятся в папке srv каталога пакета. Файлы srv похожи на файлы msg, за исключением того, что они состоят из двух частей: запроса и ответа. Эти две части разделены строкой "---". Вот пример файла srv:
+<p>
+<img src="./images/file.srv.png"><br>
+В этом примере A and B - запрос, а Sum - ответ.
+
+<h3>Создание файла srv:</h3>
+<ol>
+<li> Переходим в папку пакета. В ней создаём каталог srv.
+<li> Вместо того, чтобы создавать новый файл.srv вручную, мы скопируем существующий из другого пакета.<br>
+Для этого есть <b>roscp</b> - полезный инструмент командной строки для копирования файлов из одного пакета в другой:
+<p>
+<font color="green">roscp [package_name] [file_to_copy_path] [copy_path]</font>
+<p>
+мы можем скопировать сервис из пакета rospy_tutorials:
+<br>
+<img src="./images/roscp.png"><br>
+В результате в папке srv появился файл AddTwoInts.srv
+<li> Теперь нужно убедиться, что файлы srv преобразованы в исходный код для C++, Python и других языков. Для этого открыть package.xml и убедитесь, что эти две строки есть в нем и не закомментированы:<br>
+ &lt;build_depend&gt;message_generation&lt;/build_depend&gt;<br>
+ &lt;exec_depend&gt;message_runtime&lt;/exec_depend&gt;<br>
+ Этот шаг, я выполнил <a href="ros_message.html">при создании файла.msg</a> (файл package.xml, как и CMakeLists.txt находятся в корне пакета)
+ <li> Изменения в CMakeLists.txt<br>
+ Если бы не выполнил этот шаг на этапе создания файла.msg, то добавить <b>message_generation</b> в функцию find_package<br>
+ Несмотря на свое название, message_generation работает как для msg, так и для srv.
+ <p>
+ Изменить блок (раскомментировать и написать имя файла.srv):<br>
+ <img src="./images/add_service.png">
+
+<h3>Использование команды rossrv</h3>
+Синтаксис:<br>
+<font color="green">rossrv show &lt;service type&gt;</font><br>
+<img src="./images/rossrv.png"><br>
+Показывает содержимое файла службы.
+<p>
+Можно также как и для msg без названия пакета:<br>
+<img src="./images/rossrv1.png"><br>
+Только в этом случае будут показаны 2 службы.
+<p>
+<li> Раскомментировать функцию generate messages() в CMakeLists.txt. Выполнил это на 5 шаге при создании файла msg.
+</ol>
+Теперь когда файлы создали, записали настройки, нужно чтобы изменения вступили в силу, снова выполнить команду <b>catkin_make</b>:
+<ol>
+<li> <font color=green>roscd beginner_tutorials</font> -переходим в каталог пакета beginner_tutorials
+<li> <font color=green>cd ../..</font> - переходим в корневой каталог пакетов catkin_ws
+<li> <font color=green>catkin_make</font> - перенастраиваем наши пакеты. 
+<li> <font color=green>cd -</font> - возвращаемся в наш пакет beginner_tutorials
+</ol>
+Вместо catkin_make можно выполнить команду <b>catkin build</b><br>
+Любой msg-файл в каталоге msg будет генерировать код для использования на всех поддерживаемых языках.<br>
+Файл заголовка сообщения на C++ будет сгенерирован в ~/catkin_ws/devel/include/beginner_tutorials/.<br>
+Скрипт на Python будет создан в ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/msg.<br>
+Файл lisp находится в ~/catkin_ws/devel/share/common-lisp/ros/beginner_tutorials/msg/.
+<p>
+Аналогично, все файлы .srv в каталоге srv будут содержать сгенерированный код на поддерживаемых языках. Для C++ это приведет к созданию файлов заголовков в том же каталоге, что и файлы заголовков сообщений. Для Python и Lisp рядом с папками "msg" будет папка "srv".
+
+
+<h2 align=center><a href="https://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29">Создание сервера сервиса и клиента сервиса на C++</a></h2>
+<h3>Создание ноды сервера сервиса:</h3>
+Создадим ноду сервиса ("add_two_ints_server"), который будет получать два целых числа и возвращать сумму. Это по функции будет сервер.<br>
+Сначало перейдём в каталог пакета, где будут наши службы:<br>
+<b>roscd beginner_tutorials</b><br>
+Пожалуйста, убедитесь, что вы следовали инструкциям из предыдущего руководства по созданию сервиса, необходимого в этом руководстве, создав AddTwoInts.srv<br>
+Создаём файл src/add_two_ints_server.cpp:<br>
+<b>nano src/add_two_ints_server.cpp</b><br>
+Код:<br>
+<pre>
+#include "ros/ros.h"
+#include "beginner_tutorials/AddTwoInts.h"
+
+bool add(beginner_tutorials::AddTwoInts::Request  &req,
+         beginner_tutorials::AddTwoInts::Response &res)
+{
+  res.sum = req.a + req.b;
+  ROS_INFO("request: x=%ld, y=%ld", (long int)req.a, (long int)req.b);
+  ROS_INFO("sending back response: [%ld]", (long int)res.sum);
+  return true;
+}
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "add_two_ints_server");
+  ros::NodeHandle n;
+
+  ros::ServiceServer service = n.advertiseService("add_two_ints", add);
+  ROS_INFO("Ready to add two ints.");
+  ros::spin();
+
+  return 0;
+}
+</pre><br>
+Разбор кода:
+<ul>
+<li> <b>
+<pre>
+#include "ros/ros.h"
+#include "beginner_tutorials/AddTwoInts.h"
+</pre></b>
+beginner_tutorials/AddTwoInts.h - это заголовочный файл, созданный на основе файла srv, который мы создали ранее.
+<li>
+<b>
+<pre>
+bool add(beginner_tutorials::AddTwoInts::Request  &req,
+         beginner_tutorials::AddTwoInts::Response &res)
+</pre></b>
+Эта функция предоставляет услугу добавления двух целых чисел, она принимает тип запроса и ответа, определенный в файле srv, и возвращает логическое значение.
+<li>
+<b><pre>
+{
+  res.sum = req.a + req.b;
+  ROS_INFO("request: x=%ld, y=%ld", (long int)req.a, (long int)req.b);
+  ROS_INFO("sending back response: [%ld]", (long int)res.sum);
+  return true;
+}
+</pre></b>
+Здесь два целых числа добавляются и сохраняются в ответе. Затем регистрируется некоторая информация о запросе и ответе. Наконец, по завершении работы служба возвращает значение true.
+<li><b><pre>
+ros::ServiceServer service = n.advertiseService("add_two_ints", add);
+</pre></b>
+Здесь сервис создается и объявляется через ROS.
+</ul>
+<h3>Создание ноды клиента:</h3>
+Создаём файл клиента в каталоге пакета:<br>
+<b>nano src/add_two_ints_client.cpp</b><br>
+Код:
+<pre>
+#include "ros/ros.h"
+#include "beginner_tutorials/AddTwoInts.h"
+#include <cstdlib>
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "add_two_ints_client");
+  if (argc != 3)
+  {
+    ROS_INFO("usage: add_two_ints_client X Y");
+    return 1;
+  }
+
+  ros::NodeHandle n;
+  ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("add_two_ints");
+  beginner_tutorials::AddTwoInts srv;
+  srv.request.a = atoll(argv[1]);
+  srv.request.b = atoll(argv[2]);
+  if (client.call(srv))
+  {
+    ROS_INFO("Sum: %ld", (long int)srv.response.sum);
+  }
+  else
+  {
+    ROS_ERROR("Failed to call service add_two_ints");
+    return 1;
+  }
+
+  return 0;
+}
+</pre>
+Разбор:
+<ul>
+<li> <b>ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("add_two_ints");</b><br>
+Создается клиент для службы add_two_ints. Объект ros::ServiceClient используется для последующего вызова службы.
+<li><b><pre>
+beginner_tutorials::AddTwoInts srv;
+srv.request.a = atoll(argv[1]);
+srv.request.b = atoll(argv[2]);
+</pre></b>
+Создаем экземпляр автоматически сгенерированного класса service и присваиваем значения его элементу request. Класс service содержит два элемента, request и response. Он также содержит два определения класса, Request и Response.
+<li> <b>if (client.call(srv))</b><br>
+Фактически вызывает службу. Поскольку вызовы службы блокируются, функция вернется после завершения вызова. Если вызов службы завершился успешно, функция call() вернет значение true и значение в srv.response будет действительным. Если вызов не увенчался успехом, функция call() вернет значение false, а значение в srv.response будет недействительным.
+</ul>
+
+<h3>Building сервисов</h3>
+<ul>
+<li> Редактируем ~/catkin_ws/src/beginner_tutorials/CMakeLists.txt, добавляем строки:
+<pre>
+add_executable(add_two_ints_server src/add_two_ints_server.cpp)
+target_link_libraries(add_two_ints_server ${catkin_LIBRARIES})
+add_dependencies(add_two_ints_server beginner_tutorials_gencpp)
+
+add_executable(add_two_ints_client src/add_two_ints_client.cpp)
+target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
+add_dependencies(add_two_ints_client beginner_tutorials_gencpp)
+</pre>
+Это создаст два исполняемых файла, add_two_ints_server и add_two_ints_client, которые по умолчанию будут помещены в каталог пакетов вашего пространства разработки, расположенный по умолчанию по адресу ~/catkin_ws/devel/lib/<имя пакета>. Вы можете вызывать исполняемые файлы напрямую или использовать rosrun для их вызова. Они не помещаются в "<prefix>/bin", потому что это приведет к загрязнению ПУТИ при установке вашего пакета в систему. Если вы хотите, чтобы ваш исполняемый файл был указан в пути во время установки, вы можете настроить цель установки, см.: catkin/CMakeLists.txt
+<li> Теперь:
+<b>cd ~/catkin_ws<br>
+catkin_make</b>
+</ul>
+
+<h3>Выполнение нод сервиса и клиента</h3>
+Сервер:<p>
+Вызов мастера:<br>
+<b>roscore</b><br>
+В новом терминале запускаем сервер:<br>
+<b>rosrun beginner_tutorials add_two_ints_server</b><br>
+<img src="./images/rosrun_server.png">
+<p>
+Клиент:<br>
+В новом терминале:
+<br><b>rosrun beginner_tutorials add_two_ints_client 1 3</b><br>
+<img src="./images/rosrun_client.png">
+<p>
+------------------------------------------------------------------------------------------------------------------------------
+
+
+<h2 align=center>Создание простых сервера и клиента сервиса на python</h2>
+Сервер:<br>
+<b>roscd beginner_tutorials</b><br>
+<b>nano scripts/add_two_ints_server.py</b><br>
+Код:
+<pre>
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+from beginner_tutorials.srv import AddTwoInts,AddTwoIntsResponse
+import rospy
+
+def handle_add_two_ints(req):
+    print("Returning [%s + %s = %s]"%(req.a, req.b, (req.a + req.b)))
+    return AddTwoIntsResponse(req.a + req.b)
+
+def add_two_ints_server():
+    rospy.init_node('add_two_ints_server')
+    s = rospy.Service('add_two_ints', AddTwoInts, handle_add_two_ints)
+    print("Ready to add two ints.")
+    rospy.spin()
+
+if __name__ == "__main__":
+    add_two_ints_server()
+ </pre>
+ <b>chmod +x scripts/add_two_ints_server.py</b><br>
+ <b>nano CMakeLists.txt</b><br>
+ Добавляем строки:
+ <pre>
+ catkin_install_python(PROGRAMS scripts/add_two_ints_server.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+</pre>
+Строка <b>s = rospy.Service('add_two_ints', AddTwoInts, handle_add_two_ints)</b><br>
+При этом объявляется новая служба с именем add_two_ints и типом службы AddTwoInts. Все запросы передаются в функцию handle_add_two_ints. функция handle_add_two_ints вызывается с экземплярами AddTwoIntsRequest и возвращает экземпляры AddTwoIntsResponse.
+<p>
+Как и в примере с подписчиком, функция rospy.spin() не позволяет вашему коду завершать работу до завершения работы службы. 
+<p>
+Клиент:
+<br><b>nano scripts/add_two_ints_client.py</b><br>
+Код:
+<pre>
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import sys
+import rospy
+from beginner_tutorials.srv import *
+
+def add_two_ints_client(x, y):
+    rospy.wait_for_service('add_two_ints')
+    try:
+        add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoInts)
+        resp1 = add_two_ints(x, y)
+        return resp1.sum
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
+def usage():
+    return "%s [x y]"%sys.argv[0]
+
+if __name__ == "__main__":
+    if len(sys.argv) == 3:
+        x = int(sys.argv[1])
+        y = int(sys.argv[2])
+    else:
+        print(usage())
+        sys.exit(1)
+    print("Requesting %s+%s"%(x, y))
+    print("%s + %s = %s"%(x, y, add_two_ints_client(x, y)))
+</pre>
+<b>chmod +x scripts/add_two_ints_client.py</b><br>
+Добавляем в CMakeLists.txt:<br>
+<b>nano CMakeLists.txt</b><br>
+строки:
+<pre>
+catkin_install_python(PROGRAMS scripts/add_two_ints_server.py scripts/add_two_ints_client.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+</pre>
+Разбор кода:<br>
+Для клиентов вам не нужно вызывать init_node(). Сначала мы вызываем:<br>
+<b>rospy.wait_for_service('add_two_ints')</b><br>
+Это удобный метод, который блокируется до тех пор, пока не будет доступна служба с именем add_two_ints.
+<p>
+Далее мы создаем дескриптор для вызова службы:<br>
+<b>add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoInts)</b>
+<p>
+Мы можем использовать этот дескриптор так же, как обычную функцию, и вызывать его:<br>
+<b>resp1 = add_two_ints(x, y)<br>
+  return resp1.sum</b><br>
+Поскольку мы указали тип сервиса как AddTwoInts, он выполняет работу по созданию объекта запроса AddTwoInts за вас (вместо этого вы можете ввести свой собственный). Возвращаемое значение - это объект ответа AddTwoInts. Если вызов завершается неудачей, может возникнуть ошибка rospy.ServiceException, поэтому вам следует настроить соответствующий блок try/except.
+<h3>Building сервера и клиента</h3>
+<b>cd ~/catkin_ws<br>
+catkin_make</b>
+
+
+<h3>Выполнение сервера и клиента</h3>
+Сервер:<br>
+<b>roscore</b> вызвали мастера<br>
+В другом терминале:<br>
+<b>rosrun beginner_tutorials add_two_ints_server</b>     (C++)<br>
+или<br>
+<b>rosrun beginner_tutorials add_two_ints_server.py</b>  (Python)
+<p>
+Клиент:
+В другом клиенте:<br>
+<b>rosrun beginner_tutorials add_two_ints_client 1 3</b>     (C++)<br>
+или<br>
+<b>rosrun beginner_tutorials add_two_ints_client.py 1 3</b>  (Python)<br>
+<img src="./images/rosrun_client1.png">
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><br><br><br></body></html>
