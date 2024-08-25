@@ -2,18 +2,92 @@
 <title>jMAVSim</title>
 <h2 align=center>Запуск дрона jMAVSim</h2>
 Ссылки: <a href="https://habr.com/ru/articles/434220/">Вход в Aeronet: запуск автономного квадрокоптера в виртуальной среде</a><br>
-<a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a>
+<a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a> и <a href="https://copter-space.gitbook.io/copter-space/altitral/untitled-1/untitled-2">Установка и запуск jMAVSim на Linux Ubuntu</a>. Одинаковый источник, но пара существенных отличий как минимум есть. 
 <p>
-Попробую запустить виртуальный дрон jMAVSim, вроде как это требуется для выполнения задания №6.7
-
-
-
-
-
-
-
-
-
+jMAVSim является легковесной средой, предназначенной только для тестирование мультироторных летательных систем; Gazebo – универсальная среда для любых типов роботов.
+<p>
+25.08.2024:
+<ol>
+<li> Попробую запустить виртуальный дрон jMAVSim, вроде как это требуется для выполнения задания №6.7 по странице <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a>.
+<p>
+Вношу пользователя dmitriy в группу dialout:<br>
+<b>sudo usermod -a -G dialout dmitriy</b><br>
+Группа dialout предоставляет полный доступ к серийному порту.
+<p>
+Далее требуется скачать и запустить https://raw.githubusercontent.com/PX4/Devguide/master/build_scripts/ubuntu_sim_nuttx.sh<br>
+Но зачем непонятно.
+<li> Следую далее по инструкции другой страницы: <a href="https://clover.coex.tech/ru/sitl.html">Симуляция PX4</a>.
+<p>
+<b>git clone https://github.com/PX4/jMAVSim.git</b>
+<p>
+<img src="./images/jmavsim.png">
+<p>
+Говорят, что из-за медленного интернета ошибка.
+<p>
+<b>git clone git@github.com:PX4/PX4-Autopilot.git</b>
+<p>
+<img src="./images/jmavsim1.png">
+<p>
+По ссылке Github CLI также не получилось.
+<p>
+Проблему решил закачкой zip-архива. В репо <a href="https://github.com/PX4/PX4-Autopilot">дрона</a> нажимаю на кнопку Code. Показываются ссылки на клонирование репо в https и ssh и также ссылка на zip-архив. Скачал, распокавал сначала в домашнюю папку, увидел что есть файлы Cmakelist.txt и package.xml., перенес в catkin_ws/src. Пакет PX4-Autopilot-main.
+<li> cd catkin_ws<br>
+catkin_make
+<p>
+<img src="./images/jmavsim2.png">
+<p>
+~/catkin_ws/devel/setup.bash<br>
+rosls и три раза TAB<br>
+В списке установленных пакетов нашёл px4/<br>
+<font color=red>Но в catkin_ws/build не нашел PX4-Autopilot-main</font>.
+<p>
+<b>catkin_make_isolated</b>
+<p>
+<img src="./images/jmavsim3.png">
+<li> <b>make posix_sitl_default jmavsim</b>
+<p>
+<img src="./images/jmavsim4.png">
+<li> Вернулся к <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a>. В домашнем каталоге:<br>
+<b>nano ubuntu_sim_nuttx.sh</b><br>
+И вставил код из https://raw.githubusercontent.com/PX4/Devguide/master/build_scripts/ubuntu_sim_nuttx.sh                 
+<p>
+<b>source ubuntu_sim_nuttx.sh</b><br>
+В ходе выполнения не установил пакеты python и установил gazebo 9.
+<p>
+Перезагрузил компьютер.
+<li> Здесь далее со страницы: <a href="https://copter-space.gitbook.io/copter-space/altitral/untitled-1/untitled-2">Установка и запуск jMAVSim на Linux Ubuntu</a> команда клонирования репо. В <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a> этой команды нет.
+<p>
+<b>git clone https://github.com/PX4/Firmware.git</b><br>
+На этот раз загрузил.
+<p>
+<img src="./images/jmavsim5.png">
+<li> Осуществляем компиляцию и запуск симулятора. В <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a> команда: make posix_sitl_default jmavsim
+<p>
+<b>make px4_sitl jmavsim</b>
+<p>
+<img src="./images/jmavsim6.png">
+<p>
+<b>sudo apt install python3-pip<br>
+pip3 install kconfiglib<br>
+pip3 install --user jinja2<br>
+pip3 install --user jsonschema</b>
+<p>
+Снова:<b>make px4_sitl jmavsim</b>
+<p>
+<img src="./images/jmavsim7.png">
+<p>
+<b>cat /usr/share/doc/gcc-9/README.Bugs</b><br>
+Много написано, но почему произошла ошибка, ответа не нашёл.
+<li> Выполняю команду, как в <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a>
+<p>
+<b>make posix_sitl_default jmavsim</b>
+<p>
+<img src="./images/jmavsim8.png">
+<li> cd ~/catkin_ws<br>
+catkin_make
+<p>
+<img src="./images/jmavsim9.png">
+</ol>
 
 
 
