@@ -61,7 +61,7 @@ rosls и три раза TAB<br>
 На этот раз загрузил.
 <p>
 <img src="./images/jmavsim5.png">
-<li> Осуществляем компиляцию и запуск симулятора. В <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a> команда: make posix_sitl_default jmavsim
+<li> Осуществляем компиляцию и запуск симулятора. В <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a> другая команда: make posix_sitl_default jmavsim
 <p>
 <b>make px4_sitl jmavsim</b>
 <p>
@@ -87,6 +87,18 @@ pip3 install --user jsonschema</b>
 catkin_make
 <p>
 <img src="./images/jmavsim9.png">
+</ol>
+<h3>26.08.2024</h3>
+<ol> 
+<li> Повторяю вчерашний день. Перешел в папку Firmware:<br>
+<b>cd catkin_ws/src/Firmware</b><br>
+И снова:<br>
+<b>make px4_sitl jmavsim</b>
+<p>
+<img src="./images/jmavsim10.png">
+<p>
+Ничего не менял, но разница с вчерашним днём большая. Собирает 374 пункта против 972 вчерашних. PX4 вроде стартовал, но проблема возникла с портом 4560.
+<li>
 </ol>
 
 
