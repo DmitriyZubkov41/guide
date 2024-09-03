@@ -1,7 +1,7 @@
 <html><head></head><body>
 <title>jMAVSim</title>
-<h2 align=center>Запуск дрона jMAVSim</h2>
-Ссылки: <a href="https://habr.com/ru/articles/434220/">Вход в Aeronet: запуск автономного квадрокоптера в виртуальной среде</a><br>
+<h2 align=center>Запуск дрона в jMAVSim</h2>
+Ссылки: <a href="https://habr.com/ru/articles/434220/">Вход в Aeronet: запуск автономного квадрокоптера в виртуальной среде</a> (24.12.2018)<br>
 <a href="https://copter-space.gitbook.io/uchebnik-mashinnoe-zrenie-tom-2/razdel-1/simulyator-drona-jmavsim">Симулятор дрона jmavsim</a> и <a href="https://copter-space.gitbook.io/copter-space/altitral/untitled-1/untitled-2">Установка и запуск jMAVSim на Linux Ubuntu</a>. Одинаковый источник, но пара существенных отличий как минимум есть. 
 <p>
 jMAVSim является легковесной средой, предназначенной только для тестирование мультироторных летательных систем; Gazebo – универсальная среда для любых типов роботов.
@@ -89,8 +89,7 @@ catkin_make
 <img src="./images/jmavsim9.png">
 </ol>
 <h3>26.08.2024</h3>
-<ol> 
-<li> Повторяю вчерашний день. Перешел в папку Firmware:<br>
+Повторяю вчерашний день. Перешел в папку Firmware:<br>
 <b>cd catkin_ws/src/Firmware</b><br>
 И снова:<br>
 <b>make px4_sitl jmavsim</b>
@@ -98,8 +97,502 @@ catkin_make
 <img src="./images/jmavsim10.png">
 <p>
 Ничего не менял, но разница с вчерашним днём большая. Собирает 374 пункта против 972 вчерашних. PX4 вроде стартовал, но проблема возникла с портом 4560.
-<li>
+<h3>29.08.2024</h3>
+Был занят переводом <a href="https://docs.px4.io/main/en/">PX4 Autopilot User Guide</a>.
+<p>
+Сейчас попробую установить QGroundControl Daily Build.
+<ol>
+<li> Файл QGroundControl Daily Build был скачан <a href="https://d176tv9ibo4jno.cloudfront.net/builds/master/QGroundControl-x86_64.AppImage">отсюда</a>.<br>
+Переместил его из Загрузки в Home/dmitriy.
+<li> Далее следую командам по установке QGroundControl.<br>
+Пользователя dmitriy уже поместил в dialout.
+<p>
+<b>sudo apt-get remove modemmanager -y</b><br>
+Пакет не был установлен в моем компьютере, так что удалять нечего.
+<p>
+<b>sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y</b><br>
+Уже были установлены.
+<p>
+<b>sudo apt install libfuse2 -y</b><br>
+Уже был установлен.
+<p>
+<b>sudo apt install libxcb-xinerama0 libxkbcommon-x11-0 libxcb-cursor-dev -y</b>
+<p>
+Перезагрузил терминал.
+<p>
+<b>chmod +x ./QGroundControl-x86_64.AppImage</b>
+<p>
+<b>./QGroundControl-x86_64.AppImage</b>
+<p>
+<img src="./images/jmavsim11.png">
+<p>
+резагрузил компьютер, снова: ./QGroundControl-x86_64.AppImage<br>
+Проблема не изменилась.
+<p>
+Тогда скачал стабильный релиз QGroundControl <a href="https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage">отсюда</a>. Поместил в созданную папку ~/QGroundControl
+<p>
+<b>chmod +x ./QGroundControl.AppImage<br>
+./QGroundControl.AppImage</b><br>
+
+Запустился:
+<p>
+<img src="./images/jmavsim12.png">
+<li> Далее выполнял команды:
+<p>
+make px4_sitl none_iris
+<p>
+Завис на строке: <font color=red>INFO  [simulator_mavlink] Waiting for simulator to accept connection on TCP port 4560</font>
+<p>
+make px4_sitl jmavsim<br>
+Симулятор не открылся.
+<p>
+make px4_sitl gazebo-classic_rover<br>
+Не открылся.
 </ol>
+<h3>30.08.2024</h3>
+Сконцентрируемся на команде make px4_sitl jmavsim, конкретно почему не работает порт 4506.
+<ol>
+<li> Запустим на всякий случай программу QGroundControl:
+<pre>
+cd QGroundControl
+./QGroundControl.AppImage
+</pre>
+<p>
+В новом терминале перейдём в папку ~/catkin_ws/src/Firmware и выполним команду make:
+<pre>
+cd ~/catkin_ws/src/Firmware
+make px4_sitl jmavsim
+</pre>
+Ничего нового, похоже проблема с портом 4506.
+<li> <p>Выполним эту команду в папке PX4-Autopilot-main:
+<pre>
+cd ../PX4-Autopilot-main
+make px4_sitl jmavsim
+</pre>
+Получен ответ, что PX4-Autopilot-m не репозиторий.
+<li> <p>Проверю порт 4506:<br>
+nc -l 4506<br>
+В другом терминале:
+nc 127.0.0.1 4506<br>
+Сообщения передаются нормально, видимо проблема не в порте.
+<li> Решил все с самого начала выполнить по инструкции с <a href="https://docs.px4.io/main/en/dev_setup/dev_env_linux_ubuntu.html">ПО для работы с PX4 в Ubuntu</a><br>
+Сначало удалил папку catkin_ws/src/PX4-Autopilot-main. Далее:
+<pre>
+cd ~/catkin_ws/src
+git clone git@github.com:PX4/PX4-Autopilot.git --recursive
+<pre>
+Выполнил, но много fatal, error и посмотрел PX4-Autopilot/Tools/simulation/jmavsim. Содержит всего лишь пустую папку jMAVSim и файл jmavsim_run.sh<br>
+Продолжаем:<br>
+Перешёл в catkin_ws/src. Там команда:<br>
+bash ./PX4-Autopilot/Tools/setup/ubuntu.sh<br>
+Раза 3 выполнял эту команду, всё какие-то ошибки.
+<p>
+<li> Перезагрузил компьютер.<br>
+Выполнил команды, которые потребовал после выполнения make px4_sitl jmavsim:
+<pre>
+git submodule sync --recursive
+git submodule update --init --recursive
+</pre>
+Снова:<br>
+make px4_sitl jmavsim<br>
+Не выполнилась.<p>
+<li> Решил из-за того что команда bash ./PX4-Autopilot/Tools/setup/ubuntu.sh выполнилась с проблемами, повторить её. Перешёл в catkin_ws/src. Далее:<br>
+<b>bash ./PX4-Autopilot/Tools/setup/ubuntu.sh</b><br>
+На этот раз выполнилась без ошибок и в конце попросила перезагрузиться. Единственное, что не понравилось, pandas установилась устаревшей версии.<br>
+Перезагрузил комп.
+<pre>
+cd cd catkin_ws/src/PX4-Autopilot
+make px4_sitl jmavsim
+</pre>
+Хрень. Снова в PX4-Autopilot<br>
+git submodule sync --recursive<br>
+git submodule update --init --recursive<br>
+В src:<br>
+bash ./PX4-Autopilot/Tools/setup/ubuntu.sh<br>
+Проблем нет. reboot<p>
+<li> cd catkin_ws/src/PX4-Autopilot<br>
+make px4_sitl jmavsim<br>
+Ничего не изменилось.<br>
+Cannot find source file: heatshrink/heatshrink_decoder.c<br>
+Error: /home/dmitriy/catkin_ws/src/PX4-Autopilot/build/px4_sitl_default is not a directory
+<p>
+Что делать? Я устал.<p>
+<li> Выполнил:<br>
+<a href="https://github.com/PX4/PX4-Autopilot/issues/16631">make submodulesupdate</a><br>
+и в src снова: <b>bash ./PX4-Autopilot/Tools/setup/ubuntu.sh</b><br>
+Нормально, reboot.
+В PX4-Autopilot команда: <b>make px4_sitl jmavsim</b>
+<pre>
+/usr/bin/python3: Error while finding module specification for 'symforce.symbolic' (ModuleNotFoundError: No module named 'symforce')
+-- Could NOT find gz-transport (missing: gz-transport_DIR)
+</pre>
+и
+<pre>
+/home/dmitriy/catkin_ws/src/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris
+  not found
+</pre>
+Также и другие модели не обнаружены в PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/
+<pre>
+CMake Error at cmake/px4_add_library.cmake:42 (add_library):
+  Cannot find source file:
+
+    heatshrink/heatshrink_decoder.c
+</pre>
+и конец:<br>
+<img src="./images/jmavsim13.png">
+<pre>
+CMake Error at cmake/px4_add_library.cmake:42 (add_library):
+  No SOURCES given to target: heatshrink
+Call Stack (most recent call first):
+  src/lib/heatshrink/CMakeLists.txt:36 (px4_add_library)
+
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.
+Error: /home/dmitriy/catkin_ws/src/PX4-Autopilot/build/px4_sitl_default is not a directory
+</pre>
+</ol>
+<h3>31.08.2024</h3>
+<ol>
+<li> Выполняю команды по <a href="https://github.com/PX4/PX4-Autopilot/issues/20418">make px4_sitl_rtps error</a>
+<p>
+cd catkin_ws/src/PX4-Autopilot<br>
+make distclean<br>
+git submodule update --init --recursive<br>
+<font color=green>В catkin_ws/src/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic появилась папка models.</font>
+<p>
+<li> Сразу же: <b>make px4_sitl jmavsim</b>
+<p>
+Отрывки из вывода:
+<pre>
+/usr/bin/python3: Error while finding module specification for 'symforce.symbolic' (ModuleNotFoundError: No module named 'symforce')
+-- Could NOT find gz-transport (missing: gz-transport_DIR)
+</pre>
+<font color=green>
+<pre>
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/dmitriy/catkin_ws/src/PX4-Autopilot/build/px4_sitl_default
+</pre></font>
+<pre>
+INFO  [simulator_mavlink] using TCP on remote host localhost port 4560
+<font color=brown>WARN  [simulator_mavlink] Please ensure port 4560 is not blocked by a firewall.</font>
+INFO  [simulator_mavlink] Resolved host 'localhost' to address: 127.0.0.1
+INFO  [simulator_mavlink] Waiting for simulator to accept connection on TCP port 4560
+</pre>
+<font color=brown>WARN  [health_and_arming_checks] Preflight Fail: ekf2 missing data</font><br>
+Появилась командная строка: <b>pxh&gt;</b><br>
+<font color=green>И запустился jmavsim</font>, но в каком-то недозагруженном виде:<br>
+<img src="./images/jmavsim15.png">
+<pre>
+INFO  [logger] Opened full log file: ./log/2024-08-31/06_41_20.ulg
+INFO  [mavlink] MAVLink only on localhost (set param MAV_{i}_BROADCAST = 1 to enable network)
+INFO  [mavlink] MAVLink only on localhost (set param MAV_{i}_BROADCAST = 1 to enable network)
+INFO  [px4] Startup script returned successfully
+pxh> <font color=brown>WARN</font>  [health_and_arming_checks] <font color=brown>Preflight: GPS fix too low</font>
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f03011e9092, pid=12031, tid=12071
+#
+# JRE version: OpenJDK Runtime Environment (13.0.7+5) (build 13.0.7+5-Ubuntu-0ubuntu120.04)
+# Java VM: OpenJDK 64-Bit Server VM (13.0.7+5-Ubuntu-0ubuntu120.04, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [i915_dri.so+0x26c092]
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -- %E" (or dumping to /home/dmitriy/catkin_ws/src/PX4-Autopilot/Tools/simulation/jmavsim/jMAVSim/out/production/core.12031)
+#
+# An error report file with more information is saved as:
+# /home/dmitriy/catkin_ws/src/PX4-Autopilot/Tools/simulation/jmavsim/jMAVSim/out/production/hs_err_pid12031.log
+#
+# If you would like to submit a bug report, please visit:
+#   Unknown
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+[thread 12095 also had an <font color=red>error]ERROR</font> [simulator_mavlink] <font color=red>poll timeout 0, 22</font>
+<font color=red>ERROR</font> [simulator_mavlink] <font color=red>poll timeout 0, 22</font>
+</pre>
+<pre>
+./jmavsim_run.sh: строка 78: 12031 Аварийный останов         (стек памяти сброшен на диск) java --add-exports java.base/java.lang=ALL-UNNAMED --add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports java.desktop/sun.java2d=ALL-UNNAMED -XX:GCTimeRatio=20 -Djava.ext.dirs= -jar jmavsim_run.jar $device $extra_args
+</pre>
+<img src="./images/jmavsim14.png"><br>
+Окно jmavsim закрылось.
+<p>
+Далее я:<br>
+<b>cat Tools/simulation/jmavsim/jMAVSim/out/production/hs_err_pid12031.log</b><br>
+Полезного ничего не нашёл.<p>
+<li> Поиск решения навел только на <a href="https://discuss.px4.io/t/px4-poll-timeout/20484/17">эту страницу</a>, где проблему  poll timeout 0, 22 решили выполнением команд:<br>
+make clean<br>
+make distclean<br>
+и затем снова запуск: make px4_sitl jmavsim.<br>
+Также возможно поковыряться в настройках QGroundControl.<p>
+<li> make clean<br>
+make distclean<br>
+make px4_sitl jmavsim
+<p>
+<pre>
+../../src/modules/ekf2/EKF/ekf.cpp:527:1: internal compiler error: Ошибка сегментирования
+  527 | }
+      | ^
+0x7fef5d34408f ???
+	/build/glibc-LcI20x/glibc-2.31/signal/../sysdeps/unix/sysv/linux/x86_64/sigaction.c:0
+0x7fef5d325082 __libc_start_main
+	../csu/libc-start.c:308
+Please submit a full bug report,
+with preprocessed source if appropriate.
+Please include the complete backtrace with any bug report.
+See &lt;file:///usr/share/doc/gcc-9/README.Bugs&gt; for instructions.
+[529/996] Building CXX object src/modules/ekf2/CMakeFiles/modules__ekf2.dir/EKF/ekf_helper.cpp.o
+ninja: build stopped: subcommand failed.
+make: *** [Makefile:232: px4_sitl] Ошибка 1
+</pre>
+</ol>
+<h3>01.09.2024</h3>
+<ol>
+<li> cd catkin_ws/src/PX4-Autopilot<br>
+make px4_sitl jmavsim
+<p>
+Отрывок из вывода:
+<pre>
+dmitriy@945G-M3:~/catkin_ws/src/PX4-Autopilot$ make px4_sitl jmavsim
+[137/470] Building CXX object src/modules/mavli...les/modules__mavlink.dir/mavlink_messages.cpp.o
+FAILED: src/modules/mavlink/CMakeFiles/modules__mavlink.dir/mavlink_messages.cpp.o 
+/usr/bin/c++  -DCONFIG_ARCH_BOARD_PX4_SITL -DENABLE_LOCKSTEP_SCHEDULER -DMODULE_NAME=\"mavlink\" -DPX4_BOARD_LABEL=\"default\" 
+-DPX4_BOARD_NAME=\"PX4_SITL\" -DPX4_MAIN=mavlink_app_main -D__CUSTOM_FILE_IO__ -D__PX4_LINUX -D__PX4_POSIX -
+D__STDC_FORMAT_MACROS -Dnoreturn_function="__attribute__((noreturn))" -I../../boards/px4/sitl/src -I../../platforms/posix/src/
+px4/common/include -I. -Isrc/lib -I../../platforms/posix/src/px4/generic/generic/include -I../../platforms/common -I../../
+platforms/common/include -I../../src -I../../src/include -I../../src/lib -I../../src/lib/matrix -I../../src/modules -I../../
+platforms/posix/include -Iexternal/Install/include -Imavlink -Imavlink/development -Imavlink/uAvionix -I../../src/lib/
+variable_length_ringbuffer -O2 -g -DNDEBUG -fPIC   -g -fdata-sections -ffunction-sections -fomit-frame-pointer -fmerge-all-
+constants -fno-signed-zeros -fno-trapping-math -freciprocal-math -fno-math-errno -fno-strict-aliasing -fvisibility=hidden -
+include visibility.h -Wall -Wextra -Werror -Warray-bounds -Wcast-align -Wdisabled-optimization -Wdouble-promotion -Wfatal-
+errors -Wfloat-equal -Wformat-security -Winit-self -Wlogical-op -Wpointer-arith -Wshadow -Wuninitialized -Wunknown-pragmas -
+Wunused-variable -Wno-missing-field-initializers -Wno-missing-include-dirs -Wno-unused-parameter -fdiagnostics-color=always -
+Wno-stringop-truncation -fno-builtin-printf -fno-strength-reduce -Wformat=1 -Wunused-but-set-variable -Wno-format-truncation -
+fcheck-new -Wreorder -Wno-overloaded-virtual -Wno-enum-compare -Wno-address-of-packed-member -Wno-cast-align -std=gnu++14 -MD -
+MT src/modules/mavlink/CMakeFiles/modules__mavlink.dir/mavlink_messages.cpp.o -MF src/modules/mavlink/CMakeFiles/
+modules__mavlink.dir/mavlink_messages.cpp.o.d -o src/modules/mavlink/CMakeFiles/modules__mavlink.dir/mavlink_messages.cpp.o -
+c ../../src/modules/mavlink/mavlink_messages.cpp
+/tmp/ccySoJZJ.s: Сообщения ассемблера:
+/tmp/ccySoJZJ.s:32961: Ошибка: неизвестная псевдооперация: «.loc�93»
+[139/470] Building CXX object src/modules/mavli...les/modules__mavlink.dir/mavlink_receiver.cpp.o
+ninja: build stopped: subcommand failed.
+make: *** [Makefile:232: px4_sitl] Ошибка 1
+</pre>
+<img src="./images/jmavsim16.png"><p>
+<li> Раздельный режим, сначало вызову jmavsim:<br>
+<b>./Tools/simulation/jmavsim/jmavsim_run.sh -l</b><br>
+Появился симулятор на несколько секунд и исчез.<br>
+<pre>
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007fbb4ea51092, pid=5016, tid=5054
+</pre>
+<pre>
+./Tools/simulation/jmavsim/jmavsim_run.sh: строка 78:  5016 Аварийный останов         (стек памяти сброшен на диск) java --add-exports java.base/java.lang=ALL-UNNAMED --add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports java.desktop/sun.java2d=ALL-UNNAMED -XX:GCTimeRatio=20 -Djava.ext.dirs= -jar jmavsim_run.jar $device $extra_args
+</pre>
+<li> Увеличу файл подкачки до 12 Gb:
+<pre>
+sudo swapoff /swapfile
+sudo fallocate -l 12G /swapfile
+sudo swapon /swapfile
+</pre>
+Снова: <b>./Tools/simulation/jmavsim/jmavsim_run.sh -l</b><br>
+Ничего не изменилось, появился на несколько секунд недоделанный симулятор и исчез. Отрывок из сообщения:
+<pre>
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f3b01ef3092, pid=5377, tid=5418
+#
+# JRE version: OpenJDK Runtime Environment (13.0.7+5) (build 13.0.7+5-Ubuntu-0ubuntu120.04)
+# Java VM: OpenJDK 64-Bit Server VM (13.0.7+5-Ubuntu-0ubuntu120.04, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [i915_dri.so+0x26c092]
+</pre>
+<pre>
+./Tools/simulation/jmavsim/jmavsim_run.sh: строка 78:  5377 Аварийный останов         (стек памяти сброшен на диск) java --add-exports java.base/java.lang=ALL-UNNAMED --add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports java.desktop/sun.java2d=ALL-UNNAMED -XX:GCTimeRatio=20 -Djava.ext.dirs= -jar jmavsim_run.jar $device $extra_args
+</pre>
+<li> Headless режим (без графического интерфейса).<br>
+<b>HEADLESS=1 make px4_sitl jmavsim</b>
+<p>
+<img src="./images/jmavsim17.png"><p>
+Похоже выполнилась нормально, но без графики, как и предполагалось.<br>
+Выполнил команду: <b>commander takeoff</b><br>
+<img src="./images/jmavsim18.png"><p>
+Вроде нормально, проблема видимо из-за малой озу, возможно из-за видеокарты, короче ничего не сделаешь.<p>
+<li> Будем запускать PX4 на gazebo.<br>
+Сначало: <b>gazebo</b><br>
+Как и ожидалось, не запустился.<br>
+<b>escalating to SIGKILL on client</b>
+<p>
+<b>make px4_sitl gz_x500</b>
+<pre>
+ninja: error: unknown target 'gz_x500'
+make: *** [Makefile:232: px4_sitl] Ошибка 1
+</pre>
+</ol>
+<h3>02.09.2024</h3>
+<ol>
+<li> cd catkin_ws/src/PX4-Autopilot<br>
+make px4_sitl gazebo-classic
+<p>
+Почему-то команда выполняется очень медленно, такое впечатление словно зависла. Уже в 4 раз запустил. Получил:<br>
+<img src="./images/jmavsim19.png"><p>
+<li> Не дождался выполнения команды. Снова выполняю:<br>
+<b>~/catkin_ws/src$ bash ./PX4-Autopilot/Tools/setup/ubuntu.sh</b><br>
+Получаю сообщения:
+<ul>
+<li> Installing PX4 general dependencies: что пакеты уже установлены
+<li> Python3 dependencies уже satisfied
+<li> Nuttx dependies: пакеты уже установлены
+<li> Installing PX4 simulation dependencies: пакеты уже установлены
+</ul>
+make px4_sitl gazebo-classic<br>
+2-3 часа прошло, всё же выполнилась, газебо завершился аварийным выходом.<p>
+<li> <h3>docker-контейнер</h3>
+Всё, буду выполнять px4 на gazebo через docker-контейнер.
+<p>
+<a href="https://github.com/PX4/PX4-Autopilot/issues/21917">ответ за 05.10.2023</a>:<br>
+Открываю контейнер:<br>
+<b>docker run --rm -it rosgazebo1 /bin/bash</b>
+<p>
+Клонирую репо:
+<pre>
+apt update
+apt install git -y
+git clone https://github.com/PX4/PX4-Autopilot.git --recursive
+bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+</pre>
+В ходе выполнения последней команды:
+<pre>
+ WARNING: The script isympy is installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts f2py, f2py3 and f2py3.8 are installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts alldefconfig, allmodconfig, allnoconfig, allyesconfig, defconfig, genconfig, guiconfig, listnewconfig, menuconfig, oldconfig, olddefconfig, savedefconfig and setconfig are installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts futurize and pasteurize are installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts coverage, coverage-3.8 and coverage3 are installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts activate-global-python-argcomplete, python-argcomplete-check-easy-install-script and register-python-argcomplete are installed in '/root/.local/bin' which is not on                                            PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts ulog2csv, ulog2kml, ulog2rosbag, ulog_extract_gps_dump, ulog_info, ulog_messages, ulog_migratedb and ulog_params are installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script nnvg is installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.                                                                                                                                                    
+  WARNING: The script jsonschema is installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+</pre>
+После завершения этой команды предложено перезагрузиться, но как в контейнере перезагрузиться, я не знаю.<br>
+cd PX4-Autopilot<br>
+make px4_sitl gazebo-classic
+<p>
+Конец сообщения:
+<pre>
+[565/1007] Building CXX object src/modules/ekf2/CMakeFiles/modules__ekf2.dir/EKF/aid_sources/magnetometer/mag_fusion.cpp.o
+FAILED: src/modules/ekf2/CMakeFiles/modules__ekf2.dir/EKF/aid_sources/magnetometer/mag_fusion.cpp.o 
+/usr/bin/c++  -DCONFIG_ARCH_BOARD_PX4_SITL -DENABLE_LOCKSTEP_SCHEDULER -DMODULE_NAME=\"ekf2\" -DPX4_MAIN=ekf2_app_main -
+D__CUSTOM_FILE_IO__ -D__PX4_LINUX -D__PX4_POSIX -D__STDC_FORMAT_MACROS -Dnoreturn_function="__attribute__((noreturn))" -I../../
+boards/px4/sitl/src -I../../platforms/posix/src/px4/common/include -I. -Isrc/lib -I../../platforms/posix/src/px4/generic/
+generic/include -I../../platforms/common -I../../platforms/common/include -I../../src -I../../src/include -I../../src/lib -
+I../../src/lib/matrix -I../../src/modules -I../../platforms/posix/include -Iexternal/Install/include -I../../src/modules/ekf2/
+EKF -I../../src/modules/ekf2/EKF/aid_sources -I../../src/modules/ekf2/EKF/python/ekf_derivation/.. -O2 -g -DNDEBUG -fPIC   -g -
+fdata-sections -ffunction-sections -fomit-frame-pointer -fmerge-all-constants -fno-signed-zeros -fno-trapping-math -freciprocal-
+math -fno-math-errno -fno-strict-aliasing -fvisibility=hidden -include visibility.h -Wall -Wextra -Werror -Warray-bounds -Wcast-
+align -Wdisabled-optimization -Wdouble-promotion -Wfatal-errors -Wfloat-equal -Wformat-security -Winit-self -Wlogical-op -
+Wpointer-arith -Wshadow -Wuninitialized -Wunknown-pragmas -Wunused-variable -Wno-missing-field-initializers -Wno-missing-
+include-dirs -Wno-unused-parameter -fdiagnostics-color=always -Wno-stringop-truncation -fno-builtin-printf -fno-strength-reduce 
+-Wformat=1 -Wunused-but-set-variable -Wno-format-truncation -fcheck-new -Wreorder -Wno-overloaded-virtual -O2 -fno-associative-
+math -std=gnu++14 -MD -MT src/modules/ekf2/CMakeFiles/modules__ekf2.dir/EKF/aid_sources/magnetometer/mag_fusion.cpp.o -MF src/
+modules/ekf2/CMakeFiles/modules__ekf2.dir/EKF/aid_sources/magnetometer/mag_fusion.cpp.o.d -o src/modules/ekf2/CMakeFiles/
+modules__ekf2.dir/EKF/aid_sources/magnetometer/mag_fusion.cpp.o -c ../../src/modules/ekf2/EKF/aid_sources/magnetometer/
+mag_fusion.cpp
+In file included from ../../platforms/common/uORB/uORBDeviceMaster.hpp:39,
+                 from ../../platforms/common/uORB/uORBDeviceNode.hpp:37,
+                 from ../../platforms/common/uORB/PublicationMulti.hpp:44,
+                 from ../../src/modules/ekf2/EKF/aid_sources/aux_global_position/aux_global_position.hpp:52,
+                 from ../../src/modules/ekf2/EKF/ekf.h:66,
+                 from ../../src/modules/ekf2/EKF/aid_sources/magnetometer/mag_fusion.cpp:44:
+./uORB/topics/uORBTopics.hpp:337:9: <font color=red>internal compiler error</font>: Segmentation fault
+  337 |  wind = 287,
+      |         ^~~
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See &lt;file:///usr/share/doc/gcc-9/README.Bugs&gt; for instructions.
+[566/1007] Building CXX object src/modules/ekf2/CMakeFiles/modules__ekf2.dir/EKF/aid_sources/optical_flow/
+optical_flow_control.cpp.o
+ninja: build stopped: subcommand failed.
+make: *** [Makefile:232: px4_sitl] Error 1
+</pre>
+Сохраняю изменения в образе:<br>
+docker ps<br>
+docker commit 490bc86e4962 rosgazebo1
+</ol>
+<h3>03.09.2024</h3>
+<ol>
+<li> docker run --rm -it rosgazebo1 /bin/bash<br>
+cd PX4-Autopilot<br>
+make px4_sitl gazebo-classic<br>
+<img src="./images/jmavsim20.png"><br>
+Похоже всё получилось, но из-за того что у контейнера нет монитора, не запустился газебо.<p>
+<li> <b>Буду к контейнеру через F11-forvarding подключаться с хоста и в хосте выполнять make.</b><br>
+В контейнере:<br>
+passwd<br>
+cd<br>
+/etc/init.d/ssh start<br>
+<img src="./images/jmavsim21.png">
+<p>
+В терминале хоста:<br>
+ssh -X root@172.17.0.2<br>
+<img src="./images/jmavsim22.png">
+<p>
+cd /<br>
+cd workspace/PX4-Autopilot<br>
+make px4_sitl gazebo-classic
+<pre>
+Using: /workspace/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris/iris.sdf
+<font color=brown>Warning [parser.cc:833] XML Attribute[version] in element[sdf] not defined in SDF, ignoring</font>.
+</pre>
+<pre>
+INFO  [simulator_mavlink] Waiting for simulator to accept connection on TCP port 4560
+INFO  [simulator_mavlink] Simulator connected on TCP port 4560.
+INFO  [lockstep_scheduler] setting initial absolute time to 4228000 us
+INFO  [commander] LED: open /dev/led0 failed (22)
+WARN  [health_and_arming_checks] <font color=brown>Preflight Fail: ekf2 missing data</font>
+INFO  [uxrce_dds_client] init UDP agent IP:127.0.0.1, port:8888
+</pre>
+<img src="./images/jmavsim23.png">
+<p>
+Открылся симулятор Gazebo с едва заметным дроном на земле.<br>
+<img src="./images/jmavsim24.png"><br>
+ Выполнил команду: <b>commander takeoff</b>.<br>
+<img src="./images/jmavsim25.png"><br>
+Дрон поднялся.<br>
+Приземлил на землю: <b>commander land</b><p>
+<li> Симулятор jmavsim в контейнере:<br>
+<b>make px4_sitl jmavsim</b><br>
+Открылся jmavsim с дроном.<br>
+<img src="./images/jmavsim26.png"><br>
+Выполнил команды:<br>
+commander takeoff<br>
+commander land<br>
+Все работает.<p>
+<li> Управление дроном осуществляется с помощью пакета mavros или с помощью скрипта. Как, написано в <a href="https://habr.com/ru/articles/434220/">Вход в Aeronet: запуск автономного квадрокоптера в виртуальной среде</a>. Займемся после изучения python и C++
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
