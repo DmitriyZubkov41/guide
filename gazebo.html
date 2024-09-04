@@ -2,11 +2,38 @@
 <title>Gazebo</title>
 <h2 align=center>Gazebo</h2>
 Ссылки: <a href="https://se.moevm.info/doku.php/courses:ros:class7">Занятие № 7. Gazebo</a><br>
-<a href="https://studylib.ru/doc/168370/surcukov-m.m.-vvodnoe-rukovodstvo-po-rabote-s-gazebo---m">Сурцуков М.М. Вводное руководство по работе с Gazebo , М</a>
+<a href="https://studylib.ru/doc/168370/surcukov-m.m.-vvodnoe-rukovodstvo-po-rabote-s-gazebo---m">Сурцуков М.М. Вводное руководство по работе с Gazebo , М</a><br>
+<a href="https://classic.gazebosim.org/">Официальная страницадля gazebo classic</a>
 <p>
 Rviz не является единственным способом визуализировать информацию в ROS. Ещё одним способом отобразить визуально состояение системы является пакет Gazebo. Конечно, нет необходимости разрабатывать и пользоваться двумя пакетами, которые выполняют одинаковые функции, и говорить о том, что это два равноценных способа визуализации неверно. На самом деле Gazebo - это немного большее, чем просто визуализатор; это целый симулятор мира с описанной физикой. Кроме того, в gazebo основными объектами являются не точки и линии, а трёхмерные объекты, обычно более или менее чётко нарисованные (вместо условных точек и сфер в Rviz).
 <p>
 Основная цель симулятора - демострировать результат работы программы в виде, удобном для восприятия. Для описания внешнего вида объектов используется язык разметки xml. Некоторые объекты уже описаны и могут быть скачаны с официального сайта gazebo. Однако, объекты можно создавать самостоятельно из простых фигур, типа кубов, сфер и прочих.
+
+<h3>Какой gazebo устанавливать?</h3>
+Ссылки: <a href="https://gazebosim.org/docs/latest/getstarted/">Getting Started with Gazebo?</a><br>
+<a href="https://gazebosim.org/docs/latest/ros_installation/">Installing Gazebo with ROS</a>
+<p>
+Согласно <a href="https://gazebosim.org/docs/latest/getstarted/">Getting Started with Gazebo?</a> для ubuntu 20.04 рекомендован gazebo garden<br>
+<img src="./images/gazebo1.png">
+<p>
+Но в <a href="https://gazebosim.org/docs/latest/ros_installation/">Installing Gazebo with ROS</a> сказано, что с ROS noetic лучше использовать gazebo citadel<br>
+<img src="./images/gazebo2.png">
+<p>
+<b><a href="https://gazebosim.org/about">История</a></b><br>
+
+<b><a href="https://gazebosim.org/docs/latest/gazebo_classic_migration/">Gazebo Classic Migration</a></b><br>
+Gazebo была запущена в 2002 году. После более чем 15 лет разработки пришло время для существенного обновления. Это обновление также дало возможность перейти от монолитной архитектуры к набору слабо связанных библиотек.
+<br>
+Мы назвали новую разработку Igntion, чтобы отличить ее от Gazebo, которая была выпущена ранее и теперь устаревший gazebo называется Gazebo Classic, а новый назывался Igntion.<br>
+Новый Gazebo (https://gazebosim.org) до 6 (Fortress) версии включительно, назывался Ignition. Начиная с 7 (Garden) версии переименован обратно в Gazebo.<br>
+<br>
+В качестве условного обозначения мы называем старые версии Gazebo, те, что имеют номера выпуска, такие как Gazebo 9 и Gazebo 11, “Gazebo Classic”. Более новые версии Gazebo, ранее называвшиеся “Ignition”, с названиями релизов, написанными буквами, такими как Harmonic, называются просто “Gazebo”.<br>
+
+<img src="./images/gazebo3.png">
+<p>
+<b><a href="https://gazebosim.org/docs/latest/releases/#release-list">Список релизов</a></b>
+<p>
+<img src="./images/gazebo4.png">
 
 <h3>Установка Gazebo</h3>
 Gazebo является отдельным пакетом, который может быть использован независимо от ROS. В этом случае необходимо писать «скрипты», управляющие поведением объектов в симуляторе. Однако, возможно использовать Gazebo и совместно с ROS.

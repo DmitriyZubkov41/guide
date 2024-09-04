@@ -2,7 +2,11 @@
 <title>Создание виртуального робота</title>
 <h2 align=center>Создание виртуального робота или написание urdf-файла</h2>
 Ссылки: <a href="https://habr.com/ru/articles/467241/">Робот-тележка на ROS. Часть 4. Создаем симуляцию робота, используя редакторы rviz и gazebo</a><br>
-<a href="https://studylib.ru/doc/168370/surcukov-m.m.-vvodnoe-rukovodstvo-po-rabote-s-gazebo---m">Сурцуков М.М. Вводное руководство по работе с Gazebo , М</a>
+<a href="https://studylib.ru/doc/168370/surcukov-m.m.-vvodnoe-rukovodstvo-po-rabote-s-gazebo---m">Сурцуков М.М. Вводное руководство по работе с Gazebo , М</a><br>
+<a href="http://sdformat.org/tutorials?cat=specification&">SDFormat Specification</a><br>
+<a href="https://gazebosim.org/docs/citadel/sdf_worlds/">SDF worlds</a><br>
+<a href="https://wiki.ros.org/urdf/Tutorials">urdfTutorials</a><br>
+<a href="https://github.com/AntonSHBK/mobile_robot_base_ros1/blob/main/docs/Ru.md">Простая имитационная модель мобильного робота в ROS и Gazebo</a>
 <p>
 Cуществует два стандарта описания роботов: .sdf и .urdf; первый является более новым и более удобным для использования, поэтому большинство объектов на данный момент существует именно в формате .sdf.
 <p>
@@ -31,10 +35,38 @@ sdf-файлы пишутся на языке xml (с помощью тегов)
 <p>
 Название xacro происходит  от XmlmACROs.  Это  простая  утилита, однако,она существенно помогает в создании сложных xmlфайлов в том числе sdfи urdf. Xacro позволяет импортировать один sdfфайл в другой, определять переменные, создавать макросы, производить не сложные арифметические вычисления и т.д.
 
-
-
-
-
+<h3><a href="https://github.com/AntonSHBK/mobile_robot_base_ros1/blob/main/docs/Ru.md">Простая имитационная модель мобильного робота в ROS и Gazebo</a></h3>
+Ссылки: <a href="https://wiki.ros.org/urdf/Tutorials">urdfTutorials</a><br>
+<a href="https://wiki.ros.org/urdf/Examples">Примеры urdf-файлов</a>
+<p>
+URDF (Unified Robot Description Format) — это XML-формат, используемый для описания всех аспектов робототехнических систем в ROS. Он описывает физические свойства модели, включая размеры, форму, материалы, а также динамические и кинематические аспекты. URDF обычно используется для статических и неизменяемых описаний.
+<p>
+<b>XACRO</b> - язык, облегчающий разработку urdf-файлов.<br>
+Ссылки: <a href="http://wiki.ros.org/xacro#Tutorials">ros_xacro</a>
+<p>
+XACRO является расширением URDF и предоставляет возможность создавать более чистые и модульные описания, используя макросы XML для упрощения и повторного использования кода. XACRO улучшает управляемость и поддержку сложных файлов URDF, что делает его идеальным для больших робототехнических систем.
+<p>
+<b>SDF</b> (Simulation Description Format) — это формат, разработанный специально для описания объектов и сред, используемых в симуляционных программах типа Gazebo. В отличие от URDF, SDF поддерживает описание не только роботов, но и целых сред, динамических свойств объектов, освещения, физики и других аспектов, что делает его особенно подходящим для комплексных симуляций.<br>
+Ссылки: <a href="http://sdformat.org/">SDF на сайте Gazebo</a><br>
+<a href="https://github.com/osrf/gazebo_models">Примеры моделей SDF</a>
+<p>
+<b>Инструменты:</b><br>
+Инструмент командной строки check_urdf пытается проанализировать файл как описание URDF и либо выводит описание результирующей кинематической цепи, либо сообщение об ошибке.
+<p>
+Например, чтобы запустить этот инструмент в pr2 urdf, сначала создайте файл urdf, выполнив:<br>
+<b>rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro -o /tmp/pr2.urdf</b>
+<p>
+Затем запустите проверку, выполнив команду:<br>
+<b>rosrun urdfdom check_urdf /tmp/pr2.urdf</b>
+<p>
+Visual Studio Code имеет расширение ROS, которое поддерживает визуализацию URDF.<br>
+Чтобы получить диаграмму graphviz вашего urdf-файла, выполните следующие действия:<br>
+<b>urdf_to_graphiz pr2.urdf</b>
+<p>
+<b>Создание urdf-файла</b><br>
+RDF - это XML, который является текстовым форматом. Таким образом, вы можете создавать файлы в любом текстовом редакторе. Рекомендуется использовать IDE с хорошей поддержкой XML.
+<p>
+Если уже существует CAD-модель робота, есть несколько инструментов, которые можно использовать для преобразования CAD-модели в URDF. 
 
 
 
