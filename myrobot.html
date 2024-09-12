@@ -1,0 +1,177 @@
+<html><head></head><body>
+<title>Создание виртуального робота</title>
+<h2 align=center>Создание виртуального робота, начало в 12.09.2024</h2>
+Мой робот будет представлять собой примерно газонокосилку, схематично это просто параллепипед и 4 колёса, плюс датчик, чтобы видеть деревья. Потом возможно нужно будеть добавить плату миникомпьютера, чтобы робот имел мозги, а не был просто радиоуправляемой игрушкой.
+<p>
+Ссылки: <a href="https://habr.com/ru/articles/467241/">Робот-тележка на ROS. Часть 4. Создаем симуляцию робота, используя редакторы rviz и gazebo</a>
+<p>
+Сначало используя опробированный набор команд, открываю контейнер docker, через F11-forvarding запускаю локальное выполнение симуляторов из удаленного докер-контейнера:<br>
+docker run --rm -it rosurdf /bin/bash<br>
+passwd<br>
+/etc/init.d/ssh start<br>
+Другой терминал: ssh -X root@172.17.0.2<br>
+cd catkin_ws/src
+<p>
+Теперь создам пакет myrobot_description с зависимостями от urdf std_msgs rospy roscpp:<br>
+<b>catkin_create_pkg myrobot_description urdf std_msgs rospy roscpp</b>
+<p>
+Была создана папка myrobot_description, в ней файлы: CMakeLists.txt, package.xml и каталоги: include и src.<br>
+В myrobot_description создам каталоги: urdf, launch:<br>
+<pre>mkdir urdf launch</pre>
+Создам файлы: urdf/gazon.urdf и launch/gazebo.launch:
+<pre>
+touch urdf/gazon.urdf
+touch launch/gazebo.launch</pre>
+Теперь буду описывать своего робота в файле gazon.urdf
+<pre>nano urdf/gazon.urdf</pre>
+Код:
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;robot name="gazonchik"&gt;
+
+   &lt;link name="base_link"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;box size="0.6 0.4 0.1"/&gt;
+        &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+
+   &lt;link name="переднее правое колесо"&gt;
+      &lt;visual&gt;
+       &lt;geometry&gt;
+         &lt;cylinder length="0.05" radius="0.06"/&gt;
+       &lt;/geometry&gt;
+      &lt;/visual&gt;
+   &lt;/link&gt;
+  
+   &lt;link name="переднее левое колесо"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;cylinder length="0.05" radius="0.06"/&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+   &lt;/link&gt;
+
+    &lt;link name="заднее левое колесо"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+    &lt;/link&gt;
+
+     &lt;link name="заднее правое колесо"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+     &lt;/link&gt;
+
+     &lt;joint name="переднее правое колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="переднее правое колесо"/&gt;
+       &lt;origin xyz="0.25 0.2 -0.03"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="переднее левоее колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="переднее левое колесо"/&gt;
+       &lt;origin xyz="0.25 -0.2 -0.03"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="заднее правое  колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="заднее правое колесо"/&gt;
+       &lt;origin xyz="-0.25 0.2 -0.03"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="заднее левое  колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="заднее левое колесо"/&gt;
+       &lt;origin xyz="-0.25 -0.2 -0.03"/&gt;
+     &lt;/joint&gt;
+
+ &lt;/robot&gt;
+</pre>
+Из <a href="https://habr.com/ru/articles/467241/">Робот-тележка на ROS. Часть 4. Создаем симуляцию робота, используя редакторы rviz и gazebo</a>:<br>
+<i>Если посмотреть код детально, то можно выяснить, что это стандартный файл xml, состоящий из блоков:
+<ul>
+<li>— visual
+<li>— collision
+<li>— inertial
+</ul>
+Каждый блок описывает свою часть: visual — это внешность робота, не более, collision и inertial — это физика робота, как все будет взаимодействовать с внешним миром — столкновения, инерция.<br>
+<b>joints</b> — элементы, которые помогают определить движение между частями робота (links). Так например, движение колеса (wheel) влияет на раму в целом (chasis).<br>
+<b>origin xyz</b> — это первоначальное расположение объекта по осям x,y,z.
+<p>
+parent link и child link это соответственно родительская и дочерняя связи, что из чего растет.
+Также примечательно наличие типов: type=«continuous», type=«fixed». Это определение того, что может вращаться, а что нет. Так колеса имеют тип continuous. А, например, batery_joint — fixed.<br>
+Отступы в коде такого же глубоко смысла как в python, где нельзя мешать табы и пробелы, не несут. Но для рая перфекциониста и наглядности лучше их иметь.</i>
+<p>
+Теперь задача, запустить робота в rviz, чтобы посмотреть что я создал.
+<p> 
+<b>nano launch/rviz.launch</b>
+<p>
+Код:
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;launch&gt;
+   &lt;param name="robot_description" command="cat '$(find rosbots_description)/urdf/gazon.urdf'"/&gt;
+   &lt;!-- send fake joint values --&gt;
+  &lt;node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"&gt;
+    &lt;param name="use_gui" value="False"/&gt;
+  &lt;/node&gt;
+   &lt;!-- Combine joint values --&gt;
+  &lt;node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/&gt;
+   &lt;!-- Show in Rviz   --&gt;
+  &lt;node name="rviz" pkg="rviz" type="rviz" /&gt; 
+&lt;/launch&gt;</pre>
+Поехали:<br>
+<b>roslaunch myrobot_description rviz.launch</b>
+<p>
+<img src="./images/myrobot.png">
+<p>
+Поменял в строке &lt;param name="robot_description" command="cat '$(find rosbots_description)/urdf/gazon.urdf'"/&gt; rosbots_description на myrobot_description
+<p>
+Снова: roslaunch myrobot_description rviz.launch
+<p>
+<img src="./images/myrobot1.png">
+<p>
+<img src="./images/myrobot2.png">
+<p>
+Робота в симуляторе не видно, похоже отсутствует разрешение на выполнение gazon.urdf
+<p>
+<img src="./images/myrobot3.png">
+<p>
+Снова: roslaunch myrobot_description rviz.launch
+<p>
+<img src="./images/myrobot4.png">
+<p>
+Ничего не изменилось.
+<p>
+roscd robot_state_publisher
+<p>
+Посмотрел, ни в robot_state_publisher ни в внутренней папке test файла state_publisher нет.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br></body></html>
