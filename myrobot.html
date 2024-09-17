@@ -154,24 +154,243 @@ parent link и child link это соответственно родительс
 roscd robot_state_publisher
 <p>
 Посмотрел, ни в robot_state_publisher ни в внутренней папке test файла state_publisher нет.
+<p>
+<b>13.09.2024:</b><br>
+Из <a href="https://habr.com/ru/articles/467241/">Робот-тележка на ROS. Часть 4. Создаем симуляцию робота, используя редакторы rviz и gazebo</a>:<br>
+<i>robot_state_publisher служит для публикации состояния суставов и трансформаций.<br>
+Сервис robot_state_publisher использует URDF, указанный параметром robot_description, и положения суставов из раздела joint_states для вычисления прямой кинематики робота.<br>
+Сервис joint_state_publisher и joint_state_publisher_gui считывает параметр robot_description с сервера параметров, находит все нефиксированные соединения и публикует сообщение JointState со всеми определенными соединениями. В свою очередь joint_state_publisher_gui предоставляет графический интерфейс для изменения параметров соединения (вращения колёсами к примеру). Запускать нужно что-то одно, если запустить оба сервиса, то они будут между собой конфликтовать.<br>
+Примечание: `joint_state_publisher_gui` не работает должным образом вместе с gazebo (нет возможности повлиять на соединения).
+<p>
+При первом запуске rviz после добавления робота в рабочую область рекомендуется сохранить конфигурацию запуска rviz в директорию rviz и изменить файл запуска:
+<pre>
+&lt;arg name="rvizconfig" default="$(find custom_ackermann_steering_controller_ros)/rviz/base.rviz"/&gt;
+&lt;node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)"/&gt;</pre>
+Тем самым, при последующих запусках нам не придётся всё заново открывать и настраивать.</i>
+<p>
+Изменил rviz.launch:
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;launch&gt;
+   &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'"/&gt;
+   &lt;!-- Запуск нод --&gt;
+  &lt;node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"&gt;
+    &lt;param name="use_gui" value="False"/&gt;
+  &lt;/node&gt;
+  &lt;node 
+    name="robot_state_publisher" 
+    pkg="robot_state_publisher" 
+    type="robot_state_publisher"&gt;
+  &lt;/node&gt;
+   &lt;!-- Show in Rviz   --&gt;
+  &lt;node name="rviz" pkg="rviz" type="rviz" /&gt;
+&lt;/launch&gt;</pre>
+Конкретно в строке ноды robot_state_publisher type изменил с state_publisher на robot_state_publisher
+<p>
+<b>roslaunch myrobot_description rviz.launch</b>
+<p>
+<img src="./images/myrobot5.png">
+<p>
+На этот раз ноды запустились нормально, но в rviz опять нет моего робота. Поменял fixed frame с map на base_link, нажал на Add и добавил robotmodel, присвоил ему name gazon. И мой робот появился:
+<p>
+<img src="./images/myrobot6.png">
+<p>
+Сохранил конфиг, как gazon.rviz
+<p>
+Поторопился сохранить конфиг.<br>
+В myrobot_description создал папку config.<br>
+Отредактировал rviz.launch:
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;launch&gt;
+   &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'"/&gt;
+   &lt;arg name="rvizconfig" default="$(find myrobot_description)/config/gazon.rviz"/&gt;  
+ &lt;!-- Запуск нод --&gt;
+  &lt;node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"&gt;
+    &lt;param name="use_gui" value="False"/&gt;
+  &lt;/node&gt;
+  &lt;node 
+    name="robot_state_publisher" 
+    pkg="robot_state_publisher" 
+    type="robot_state_publisher"&gt;
+  &lt;/node&gt;
+   &lt;!-- Show in Rviz   --&gt;
+  &lt;node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)"/&gt; 
+&lt;/launch&gt;</pre>
+Запустил rviz.launch<br>
+Сохранил конфиг в myrobot_description/config/gazon.rviz<br>
+Теперь при запуске rviz.launch будет сразу открываться конфиг myrobot_description/config/gazon.rviz
+<p>
+<font color=red>Всё же непонятно, почему в пакетах joint_state_publisher и robot_state_publisher нет одноименных нод.</font>
+<p>
+Окончательный код gazon.urdf:
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;robot name="gazonchik"&gt;
+
+   &lt;material name="black"&gt;
+     &lt;color rgba="0 0 0 1"/&gt;
+   &lt;/material&gt;
+
+   &lt;material name="grey"&gt;
+     &lt;color rgba="0.5 0.5 0.5 1"/&gt;
+   &lt;/material&gt;
+
+   &lt;link name="base_link"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;box size="0.6 0.4 0.1"/&gt;
+        &lt;/geometry&gt;
+        &lt;material name="grey"/&gt;
+      &lt;/visual&gt;
+    &lt;/link&gt;
+
+   &lt;link name="front_right_wheel"&gt;
+      &lt;visual&gt;
+       &lt;geometry&gt;
+         &lt;cylinder length="0.05" radius="0.06"/&gt;
+       &lt;/geometry&gt;
+       &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+       &lt;material name="black"/&gt;
+      &lt;/visual&gt;
+   &lt;/link&gt;
+
+   &lt;link name="front_left_wheel"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;cylinder length="0.05" radius="0.06"/&gt;
+        &lt;/geometry&gt;
+        &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+       &lt;material name="black"/&gt;
+      &lt;/visual&gt;
+   &lt;/link&gt;
+   
+  &lt;link name="back_right_wheel"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+         &lt;material name="black"/&gt;
+       &lt;/visual&gt;
+     &lt;/link&gt;
+
+     &lt;joint name="переднее правое колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="front_right_wheel"/&gt;
+       &lt;origin xyz="0.3 -0.2 -0.05"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="переднее левое колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="front_left_wheel"/&gt;
+       &lt;origin xyz="0.3 0.2 -0.05"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="заднее правое  колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="back_right_wheel"/&gt;
+       &lt;origin xyz="-0.3 -0.2 -0.05"/&gt;
+     &lt;/joint&gt;
+     
+     &lt;joint name="заднее левое  колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="back_left_wheel"/&gt;
+       &lt;origin xyz="-0.3 0.2 -0.05"/&gt;
+     &lt;/joint&gt;
+
+ &lt;/robot&gt;</pre>
+<img src="./images/myrobot7.png">
+<p>
+<ul>
+<li> Ось красного цвета - это ось X, ось зеленого цвета - ось Y и ось синего цвета - Z.<br>
+<li> Если link name, значение написать русскими буквами, то в rviz имя ссылок не будет выводиться.
+<li> color rgba="0 0 0 1" - черный цвет, color rgba="0.5 0.5 0.5 1" - серый цвет, color rgba="1 1 1 1" - белый цвет<br>
+color rgba="1.0 1.0 0.0 1.0" - желтый
+</ul> 
+В блок joint каждого колёса добавил строку &lt;axis xyz="0 0 1"/&gt;. Посмотрел в rviz, ни оси ни какого-то другого элемента не видно.
+<p>
+<b>16.09.2024: Запуск в gazebo</b>
+<p>
+nano launch/gazebo.launch
+<p>
+Код:
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;launch&gt;
+    &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'" /&gt;
+ 
+    &lt;arg name="x" default="0"/&gt;
+    &lt;arg name="y" default="0"/&gt;
+    &lt;arg name="z" default="0.5"/&gt;
+ 
+    &lt;node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model gazonchik -x $(arg x) -y $(arg y) -z $(arg z)" /&gt;
+&lt;/launch&gt;
+</pre>
+<i>Здесь мы также считываем модель, затем аргументами передаем ее расположение в пространстве по осям x,y,z. Далее запускаем всего лишь одну ноду — mybot_spawn из пакета gazebo_ros.</i>
+<p>
+Запустить газебо без робота:<br>
+<b>roslaunch gazebo_ros empty_world.launch</b><br>
+Открылся симулятор без робота.
+<p>
+В другом терминале выполняем команду запуска моего робота:<br>
+<b>roslaunch myrobot_description gazebo.launch</b>
+<p>
+<img src="./images/myrobot8.png">
+<p>
+<pre>
+Error Code 17 Msg: urdf2sdf: link[base_link] has no &lt;inertial&gt; block defined. Please ensure this
+ link has a valid mass to prevent any missing links or joints in the resulting SDF model.
+Warning [parser_urdf.cc:2755] Error Code 17 Msg: urdf2sdf: [4] child joints ignored.
+Warning [parser_urdf.cc:2755] Error Code 17 Msg: urdf2sdf: [4] child links ignored.
+Warning [parser_urdf.cc:2759] Error Code 17 Msg: urdf2sdf: link[base_link] is not modeled in sdf.
+</pre>
+Как минимум из-за того, что отсутствует тег inertial.
+<p>
+В urdf/gazon.urdf в блок base_link добавил:
+<pre>
+&lt;inertial&gt;
+        &lt;origin xyz="0.0 0 0."/&gt;
+        &lt;mass value="0.5"/&gt; 
+        &lt;inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.03" /&gt;
+      &lt;/inertial&gt;
+</pre>
+В launch/gazebo.launch в строке <i>args="-urdf -param robot_description -model gazonchik -x $(arg x) -y $(arg y) -z $(arg z)"</i> поменял gazonchik на gazonchik2 (была жалоба, что модель уже существует).
+<p>
+Снова: <b>roslaunch myrobot_description gazebo.launch</b>
+<p>
+<img src="./images/myrobot9.png">
+<p>
+На этот раз нет тега inertial в линках колёс.
+<p>
+В блок каждого колёса добавил:
+<pre>
+&lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+</pre>
+Снова выпоняю:<br>
+roslaunch gazebo_ros empty_world.launch<br>
+roslaunch myrobot_description gazebo.launch
+<p>
+На этот раз вроде все нормально, но робот не открылся.
+<p>
+<img src="./images/myrobot10.png">
+<p>
+<font color=red>libcurl: (6) Could not resolve host: fuel.gazebosim.org</font>
+<p>
+В launch/gazebo.launch поменял gazonchik2 назад на gazonchik.
+<p>
+В общем внешне ничего не изменилось (не вижу своей модели), но в левой панели в списке models есть мой gazonchik и можно посмотреть его свойства (теги), какие я написал.<br>
+<font color=red>Но почему не видать моего робота?</font>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br><br></body></html>
+<br><br><br><br></body></html>
