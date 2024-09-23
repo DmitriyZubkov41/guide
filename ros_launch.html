@@ -1,0 +1,391 @@
+<html><head></head><body>
+<title>roslaunch</title>
+<h2 align="center">Команда roslaunch</h2>
+Ссылки: <a href="http://docs.voltbro.ru/starting-ros/administrirovanie-ros/roslaunch.html">Roslaunch, управление запуском</a><br>
+<a href="https://stepik.org/lesson/51393/step/1?unit=29689">Использование launch-файлов</a>
+<p>
+roslaunch запускает ноды, определённые в launch-файле. Синтаксис:<br>
+<font color="green">roslaunch [package] [filename.launch]</font>
+<p>
+файл.launch находится в папке launch, она находится в каталоге пакета.<br>
+<i>ПРИМЕЧАНИЕ: Каталог, в котором хранятся файлы launch, необязательно должен называться launch. На самом деле вам даже не нужно сохранять их в каталоге. Команда roslaunch автоматически просматривает переданный пакет и обнаруживает доступные файлы запуска. Однако это считается хорошей практикой.</i>
+
+<h2 align=center><a href="http://docs.voltbro.ru/starting-ros/administrirovanie-ros/roslaunch.html">Roslaunch, управление запуском</a></h2>
+Пример:
+<pre>
+&lt;launch&gt;
+  &lt;node pkg="test_package" type="topic_publisher.py" name="topic_publisher1"/&gt;
+  &lt;node pkg="test_package" type="topic_subscriber" name="topic_subscriber1"/&gt;
+  &lt;node pkg="test_package" type="topic_publisher.py" name="topic_publisher2"/&gt;
+  &lt;node pkg="test_package" type="topic_subscriber" name="topic_subscriber2"/&gt;
+&lt;/launch&gt;</pre>
+Тег &lt;launch&gt; - первый обязательный тег. Указывает, что файл launch. &lt;/launch&gt; - обязательный и самый последний тег.
+<p>
+В теге node указываем какой файл нужно запускать. Его параметры:
+<ul>
+<li> pkg - имя пакета
+<li> type - Название ноды, которая будет выполняться. Без расширения файла.
+<li> name - Имя (исполняемое имя), используемое при выполнении ноды, соответствующего выше параметру type. Обычно это имя совпадает, но при его запуске можно использовать другое имя.
+</ul>
+После сохранения файла, мы можем его запустить, выполнив:
+<pre>roslaunch name_package file.launch</pre>
+Если добавить параметр --screen, информация о работе запущенных программ будет отображенна на экране текущего терминала:
+<pre>roslaunch name_package file.launch --screen</pre>
+Файл можно запустить без указания названия пакета, указав полный путь к файлу:
+<pre>roslaunch /home/user/catkin_ws/src/test_package/launch/demo.launch</pre>
+В результате выполнения команды будет запущен ros master и ноды. Список запущенных нод будет указан во время выполнения команды под пунктом Nodes. Можно также их список просмотреть командой: <b>rosnode list</b>
+
+<h3 align=center>Установка переменных окружения при запуске</h3>
+Очень часто, возникает необходимость конфигурировать исполняемые файлы в момент их запуска. Например нужно иметь возможность изменять скорость Serial порта и его адрес. Каждый раз менять эти переменные в коде не удобно и очень долго.
+<p>
+Чтобы решить данную проблему, мы можем использовать возможность передавать конфигурационные переменные в запускаемые программы через .launch файлы. Пример:
+<pre>
+&lt;launch&gt;
+    &lt;node pkg="test_package" type="test_params.py" name="test_params" output="log" respawn="true"&gt;
+        &lt;param name="port" value="/dev/ttyS0"/&gt;
+        &lt;param name="boud" value="57600"/&gt;
+    &lt;/node&gt;
+&lt;/launch&gt;</pre>
+Мы видим что в ветке node добавились элементы param с настройками. Открывая такой файл, сразу видно, какие параметры возможно конфигурировать и их значения по умолчанию.
+<p>
+Для того, чтобы исполняемый файлы смогли обрабатывать эти параметры, необходимо добавить для них специальный код. Это не сложно, и для python может выглядеть так:
+<pre>
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy
+
+rospy.init_node('test_params')
+r = rospy.Rate(10) # 10hz
+port = rospy.get_param('~port','/dev/ttyS0')
+
+while not rospy.is_shutdown():
+    print(port)
+    r.sleep()</pre>
+Вторым параметром в функции get_param указывается значение по умолчанию, если параметр не определен в .launch файле.
+<p>
+Параметры возможно передавать при запуске через rosrun:
+<pre>rosrun test_package test_params.py _port:=/dev/ttyS1</pre>
+
+Еще одна удобная практика для работы с параметрами, это перенос настроек в начала файла, перечислив их как аргументы. Это можно сделать используя элемент <b>arg</b> а далее обращение к этим аргумента в формате $(arg env_name):
+<pre>
+&lt;launch&gt;
+    &lt;arg name="device" default="/dev/ttyS0"/&gt;
+    &lt;arg name="boud" default="57600"/&gt;
+
+    &lt;node pkg="test_package" type="test_params.py" name="test_package" output="log" respawn="true"&gt;
+        &lt;param name="port" value="$(arg device)"/&gt;
+        &lt;param name="boud" value="$(arg boud)"/&gt;
+    &lt;/node&gt;
+&lt;/launch&gt;</pre>
+Эта практика позволяет не листать большие файлы и всегда иметь перед глазами самые важные настройки.
+
+<h3 align=center>Подключение других .launch файлов <include></h3>
+В реальных проектах, запускаются десятки нод. Конфигурировать каждую из них в одном файле, не всегда удобно. К тому-же обычно сторонние пакеты уже содержат подходящие .launch файлы. Поэтому существуют механизм include, который позволяет подключать другие файлы запуска.
+<p>
+Приведем пример:
+<pre>
+&lt;launch&gt;
+ &lt;include file="$(find test_package)/launch/test_params.launch"&gt;
+     &lt;arg name="device" value="/dev/ttyS1"/&gt;
+  &lt;/include&gt;
+  &lt;include file="$(find navibro)/camera/camerav1_640x480.launch"/&gt;
+  &lt;include file="$(find navibro)/launch/aruco_detect.launch"/&gt;
+  &lt;include file="$(find navibro)/launch/fiducial_slam.launch"/&gt;
+&lt;/launch&gt;</pre>
+В этом примере, мы подключаем файл test_params.launch , который находиться в нашем пакете и настраиваем его на работу через устройство /dev/ttyS1.. А также подключаем три других .launch файла из другого пакета.
+
+<h3 align=center>Использование условий if и unless</h3>
+При написании сложный .launch файлов, очень помагают атрибуты if и unless, которые позволяют формировать простые алгоритмы ветвления при работе с roslaunch
+<p>
+Приведем несколько примеров:
+<pre>
+&lt;launch&gt;
+   &lt;arg name="have_serial" value="true"/&gt;
+
+   &lt;group if="$(arg have_serial)"&gt;
+     &lt;!-- Блок выполниться только если have_serial установлено в true --&gt;
+     &lt;node pkg="test_package" type="test_params.py" name="test_package" output="log" respawn="true"&gt;
+  &lt;/group&gt;
+  &lt;!-- Также if можно использовать для одного тега--&gt;
+  &lt;include if="$(arg have_serial)" file="$(find test_package)/launch/test_params.launch"&gt;
+    &lt;arg name="device" value="/dev/ttyS1"/&gt;
+  &lt;/include&gt;
+&lt;/launch&gt;</pre>
+Атрибут unless работает противоположно атрибуту if. Если значение 0 то блок выполняется.<br>
+Значение атрибутов для if и unless должно быть булевым (0,1,true,false)
+
+
+<h3 align=center><a href="https://classic.gazebosim.org/tutorials?tut=ros_roslaunch">Tutorial: Using roslaunch to start Gazebo, world files and URDF models</a></h3>
+Существует множество способов запуска моделей Gazebo, открытого мира и создания моделей роботов в моделируемой среде. В этом руководстве мы рассмотрим ROS-способ ведения дел: использование rosrun и roslaunch. Это включает в себя хранение ваших файлов URDF в пакетах ROS и сохранение различных путей к ресурсам относительно вашего рабочего пространства ROS.
+<h4>Использование roslaunch чтобы открыть World Models</h4>
+Инструмент roslaunch - это стандартный метод для запуска узлов ROS и запуска роботов в ROS. Чтобы запустить пустой Gazebo world аналогично команде rosrun из предыдущего руководства, просто запустите:
+<pre>roslaunch gazebo_ros empty_world.launch</pre>
+<b>roslaunch Arguments</b><br>
+Вы можете добавить следующие аргументы к файлам запуска, чтобы изменить поведение Gazebo:
+<ul>
+<li> <b>paused</b><br>
+Запуск Gazebo в приостановленном состоянии (по умолчанию false)
+<li> <b>use_sim_time</b><br>
+Сообщает узлам ROS, запрашивающим время, чтобы получить опубликованное в Gazebo время моделирования, опубликованное в топик /clock. (по умолчанию true).
+<li> <b>gui</b><br>
+Запустить окно пользовательского интерфейса Gazebo (по умолчанию true).
+<li> <b>headless</b> (устаревшая) запись (<b>recording</b> теперь)<br>
+Включить запись журнала состояния gazebo
+<li> <b>debug</b><br>
+Запустить gzserver (сервер Gazebo) в режиме отладки, используя gdb (по умолчанию false)
+<li> <b>verbose</b><br>
+Запустите gzserver и gzclient с помощью --verbose, выводя ошибки и предупреждения на терминал (по умолчанию false).
+<li> <b>server_required</b><br>
+Завершить скрипт launch при завершении работы gzserver (сервера Gazebo) (значение по умолчанию false)
+<li> <b>gui_required</b><br>
+Завершить скрипт.launch при завершении работы gzclient (окна пользовательского интерфейса) (значение по умолчанию false)
+</ul>
+<p>
+<b>Пример команды roslaunch</b><br>
+Обычно значения по умолчанию для этих аргументов - это все, что вам нужно, но просто в качестве примера:
+<pre>roslaunch gazebo_ros empty_world.launch /
+paused:=true use_sim_time:=false gui:=true throttled:=false recording:=false debug:=true verbose:=true gui_required:=true</pre>
+
+<h4>Launching Other Demo Worlds</h4>
+Другие демонстрационные миры уже включены в пакет gazebo_ros, в том числе:
+<pre>
+roslaunch gazebo_ros willowgarage_world.launch
+roslaunch gazebo_ros mud_world.launch
+roslaunch gazebo_ros shapes_world.launch
+roslaunch gazebo_ros rubble_world.launch</pre>
+В mud_world.launch запускается простой суставный механизм. Код:
+<pre>
+&lt;launch&gt;
+  &lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;
+  &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt;
+    &lt;arg name="world_name" value="worlds/mud.world"/&gt; &lt;!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable --&gt;
+    &lt;arg name="paused" value="false"/&gt;
+    &lt;arg name="use_sim_time" value="true"/&gt;
+    &lt;arg name="gui" value="true"/&gt;
+    &lt;arg name="recording" value="false"/&gt;
+    &lt;arg name="debug" value="false"/&gt;
+  &lt;/include&gt;
+&lt;/launch&gt;</pre>
+В этом файле запуска мы наследуем большую часть необходимой функциональности от empty_world.запуск. Единственный параметр, который нам нужно изменить, - это параметр world_name, заменив пустой файл .world на файл mud.world. Для остальных аргументов просто устанавливаются значения по умолчанию.
+
+<h4>Файлы world</h4>
+Продолжая наше изучение mud_world.запустив файл, мы теперь рассмотрим содержимое файла mud.world. Ниже показаны первые несколько компонентов mud world:
+<pre>
+&lt;sdf version="1.4"&gt;
+    &lt;world name="default"&gt;
+      &lt;include&gt;
+        &lt;uri&gt;model://sun&lt;/uri&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;uri&gt;model://double_pendulum_with_base&lt;/uri&gt;
+        &lt;name&gt;pendulum_thick_mud&lt;/name&gt;
+        &lt;pose&gt;-2.0 0 0 0 0 0&lt;/pose&gt;
+      &lt;/include&gt;
+      ...
+    &lt;/world&gt;
+  &lt;/sdf&gt;</pre>
+В этом фрагменте файла world вы можете видеть ссылки на три модели. Поиск этих трех моделей осуществляется в вашей локальной базе данных моделей Gazebo. Если они там не найдены, они автоматически извлекаются из онлайн-базы данных Gazebo.
+<p>
+Вы можете узнать больше о файлах world в <a href="https://classic.gazebosim.org/tutorials?cat=build_world">руководстве по созданию World</a>.
+<p>
+<b>Поиск Файлов World На Вашем Компьютере</b><br>
+Файлы World находятся в каталоге /worlds, указанном в вашем пути к ресурсам Gazebo. Расположение этого пути зависит от способа установки Gazebo и типа используемой вами системы. Чтобы найти расположение ресурсов Gazebo, используйте следующую команду:
+<pre>env | grep GAZEBO_RESOURCE_PATH</pre>
+Типичным путем может быть что-то вроде /usr/local/share/gazebo-1.9. Добавьте /worlds в конец пути, и у вас должен получиться каталог, содержащий файлы world, которые использует Gazebo, включая mud.файл world.
+
+<h4 align=center>Creating your own Gazebo ROS Package</h4>
+Прежде чем продолжить рассказ о том, как создавать роботов в Gazebo, мы сначала рассмотрим стандарты файловой иерархии для использования ROS с Gazebo, чтобы мы могли сделать дальнейшие предположения.
+<p>
+На данный момент мы предполагаем, что ваше рабочее пространство catkin называется catkin_ws, хотя вы можете назвать его как угодно. Таким образом, ваше рабочее пространство catkin может располагаться на вашем компьютере примерно по следующему адресу:
+<pre>/home/user/catkin_ws/src</pre>
+Все, что касается модели и описания вашего робота, находится, согласно стандартам ROS, в пакете с именем /MYROBOT_description, а все файлы world и файлы запуска, используемые в Gazebo, находятся в пакете ROS с именем /MYROBOT_gazebo. Замените "MYROBOT" на название вашего бота строчными буквами. С этими двумя пакетами ваша иерархия должна быть следующей:
+<p>
+<img src="./images/ros_launch.png">
+<p>
+Помните, что команда catkin_create_pkg используется для создания новых пакетов, хотя при необходимости ее можно легко адаптировать и для rosbuild. Большинство этих папок и файлов должны быть понятны сами по себе.
+<p>
+В следующем разделе мы расскажем вам о том, как выполнить некоторые из этих настроек для использования с пользовательским файлом world.
+<h4>Creating a Custom World File</h4>
+Вы можете создавать пользовательские файлы .world в своих собственных пакетах ROS, которые предназначены для ваших роботов и пакетов. В этом мини-руководстве мы создадим пустой мир с землей, солнцем и заправочной станцией. Ниже приведен рекомендуемый нами порядок действий. Обязательно замените MYROBOT на название вашего бота, или, если у вас нет робота для тестирования, просто замените его на что-то вроде "test":
+<ul>
+<li> Создайте пакет ROS с условным именем MYROBOT_gazebo
+<li> В этом пакете создайте папку launch
+<li> В папке launch создайте файл YOUROBOT.launch со следующим содержимым (аргументы по умолчанию исключены):
+<pre>
+&lt;launch&gt;
+  &lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;
+  &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt;
+    &lt;arg name="world_name" value="$(find MYROBOT_gazebo)/worlds/MYROBOT.world"/&gt;
+    &lt;!-- more default parameters can be changed here --&gt;
+  &lt;/include&gt;
+&lt;/launch&gt;</pre>
+<li> В том же пакете создайте папку worlds и файл MYROBOT.world со следующим содержимым:
+<pre>
+&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://sun&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://gas_station&lt;/uri&gt;
+      &lt;name&gt;gas_station&lt;/name&gt;
+      &lt;pose&gt;-2.0 7.0 0 0 0 0&lt;/pose&gt;
+    &lt;/include&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;</pre>
+<li> Теперь вы должны иметь возможность запустить свой пользовательский мир (с заправочной станцией) в Gazebo, используя следующую команду:
+<pre>
+. ~/catkin_ws/devel/setup.bash
+roslaunch MYROBOT_gazebo MYROBOT.launch</pre>
+Вы должны увидеть следующую модель мира (уменьшите масштаб с помощью колесика прокрутки мыши).:
+<p>
+<img src="./images/ros_launch1.png">
+<p>
+До конца урока ваш пустой мир MYROBOT_gazebo должен быть запущен.
+</ul>
+<p>
+<b>Редактирование файла World в Gazebo</b><br>
+Вы можете вставить дополнительные модели в файл мира вашего робота и использовать команду File->Save , чтобы экспортировать отредактированный мир обратно в ваш пакет ROS.
+
+<h4 align=center>Использование roslaunch для создания роботов URDF</h4>
+Есть два способа запустить вашего робота на базе URDF в Gazebo с помощью roslaunch:
+<p>
+<b>ROS Service Call Spawn Method</b><br>
+Первый метод обеспечивает большую переносимость пакетов ROS вашего робота между компьютерами и репозиториями. Он позволяет сохранять местоположение вашего робота относительно пути к пакету ROS, но также требует, чтобы вы выполняли вызов службы ROS с помощью небольшого скрипта (на python).
+<p>
+<b>Model Database Method</b><br>
+Второй способ позволяет вам включить вашего робота в файл .world, что кажется более простым и удобным, но требует, чтобы вы добавили своего робота в базу данных моделей Gazebo, установив переменную окружения.
+<p>
+Мы рассмотрим оба метода. В целом, мы рекомендуем использовать метод запуска вызова службы ROS
+<h4>"ROS Service Call" Robot Spawn Method</h4>
+Этот метод использует небольшой скрипт на python, называемый <b>spawn_model</b>, для отправки запроса на вызов службы к узлу gazebo_ros ROS (который в пространстве имен rostopic называется просто "gazebo"), чтобы добавить пользовательский URDF в Gazebo. Скрипт spawn_model находится в пакете gazebo_ros. Вы можете использовать этот скрипт следующим образом:
+<pre>rosrun gazebo_ros spawn_model -file `rospack find MYROBOT_description`/urdf/MYROBOT.urdf -urdf -x 0 -y 0 -z 1 -model MYROBOT</pre>
+Чтобы просмотреть все доступные аргументы для spawn_model, включая пространства имен, свойства trimesh, положения соединений и ориентацию RPY, запустите:
+<pre>rosrun gazebo_ros spawn_model -h</pre>
+<p>
+<b>URDF Example with Baxter</b><br>
+Если у вас еще нет URDF для тестирования, в качестве примера вы можете загрузить пакет baxter_description из <a href="https://github.com/RethinkRobotics/baxter_common">репозитория Rethink Robotics baxter_common</a>. Поместите этот пакет в свою рабочую область catkin, выполнив:
+<pre>git clone https://github.com/RethinkRobotics/baxter_common.git</pre>
+Теперь у вас должен быть URDF-файл с именем baxter.urdf, расположенный в baxter_description/urdf/, и вы можете запустить:
+<pre>rosrun gazebo_ros spawn_model -file `rospack find baxter_description`/urdf/baxter.urdf -urdf -z 1 -model baxter</pre>
+вы должны увидеть что-то похожее на:
+<p>
+<img src="./images/ros_launch2.png">
+<p>
+Чтобы интегрировать это непосредственно в файл запуска ROS, снова откройте файл MYROBOT_gazebo/launch/YOUROBOT.launch и добавьте следующее перед &lt;/launch&gt;
+<pre>
+&lt;!-- Spawn a robot into Gazebo --&gt;
+&lt;node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find baxter_description)/urdf/baxter.urdf -urdf -z 1 -model baxter" /&gt;</pre>
+Запустив этот файл, вы должны увидеть те же результаты, что и при использовании rosrun.
+<p>
+<b>XACRO Example with PR2</b><br>
+Если ваш URDF не в формате XML, а в формате <a href="https://wiki.ros.org/xacro">XACRO</a>, вы можете внести аналогичные изменения в свой файл запуска. Вы можете запустить этот пример PR2, установив этот пакет:
+<pre>sudo apt-get install ros-jade-pr2-common</pre>
+Затем добавьте это в свой файл запуска, созданный ранее в этом руководстве:
+<pre>
+&lt;!-- Convert an xacro and put on parameter server --&gt;
+&lt;param name="robot_description" command="$(find xacro)/xacro.py $(find pr2_description)/robots/pr2.urdf.xacro" /&gt;
+
+&lt;!-- Spawn a robot into Gazebo --&gt;
+&lt;node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model pr2" /&gt;</pre>
+Запустив этот файл, вы должны увидеть PR2 на заправочной станции.
+
+<h4 align=center>"Model Database" Robot Spawn Method</h4>
+Второй способ добавления роботов в Gazebo позволяет вам включить вашего робота в файл .world, что кажется более простым и удобным, но также требует, чтобы вы добавили своего робота в базу данных моделей Gazebo, установив переменную окружения. Эта переменная среды необходима из-за разделения зависимостей ROS от Gazebo; пути к пакетам URDF нельзя использовать непосредственно внутри файлов .world, поскольку Gazebo не имеет представления о пакетах ROS.
+<p>
+Чтобы реализовать этот метод, вы должны создать новую базу данных моделей, содержащую только одного вашего робота. Это не самый простой способ загрузить ваш URDF в Gazebo, но он позволяет избежать необходимости хранить две копии URDF вашего робота на вашем компьютере. Если приведенные ниже инструкции вас смущают, обратитесь к документации по базе данных моделей Gazebo, чтобы понять, почему требуются эти шаги.
+<p>
+Мы предполагаем, что ваша файловая иерархия ROS workspace настроена так, как описано в предыдущих разделах. Единственное отличие заключается в том, что теперь файл model.config добавлен в ваш пакет MYROBOT_description следующим образом:
+<p>
+<img src="./images/ros_launch3.png">
+<p>
+Эта иерархия специально адаптирована для использования в качестве базы данных моделей Gazebo с помощью следующих папок/файлов:
+<ul>
+<li> /home/user/catkin_workspace/src - то рассматривается как местоположение базы данных моделей gazebo
+<li> /MYROBOT_description - этот каталог рассматривается как отдельная папка модели Gazebo
+<li> model.config - это необходимый конфигурационный файл для Gazebo, чтобы найти эту модель в своей базе данных
+<li> MYROBOT.urdf - это файл описания вашего робота, который также используется Rviz, MOVEit! и т.д
+<li> /meshes - поместите сюда свои файлы .stl или .dae, как вы это сделали бы с обычными URDFS
+</ul>
+<p>
+<b>model.config</b><br>
+У каждой модели должен быть файл model.config в корневом каталоге модели, содержащий метаинформацию о модели. В общем, скопируйте это в файл model.config, заменив MYROBOT.urdf на свое имя файла:
+<pre>
+&lt;?xml version="1.0"?&gt;
+  &lt;model&gt;
+    &lt;name&gt;MYROBOT&lt;/name&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;sdf&gt;urdf/MYROBOT.urdf&lt;/sdf&gt;
+    &lt;author&gt;
+      &lt;name&gt;My name&lt;/name&gt;
+      &lt;email&gt;name@email.address&lt;/email&gt;
+    &lt;/author&gt;
+    &lt;description&gt;
+      A description of the model
+    &lt;/description&gt;
+  &lt;/model&gt;</pre>
+В отличие от SDFs, в URDFs, тег &lt;version&gt; не требуется. Дополнительную информацию смотрите в документации по базе данных Gazebo Model.
+<p>
+<b>Environment Variable</b><br>
+Наконец, вам нужно добавить переменную среды в ваш файл .bashrc, которая указывает Gazebo, где искать базы данных моделей. Используя выбранный вами редактор, отредактируйте "~/.bashrc". Проверьте, определен ли у вас уже путь к GAZEBO_MODEL_PATH. Если он у вас уже есть, добавьте его, используя точку с запятой, в противном случае добавьте новый экспорт. Предполагая, что ваша рабочая область Catkin находится в ~/catkin_ws/, ваш путь должен выглядеть примерно так:
+<pre>export GAZEBO_MODEL_PATH=/home/user/catkin_ws/src/</pre>
+<p>
+<b>Просмотр в Gazebo - Вручную</b><br>
+Теперь проверьте, правильно ли настроена ваша новая база данных моделей Gazebo, запустив Gazebo:
+<pre>gazebo</pre>
+И нажмите на вкладку "Insert" слева. Вероятно, вы увидите несколько различных выпадающих списков, представляющих различные базы данных моделей, доступные в вашей системе, включая онлайн-базу данных. Найдите базу данных, соответствующую вашему роботу, откройте подменю, нажмите на название вашего робота, а затем с помощью мыши выберите место в Gazebo для размещения робота
+<p>
+<b>Просмотр в gazebo - запуск roslaunch с базой данных моделей</b><br>
+Преимущество метода model database заключается в том, что теперь вы можете включить своего робота непосредственно в свои файлы world, не используя путь к пакету ROS. Мы будем использовать ту же настройку, что и в разделе "Создание файла world", но изменим файл world.<br>
+В той же папке MYROBOT_description/launch отредактируйте файл MYROBOT.world следующего содержания:
+<pre>
+&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://sun&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://gas_station&lt;/uri&gt;
+      &lt;name&gt;gas_station&lt;/name&gt;
+      &lt;pose&gt;-2.0 7.0 0 0 0 0&lt;/pose&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://MYROBOT_description&lt;/uri&gt;
+    &lt;/include&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;</pre>
+Теперь вы сможете запустить свой пользовательский мир как с заправочной станцией, так и с роботом в Gazebo, используя следующую команду:
+<pre>roslaunch MYROBOT_gazebo MYROBOT.launch</pre>
+Недостатком этого метода является то, что ваши пакеты MYROBOT_description и MYROBOT_gazebo не так легко переносятся между компьютерами - вам сначала нужно установить GAZEBO_MODEL_PATH в любой новой системе, прежде чем вы сможете использовать эти пакеты ROS.
+<h4>Экспорт путей к модели из package.xml</h4>
+Полезной информацией был бы формат для экспорта путей к модели из package.xml:
+<pre>
+&lt;run_depend&gt;gazebo_ros&lt;/run_depend&gt;
+&lt;export&gt;
+  &lt;gazebo_ros gazebo_model_path="${prefix}/models"/&gt;
+  &lt;gazebo_ros gazebo_media_path="${prefix}/models"/&gt;
+&lt;/export&gt;</pre>
+"${префикс}" - это то, о чем новые пользователи тоже могут не сразу узнать, и это необходимо здесь.
+<p>
+Также было бы полезно получить некоторую информацию о том, как отладить эти пути со стороны ROS, например, что вы можете использовать плагины rospack --attrib="gazebo_media_path" gazebo_ros, чтобы проверить путь к мультимедиа, который будет выбран gazebo.
+
+
+
+
+
+
+
+
+<br><br><br><br></body></html>

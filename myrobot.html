@@ -1,6 +1,49 @@
-<html><head></head><body>
+<html><head>
+<style>
+.menu {
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  color: #f2f2f2;
+  padding: 16px;
+     } 
+.menu a {
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+} 
+.content {
+          padding: 16px;
+          margin-top: 200px;
+         }
+</style>
+</head><body>
 <title>Создание виртуального робота</title>
-<h2 align=center>Создание виртуального робота, начало в 12.09.2024</h2>
+<div class="menu">
+<table border="1" width="100%"><tr>
+<td width="25%">
+<a href="#top">Начало</a><br>
+<a href="#bottom">Конец</a></td>
+<td width="25%"><font color="white">
+docker run --rm -it rosurdf /bin/bash<br>
+passwd<br>
+/etc/init.d/ssh start
+</font>
+</td>
+<td><font color="white">
+Другой терминал:<br>
+ssh -X root@172.17.0.2<br>
+cd catkin_ws/src/myrobot_description<br>
+roslaunch myrobot_description gazebo.launch
+</font>
+</td>
+</tr></table>
+</div>
+<div class="content">
+<h2 align=center><a name="top">Создание виртуального робота, начало в 12.09.2024</h2>
 Мой робот будет представлять собой примерно газонокосилку, схематично это просто параллепипед и 4 колёса, плюс датчик, чтобы видеть деревья. Потом возможно нужно будеть добавить плату миникомпьютера, чтобы робот имел мозги, а не был просто радиоуправляемой игрушкой.
 <p>
 Ссылки: <a href="https://habr.com/ru/articles/467241/">Робот-тележка на ROS. Часть 4. Создаем симуляцию робота, используя редакторы rviz и gazebo</a>
@@ -390,7 +433,195 @@ roslaunch myrobot_description gazebo.launch
 <p>
 В общем внешне ничего не изменилось (не вижу своей модели), но в левой панели в списке models есть мой gazonchik и можно посмотреть его свойства (теги), какие я написал.<br>
 <font color=red>Но почему не видать моего робота?</font>
+<p>
+<b>18.09.2024</b><br>
+Изменил launch/gazebo.launch, добавил строку &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt;:
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;launch&gt;
+    &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'" /&gt;
+
+    &lt;arg name="x" default="0"/&gt;
+    &lt;arg name="y" default="0"/&gt;
+    &lt;arg name="z" default="0.5"/&gt;
+
+    &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt;
+
+    &lt;node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model gazonchik -x $(arg x) -y $(arg y) -z $(arg z)" /&gt;
+&lt;/launch&gt;</pre>
+Думаю теперь не надо запускать вначале газебо с пустым миром, а сразу моего gazonchik'а.
+<p>
+<b>roslaunch myrobot_description gazebo.launch</b>
+<p>
+<img src="./images/myrobot11.png">
+<p>
+Нашёл ошибку, не был закрыт тег include. Исправил, снова roslaunch myrobot_description gazebo.launch<br>
+<font color=red>Не видать газонщика</font>, хотя в списке models есть.
+<h3><a name="bottom">19.09.2024</h3>
+В urdf/gazon.urdf вне блока link добавил:
+<pre>
+&lt;gazebo reference ="base_link"&gt;
+        &lt;material&gt;Gazebo/grey&lt;/material&gt;
+     &lt;/gazebo&gt;
+</pre>
+Весь код:
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;robot name="gazonchik"&gt;
+
+   &lt;material name="black"&gt;
+     &lt;color rgba="0 0 0 1"/&gt;
+   &lt;/material&gt;
+
+   &lt;material name="grey"&gt;
+     &lt;color rgba="0.5 0.5 0.5 1"/&gt;
+   &lt;/material&gt;
+
+   &lt;link name="base_link"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;box size="0.6 0.4 0.1"/&gt;
+        &lt;/geometry&gt;
+        &lt;material name="grey"/&gt;
+      &lt;/visual&gt;
+      &lt;inertial&gt;
+        &lt;origin xyz="0.0 0 0."/&gt;
+        &lt;mass value="0.5"/&gt; 
+        &lt;inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.03" /&gt;
+      &lt;/inertial&gt;
+    &lt;/link&gt;
+    &lt;gazebo reference ="base_link"&gt;
+        &lt;material&gt;Gazebo/grey&lt;/material&gt;
+     &lt;/gazebo&gt;
+
+   &lt;link name="front_right_wheel"&gt;
+      &lt;visual&gt;
+       &lt;geometry&gt;
+         &lt;cylinder length="0.05" radius="0.06"/&gt;
+       &lt;/geometry&gt;
+       &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+       &lt;material name="black"/&gt;
+      &lt;/visual&gt;
+      &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+   &lt;gazebo reference ="front_right_wheel"&gt;
+        &lt;material&gt;Gazebo/black&lt;/material&gt;
+     &lt;/gazebo&gt;
+  
+   &lt;link name="front_left_wheel"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;cylinder length="0.05" radius="0.06"/&gt;
+        &lt;/geometry&gt;
+        &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+       &lt;material name="black"/&gt;
+      &lt;/visual&gt;
+      &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+   &lt;gazebo reference ="front_left_wheel"&gt;
+        &lt;material&gt;Gazebo/black&lt;/material&gt;
+     &lt;/gazebo&gt;
+
+    &lt;link name="back_left_wheel"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+         &lt;material name="black"/&gt;
+       &lt;/visual&gt;
+       &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+    &lt;/link&gt;
+    &lt;gazebo reference ="back_left_wheel"&gt;
+        &lt;material&gt;Gazebo/black&lt;/material&gt;
+     &lt;/gazebo&gt;
+
+     &lt;link name="back_right_wheel"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
+         &lt;material name="black"/&gt;
+       &lt;/visual&gt;
+       &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+     &lt;/link&gt;
+     &lt;gazebo reference ="back_right_wheel"&gt;
+        &lt;material&gt;Gazebo/black&lt;/material&gt;
+     &lt;/gazebo&gt;  
+     &lt;joint name="переднее правое колесо к корпусу" type="revolute"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="front_right_wheel"/&gt;
+       &lt;origin xyz="0.3 -0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+       &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="переднее левое колесо к корпусу" type="revolute"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="front_left_wheel"/&gt;
+       &lt;origin xyz="0.3 0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+       &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="заднее правое  колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="back_right_wheel"/&gt;
+       &lt;origin xyz="-0.3 -0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+     &lt;/joint&gt;
+
+     &lt;joint name="заднее левое  колесо к корпусу" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="back_left_wheel"/&gt;
+       &lt;origin xyz="-0.3 0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+     &lt;/joint&gt;
+
+ &lt;/robot&gt;
+</pre>
+Проверил, ничего не изменилось в газебо. Добавим блок collision.
+<pre>
+&lt;collision&gt;
+         &lt;geometry&gt;
+            &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+&lt;/collision&gt;
+</pre>
+Наконец появился. Почему-то зарылся в землю. И цвета материалов нет.
+<p>
+<img src="./images/myrobot12.png">
 
 
 
-<br><br><br><br></body></html>
+<br><br><br><br>
+</div>
+</body></html>
