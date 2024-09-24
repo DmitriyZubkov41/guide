@@ -1,0 +1,293 @@
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 160px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       /*background-color: #111;  Черный */
+      }
+ .menu a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #818181;
+  display: block;
+          }     
+.content {
+           margin-left: 160px; /* То же, что и ширина боковой панели */
+         }
+</style>
+</head><body>
+<title>Код</title>
+<div class="menu">
+<a href="#gazon.urdf">urdf/gazon.urdf</a><br>
+<a href="#yaml">config/gazon.yaml</a><br>
+<a href="#gazebo.launch">launch/gazebo.launch</a><br>
+</div>
+<div class="content">
+<h3 align=center><a name="gazon.urdf">urdf/gazon.urdf</h3>
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;robot name="gazonchik"&gt;
+
+   &lt;material name="black"&gt;
+     &lt;color rgba="0 0 0 1"/&gt;
+   &lt;/material&gt;
+
+   &lt;material name="grey"&gt;
+     &lt;color rgba="0.5 0.5 0.5 1"/&gt;
+   &lt;/material&gt;
+
+   &lt;link name="base_link"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;box size="0.6 0.4 0.1"/&gt;
+        &lt;/geometry&gt;
+        &lt;material name="grey"/&gt;
+        &lt;origin xyz="0 0 0.06" rpy="0 0 0"/&gt;
+      &lt;/visual&gt;
+      &lt;collision&gt;
+        &lt;geometry&gt;
+          &lt;box size="0.6 0.4 0.1"/&gt;
+        &lt;/geometry&gt;
+        &lt;origin xyz="0 0 0.06" rpy="0 0 0"/&gt;
+      &lt;/collision&gt;
+      &lt;inertial&gt;
+        &lt;origin xyz="0.0 0 0."/&gt;
+        &lt;mass value="0.5"/&gt; 
+        &lt;inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.03" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+     &lt;gazebo reference="base_link"&gt;
+        &lt;material&gt;Gazebo/Grey&lt;/material&gt;
+     &lt;/gazebo&gt;
+
+   &lt;!-- блок переднего правого колёса --&gt;
+   &lt;link name="front_right_wheel"&gt;
+      &lt;visual&gt;
+       &lt;geometry&gt;
+         &lt;cylinder length="0.05" radius="0.06"/&gt;
+       &lt;/geometry&gt;
+       &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+       &lt;material name="black"/&gt;
+      &lt;/visual&gt;
+      &lt;collision&gt;
+         &lt;geometry&gt;
+            &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+      &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+      &lt;/collision&gt;
+      &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+   &lt;!--цвет  правого переднего колёса--&gt; 
+    &lt;gazebo reference="front_right_wheel"&gt;
+       &lt;mu1 value="200.0"/&gt;
+       &lt;mu2 value="100.0"/&gt;
+       &lt;kp value="10000000.0" /&gt;
+       &lt;kd value="1.0" /&gt;
+       &lt;material&gt;Gazebo/Black&lt;/material&gt;
+    &lt;/gazebo&gt;
+   
+   &lt;link name="front_left_wheel"&gt;
+      &lt;visual&gt;
+        &lt;geometry&gt;
+          &lt;cylinder length="0.05" radius="0.06"/&gt;
+        &lt;/geometry&gt;
+        &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+       &lt;material name="black"/&gt;
+      &lt;/visual&gt;
+      &lt;collision&gt;
+        &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+        &lt;/geometry&gt;
+        &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;     
+      &lt;/collision&gt;
+      &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+    &lt;gazebo reference="front_left_wheel"&gt;
+       &lt;mu1 value="200.0"/&gt;
+       &lt;mu2 value="100.0"/&gt;
+       &lt;kp value="10000000.0" /&gt;
+       &lt;kd value="1.0" /&gt;
+       &lt;material&gt;Gazebo/Black&lt;/material&gt;
+     &lt;/gazebo&gt; 
+  
+   &lt;link name="back_left_wheel"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+         &lt;material name="black"/&gt;
+       &lt;/visual&gt;
+       &lt;collision&gt;
+         &lt;geometry&gt;
+            &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+      &lt;/collision&gt;
+      &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+    &lt;gazebo reference="back_left_wheel"&gt;
+       &lt;mu1 value="200.0"/&gt;
+       &lt;mu2 value="100.0"/&gt;
+       &lt;kp value="10000000.0" /&gt;
+       &lt;kd value="1.0" /&gt;
+       &lt;material&gt;Gazebo/Black&lt;/material&gt;
+    &lt;/gazebo&gt;
+
+   &lt;link name="back_right_wheel"&gt;
+       &lt;visual&gt;
+         &lt;geometry&gt;
+           &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+         &lt;material name="black"/&gt;
+       &lt;/visual&gt;
+      &lt;collision&gt;
+         &lt;geometry&gt;
+            &lt;cylinder length="0.05" radius="0.06"/&gt;
+         &lt;/geometry&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+      &lt;/collision&gt;
+      &lt;inertial&gt;
+        &lt;mass value="0.4" /&gt;
+        &lt;origin xyz="0 0 0" /&gt;
+        &lt;inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" /&gt;
+      &lt;/inertial&gt;
+   &lt;/link&gt;
+    &lt;gazebo reference="back_right_wheel"&gt;
+        &lt;mu1 value="200.0"/&gt;
+        &lt;mu2 value="100.0"/&gt;
+        &lt;kp value="10000000.0" /&gt;
+        &lt;kd value="1.0" /&gt;
+        &lt;material&gt;Gazebo/Black&lt;/material&gt;
+    &lt;/gazebo&gt;
+   
+   &lt;joint name="front_right_wheel_to_base" type="revolute"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="front_right_wheel"/&gt;
+       &lt;origin xyz="0.3 -0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+       &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
+   &lt;/joint&gt;
+
+   &lt;joint name="front_left_wheel_to_base" type="revolute"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="front_left_wheel"/&gt;
+       &lt;origin xyz="0.3 0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+       &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
+   &lt;/joint&gt;
+
+   &lt;joint name="back_right_wheel_to_base" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="back_right_wheel"/&gt;
+       &lt;origin xyz="-0.3 -0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+   &lt;/joint&gt;
+
+   &lt;joint name="back_left_wheel_to_base" type="continuous"&gt;
+       &lt;parent link="base_link"/&gt;
+       &lt;child link="back_left_wheel"/&gt;
+       &lt;origin xyz="-0.3 0.2 -0.05"/&gt;
+       &lt;axis xyz="0 0 1"/&gt;
+   &lt;/joint&gt;
+
+   &lt;transmission name="front_right_wheel_trans"&gt;
+       &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
+       &lt;actuator name="front_right_motor"&gt;
+          &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/actuator&gt;
+       &lt;joint name="front_right_wheel_to_base"&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/joint&gt;
+   &lt;/transmission&gt;
+ 
+   &lt;transmission name="front_left_wheel_trans"&gt;
+       &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
+       &lt;actuator name="front_left_motor"&gt;
+          &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/actuator&gt;
+       &lt;joint name="front_left_wheel_to_base"&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/joint&gt;
+   &lt;/transmission&gt;
+
+   &lt;gazebo&gt;
+      &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
+        &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;
+      &lt;/plugin&gt;
+   &lt;/gazebo&gt;
+
+&lt;/robot&gt;
+</pre>
+
+
+<h3 align=center><a name="yaml">config/gazon.yaml</h3>
+Контроллеры для робота gazon.
+<pre>
+myrobot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+  # Position Controllers ---------------------------------------
+  joint1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  joint2_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint2
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+</pre> 
+
+
+<h3 align=center><a name="gazebo.launch">Код launch/gazebo.launch</h3>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;launch&gt;
+    &lt;!-- Load joint controller configurations from YAML file to parameter server --&gt;
+    &lt;rosparam file="$(find myrobot_description)/config/gazon.yaml" command="load"/&gt;
+    
+    &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'" /&gt;
+
+    &lt;arg name="x" default="0"/&gt;
+    &lt;arg name="y" default="0"/&gt;
+    &lt;arg name="z" default="0.5"/&gt;
+
+    &lt;include file="$(find gazebo_ros)/launch/empty_world.launch" /&gt;
+
+    &lt;node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model robot1 -x $(arg x) -y $(arg y) -z $(arg z)" /&gt;
+&lt;/launch&gt;
+</pre>
+ 
+</div> 
+ <br><br><br><br><br></body></html>

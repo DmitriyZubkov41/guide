@@ -23,8 +23,8 @@
 </head><body>
 <title>Создание виртуального робота</title>
 <div class="menu">
-<table border="1" width="100%"><tr>
-<td width="25%">
+<table width="100%"><tr>
+<td width="10%">
 <a href="#top">Начало</a><br>
 <a href="#bottom">Конец</a></td>
 <td width="25%"><font color="white">
@@ -33,12 +33,16 @@ passwd<br>
 /etc/init.d/ssh start
 </font>
 </td>
-<td><font color="white">
+<td  width="35%"><font color="white">
 Другой терминал:<br>
 ssh -X root@172.17.0.2<br>
 cd catkin_ws/src/myrobot_description<br>
+roslaunch myrobot_description rviz.launch<br>
 roslaunch myrobot_description gazebo.launch
 </font>
+</td>
+<td>
+<a href="kod.html">Код скриптов</a>
 </td>
 </tr></table>
 </div>
@@ -458,7 +462,7 @@ roslaunch myrobot_description gazebo.launch
 <p>
 Нашёл ошибку, не был закрыт тег include. Исправил, снова roslaunch myrobot_description gazebo.launch<br>
 <font color=red>Не видать газонщика</font>, хотя в списке models есть.
-<h3><a name="bottom">19.09.2024</h3>
+<h3>19.09.2024</h3>
 В urdf/gazon.urdf вне блока link добавил:
 <pre>
 &lt;gazebo reference ="base_link"&gt;
@@ -619,6 +623,161 @@ roslaunch myrobot_description gazebo.launch
 Наконец появился. Почему-то зарылся в землю. И цвета материалов нет.
 <p>
 <img src="./images/myrobot12.png">
+<p>
+<b><a name="bottom">24.09.2024</b><br>
+Редактирую urdf/gazon.urdf:<br>
+1. Добавляю плагин:
+<pre>
+&lt;gazebo&gt;
+   &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
+      &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;
+   &lt;/plugin&gt;
+&lt;/gazebo&gt;</pre>
+2. Добавляю для каждого переднего колеса блок transmission (вне link):
+<pre>
+&lt;transmission name="front_right_wheel_trans"&gt;
+       &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
+       &lt;actuator name="front_right_motor"&gt;
+          &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/actuator&gt;
+       &lt;joint name="front_right_wheel_to_base"&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/joint&gt;
+    &lt;/transmission&gt;
+</pre>
+и
+<pre>
+&lt;transmission name="front_left_wheel_trans"&gt;
+       &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
+       &lt;actuator name="front_left_motor"&gt;
+          &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/actuator&gt;
+       &lt;joint name="front_left_wheel_to_base"&gt;
+          &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
+       &lt;/joint&gt;
+    &lt;/transmission&gt;
+</pre>
+Строку &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt; вставил в блок actuator и joint.
+3. Блок
+<pre>
+&lt;gazebo reference ="back_right_wheel"&gt;
+   &lt;material&gt;Gazebo/black&lt;/material&gt;
+&lt;/gazebo&gt; </pre>
+каждого колеса поменял на:
+<pre>
+&lt;gazebo reference="back_right_wheel"&gt;
+      &lt;mu1 value="200.0"/&gt;
+      &lt;mu2 value="100.0"/&gt;
+      &lt;kp value="10000000.0" /&gt;
+      &lt;kd value="1.0" /&gt;
+      &lt;material&gt;Gazebo/Black&lt;/material&gt;
+&lt;/gazebo&gt;</pre>
+Несмотря на то, что в руководстве сказано вставлять gazebo с material внутри link, у меня цвет колес был черный, когда наоборот этот блок был вставлен вне link.
+<pre>roslaunch myrobot_description gazebo.launch</pre>
+<img src="./images/myrobot13.png">
+<p>
+Ошибка красного цвета, пишут что из-за отсутствия конфигурационного файла.
+<p>
+4. Создал файл config/gazon.yaml:
+<pre>
+myrobot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+  # Position Controllers ---------------------------------------
+  joint1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  joint2_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint2
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+</pre>
+В launch/gazebo.launch добавил через rosparam config/gazon.yaml
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;launch&gt;
+    &lt;!-- Load joint controller configurations from YAML file to parameter server --&gt;
+    &lt;rosparam file="$(find myrobot_description)/config/gazon.yaml" command="load"/&gt;
+    &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'" /&gt;
+
+    &lt;arg name="x" default="0"/&gt;
+    &lt;arg name="y" default="0"/&gt;
+    &lt;arg name="z" default="0.5"/&gt;
+
+    &lt;include file="$(find gazebo_ros)/launch/empty_world.launch" /&gt;
+
+    &lt;node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model robot1 -x $(arg x) -y $(arg y) -z $(arg z)" /&gt;
+&lt;/launch&gt;
+</pre>
+Вывод от команды roslaunch myrobot_description gazebo.launch:
+<pre>
+PARAMETERS
+ * /gazebo/enable_ros_network: True
+ * /myrobot/joint1_position_controller/joint: joint1
+ * /myrobot/joint1_position_controller/pid/d: 10.0
+ * /myrobot/joint1_position_controller/pid/i: 0.01
+ * /myrobot/joint1_position_controller/pid/p: 100.0
+ * /myrobot/joint1_position_controller/type: effort_controller...
+ * /myrobot/joint2_position_controller/joint: joint2
+ * /myrobot/joint2_position_controller/pid/d: 10.0
+ * /myrobot/joint2_position_controller/pid/i: 0.01
+ * /myrobot/joint2_position_controller/pid/p: 100.0
+ * /myrobot/joint2_position_controller/type: effort_controller...
+ * /myrobot/joint_state_controller/publish_rate: 50
+ * /myrobot/joint_state_controller/type: joint_state_contr...
+ * /robot_description: <?xml version="1....
+ * /rosdistro: noetic
+ * /rosversion: 1.16.0
+ * /use_sim_time: True
+</pre>
+-------------------------------------------------------------------------------------------------------
+<pre>
+[ INFO] [1727174662.245701115, 0.001000000]: Loading gazebo_ros_control plugin
+[ INFO] [1727174662.247041510, 0.001000000]: Starting gazebo_ros_control plugin in namespace: /
+[ INFO] [1727174662.252189872, 0.001000000]: gazebo_ros_control plugin is waiting for model URDF
+ in parameter [robot_description] on the ROS param server.
+[ERROR] [1727174662.782787453, 0.001000000]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/front_right_wheel_to_base
+[ERROR] [1727174662.811033643, 0.001000000]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/front_left_wheel_to_base
+[mybot_spawn-4] process has finished cleanly
+log file: /root/.ros/log/ebc6838e-7a61-11ef-9178-0242ac110002/mybot_spawn-4*.log
+[ INFO] [1727174662.943671696, 0.001000000]: Loaded gazebo_ros_control.
+</pre></pre>
+5. В link корпуса внутри visual и  collision добавил &lt;origin xyz="0 0 0.06" rpy="0 0 0"/&gt;, а в колесе изменил origin xyz (z=0.06)<br>
+Поднял робота над землей на радиус колёса.<br>
+Робот в газебо теперь нормально стоит (колесами на земле), но в rviz центры осей на колесах находятся в нижней точке колес. Наверное в joint's надо изменить координаты origin.
+<p>
+В joint front_right_wheel сделал z=0, так нижняя точка колеса стала на уровне основания корпуса:<br>
+<img src="./images/myrobot14.png">
+<p>
+Если в link колеса &lt;origin rpy="1.57075 0 0" xyz="0 0 <b>-0.06</b>"/&gt; вместо &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;, то:
+<br><img src="./images/myrobot15.png">
+<p>
+Теперь в link переднего правого колеса: &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt; - колесо относительно центра корпуса (находится в основании корпуса) подыму на 6 см.<br>
+В joint переднего правого колеса: &lt;origin xyz="0.3 -0.2 <b>0</b>"/&gt; - z оси колеса будет совпадать с z корпуса
+<br><img src="./images/myrobot16.png">
+<p>
+Окончательный вариант, и в joint и в link z=0
+<br><img src="./images/myrobot17.png">
+<pre>roslaunch myrobot_description gazebo.launch</pre>
+Непонятно:
+<br><img src="./images/myrobot18.png"><br>
+Центр земли не совмещен с машиной и одно колесо почему-то крутилось.
+
+
+
+
+
+
+
+
+
 
 
 
