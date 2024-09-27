@@ -50,7 +50,7 @@
         &lt;geometry&gt;
           &lt;box size="0.6 0.4 0.1"/&gt;
         &lt;/geometry&gt;
-        &lt;origin xyz="0 0 0.06" rpy="0 0 0"/&gt;
+        &lt;origin xyz="0 0 0.11" rpy="0 0 0"/&gt;
       &lt;/collision&gt;
       &lt;inertial&gt;
         &lt;origin xyz="0.0 0 0."/&gt;
@@ -70,14 +70,14 @@
        &lt;geometry&gt;
          &lt;cylinder length="0.05" radius="0.06"/&gt;
        &lt;/geometry&gt;
-       &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+       &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
        &lt;material name="black"/&gt;
       &lt;/visual&gt;
       &lt;collision&gt;
          &lt;geometry&gt;
             &lt;cylinder length="0.05" radius="0.06"/&gt;
          &lt;/geometry&gt;
-      &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+      &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
       &lt;/collision&gt;
       &lt;inertial&gt;
         &lt;mass value="0.4" /&gt;
@@ -101,14 +101,14 @@
         &lt;geometry&gt;
           &lt;cylinder length="0.05" radius="0.06"/&gt;
         &lt;/geometry&gt;
-        &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+        &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
        &lt;material name="black"/&gt;
       &lt;/visual&gt;
       &lt;collision&gt;
         &lt;geometry&gt;
            &lt;cylinder length="0.05" radius="0.06"/&gt;
         &lt;/geometry&gt;
-        &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;     
+        &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;     
       &lt;/collision&gt;
       &lt;inertial&gt;
         &lt;mass value="0.4" /&gt;
@@ -131,14 +131,14 @@
          &lt;geometry&gt;
            &lt;cylinder length="0.05" radius="0.06"/&gt;
          &lt;/geometry&gt;
-         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
          &lt;material name="black"/&gt;
        &lt;/visual&gt;
        &lt;collision&gt;
          &lt;geometry&gt;
             &lt;cylinder length="0.05" radius="0.06"/&gt;
          &lt;/geometry&gt;
-         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
       &lt;/collision&gt;
       &lt;inertial&gt;
         &lt;mass value="0.4" /&gt;
@@ -161,14 +161,14 @@
          &lt;geometry&gt;
            &lt;cylinder length="0.05" radius="0.06"/&gt;
          &lt;/geometry&gt;
-         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
          &lt;material name="black"/&gt;
        &lt;/visual&gt;
       &lt;collision&gt;
          &lt;geometry&gt;
-            &lt;cylinder length="0.05" radius="0.06"/&gt;
+            &lt;cylinder length="0.05" radius="0"/&gt;
          &lt;/geometry&gt;
-         &lt;origin rpy="1.57075 0 0" xyz="0 0 0.06"/&gt;
+         &lt;origin rpy="1.57075 0 0" xyz="0 0 0"/&gt;
       &lt;/collision&gt;
       &lt;inertial&gt;
         &lt;mass value="0.4" /&gt;
@@ -189,7 +189,7 @@
    &lt;joint name="front_right_wheel_to_base" type="revolute"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="front_right_wheel"/&gt;
-       &lt;origin xyz="0.3 -0.2 -0.05"/&gt;
+       &lt;origin xyz="0.3 -0.2 0"/&gt;
        &lt;axis xyz="0 0 1"/&gt;
        &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
    &lt;/joint&gt;
@@ -197,7 +197,7 @@
    &lt;joint name="front_left_wheel_to_base" type="revolute"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="front_left_wheel"/&gt;
-       &lt;origin xyz="0.3 0.2 -0.05"/&gt;
+       &lt;origin xyz="0.3 0.2 0"/&gt;
        &lt;axis xyz="0 0 1"/&gt;
        &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
    &lt;/joint&gt;
@@ -205,14 +205,14 @@
    &lt;joint name="back_right_wheel_to_base" type="continuous"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="back_right_wheel"/&gt;
-       &lt;origin xyz="-0.3 -0.2 -0.05"/&gt;
+       &lt;origin xyz="-0.3 -0.2 0"/&gt;
        &lt;axis xyz="0 0 1"/&gt;
    &lt;/joint&gt;
 
    &lt;joint name="back_left_wheel_to_base" type="continuous"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="back_left_wheel"/&gt;
-       &lt;origin xyz="-0.3 0.2 -0.05"/&gt;
+       &lt;origin xyz="-0.3 0.2 0"/&gt;
        &lt;axis xyz="0 0 1"/&gt;
    &lt;/joint&gt;
 
@@ -237,10 +237,10 @@
           &lt;hardwareInterface&gt;hardware_interface/VelocityJointInterface&lt;/hardwareInterface&gt;
        &lt;/joint&gt;
    &lt;/transmission&gt;
-
+   &lt;!-- Добавляем плагин, чтобы могли взаимодействовать с нашим роботом --&gt;
    &lt;gazebo&gt;
       &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-        &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;
+        &lt;robotNamespace&gt;gazonchik&lt;/robotNamespace&gt;
       &lt;/plugin&gt;
    &lt;/gazebo&gt;
 
@@ -251,21 +251,40 @@
 <h3 align=center><a name="yaml">config/gazon.yaml</h3>
 Контроллеры для робота gazon.
 <pre>
-myrobot:
-  # Publish all joint states -----------------------------------
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 50  
+#скопировано из конф. файла Антона (https://github.com/AntonSHBK/mobile_robot_base_ros1/blob/main/config/robot_joint_state.yaml),
+# только прокомментирую блоки камеры и задних колёс и изменю названия суставов на мои.
+# Контроллер состояния суставов, который публикует состояние всех суставов в роботе
+joint_state_controller:
+  type: "joint_state_controller/JointStateController"  # Тип контроллера, отвечающий за сбор и публикацию данных о состоянии сустав>
+  publish_rate: 50  # Частота публикации данных о состоянии суставов в герцах
 
-  # Position Controllers ---------------------------------------
-  joint1_position_controller:
-    type: effort_controllers/JointPositionController
-    joint: joint1
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-  joint2_position_controller:
-    type: effort_controllers/JointPositionController
-    joint: joint2
-    pid: {p: 100.0, i: 0.01, d: 10.0}
+# Контроллер позиции для управления камерой
+#camera_controller:
+#  type: "position_controllers/JointPositionController"  # Тип контроллера, отвечающий за управление позицией сустава
+#  joint: camera_joint  # Сустав, которым управляет данный контроллер
+
+# Контроллеры скорости для управления колёсами
+# Каждый контроллер управляет одним колесом
+
+# Контроллер для переднего левого колеса
+front_left_wheel_controller:
+  type: "velocity_controllers/JointVelocityController"  # Контроллер управляет скоростью вращения сустава
+  joint: front_left_wheel_to_base  # Сустав переднего левого колеса
+
+# Контроллер для переднего правого колеса
+front_right_wheel_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: front_right_wheel_to_base  # Сустав переднего правого колеса
+
+# Контроллер для заднего левого колеса
+#back_left_wheel_controller:
+#  type: "velocity_controllers/JointVelocityController"
+#  joint: back_left_wheel_joint  # Сустав заднего левого колеса
+
+# Контроллер для заднего правого колеса
+#back_right_wheel_controller:
+#  type: "velocity_controllers/JointVelocityController"
+#  joint: back_right_wheel_joint  # Сустав заднего правого колеса
 </pre> 
 
 
@@ -286,6 +305,9 @@ myrobot:
 
     &lt;node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
           args="-urdf -param robot_description -model robot1 -x $(arg x) -y $(arg y) -z $(arg z)" /&gt;
+          
+    &lt;!-- Запуск RViz --&gt;
+    &lt;include file="$(find myrobot_description)/launch/rviz.launch"&gt;
 &lt;/launch&gt;
 </pre>
  

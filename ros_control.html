@@ -9,9 +9,21 @@
 <p>
 <img src="./images/ros_control.png">
 <p>
-Пакеты ros_control принимают в качестве входных данных данные о совместном состоянии от датчиков привода вашего робота и заданное значение на входе. В них используется общий механизм обратной связи по контуру управления, обычно ПИД-регулятор, для управления выходными данными, обычно усилием, передаваемым на ваши приводы. ros_control усложняется для физических механизмов, которые не имеют взаимно однозначных отображений совместных позиций, усилий и т.д., но эти сценарии учитываются с использованием передач.
+Пакеты ros_control принимают в качестве входных данных данные о совместном состоянии ( joint state data) от датчиков привода вашего робота (энкодеров) заданное значение на входе. В них используется общий механизм обратной связи по контуру управления, обычно ПИД-регулятор, для управления выходными данными, обычно усилием, передаваемым на ваши приводы. ros_control усложняется для физических механизмов, которые не имеют взаимно однозначных отображений совместных позиций, усилий и т.д., но эти сценарии учитываются с использованием передач.
 <h4>Контроллеры:</h4>
-Список доступных плагинов для контроллеров, содержащийся в разделе ros_controllers, на момент написания этой статьи. Вы, конечно, можете создать свой собственный и не ограничиваться приведенным ниже списком.
+Контроллеры содержатся в пакете <a href="http://wiki.ros.org/ros_controllers?distro=noetic">ros_controllers</a>. Для ros noetic ros_controllers содержит:<br>
+ackermann_steering_controller<br>
+diff_drive_controller<br>
+effort_controllers<br>
+force_torque_sensor_controller<br>
+forward_command_controller<br>
+gripper_action_controller<br>
+imu_sensor_controller<br>
+joint_state_controller<br>
+joint_trajectory_controller<br>
+position_controllers<br>
+velocity_controllers
+<p>
 <ul>
 <li> <b>joint_state_controller</b> - Публикует состояние всех ресурсов, зарегистрированных в интерфейсе hardware_interface::JointStateInterface, в топик типа sensor_msgs/JointState.<br>
 Состоит из joint_state_controller
@@ -43,6 +55,14 @@
        <li> position_velocity_controller
        <li> position_velocity_acceleration_controller
        </ul>
+ <li> <b>diff_drive_controller</b><br>
+Из <a href="https://amperka.ru/blogs/projects/abot-robot-part-1">Как сделать робота на ROS своими руками. Часть 1: шасси и бортовая электроника</a>:  <i>Этот тип контроллера отвечает непосредственно за движение двухколёсного робота. Как это работает? Мы даём контроллеру входные данные. Например, мы хотим, чтобы робот ехал с линейной скоростью в 1 м/c и угловой скоростью в 2 рад/c. Но не знаем, какие при этом должны быть скорости колёс. Контроллер берёт эти входные данные, а также значения текущих скоростей и положение робота, полученное с одометрии, обрабатывает всё это и на выходе отдаёт необходимые угловые скорости вращения колёс, чтобы наш робот двигался именно заданным образом.
+<p>
+В ROS движение робота конвенционально осуществляется через топики, которые обмениваются сообщениями типа geometry_msgs/Twist. Сообщение этого типа состоит из двух векторов linear и angular типа geometry_msgs/Vector3. Каждый такой вектор — трёхмерный. Вектор geometry_msgs/Vector3 linear описывает линейные скорости робота вдоль осей X, Y, Z в глобальной системе координат. Вектор geometry_msgs/Vector3 angular представляет скорость вращения робота вокруг осей X, Y, Z.
+<p>
+Наш двухколёсный дифференциальный привод обладает неголономным движением. Он контролируется только линейной скростью по оси X и угловой скоростью вокруг оси Z. Таким образом, наш вектор скорости linear будет всегда иметь нулевые линейные скорости по осям Y, Z и нулевые угловые скорости вокруг осей X и Y.
+<p>
+Опишем принцип работы контроллера. Мы отправляем желаемые векторы скорости робота в топик /cmd_vel. Контроллер анализирует полученные векторы, вычисляет необходимые скорости вращения правого и левого колеса и отправляет рассчитанные значения в топики моторов левого и правого колеса. Одновременно с этим контроллер считывает текущие углы поворота колёс и вычисляет текущую траекторию и одометрию робота. Сообщения об одометрии имеют тип nav_msgs/Odometry и публикуются в топик /odom.</i>    
 </ul>
 
 <h4>Hardware Interfaces</h4>
@@ -67,22 +87,13 @@
 <li> Force-torque sensor Interface
 <li> IMU sensor Interface     
 </ul>
-<h4>Transmissions</h4>
-Трансмиссия - это элемент в вашем конвейере управления, который преобразует переменные усилия/потока таким образом, чтобы их результат - мощность - оставался постоянным. Реализация интерфейса трансмиссии преобразует переменные усилия/потока в выходные переменные усилия/потока с сохранением мощности.
-<p>
-<a href="http://ros.org/wiki/urdf/XML/Transmission">transmission в urdf</a>
-
-<h4>Joint Limits</h4>
-Интерфейс join_limits_interface содержит структуры данных для представления совместных ограничений, методы для их заполнения из распространенных форматов, таких как URDF и rosparam, и методы для обеспечения соблюдения ограничений для различных видов совместных команд.
-<p>
-Интерфейс joint_limits_interface не используется самими контроллерами (он не реализует аппаратный интерфейс), но вместо этого работает после обновления контроллеров в методе write() (или эквивалентном) абстракции robot. Принудительное применение ограничений приведет к перезаписи команд, заданных контроллерами, и не будет работать с отдельным буфером необработанных данных.
 
 <h4>Установка пакетов ros control</h4>
 <pre>sudo apt-get install ros-noetic-ros-control ros-noetic-ros-controllers</pre>
 
 
 <h3 align=center><a href="https://classic.gazebosim.org/tutorials?tut=ros_control">Tutorial: ROS Control</a></h3>
-В этом руководстве мы настроим имитационные контроллеры для управления суставами вашего робота. Это позволит нам предоставить правильные интерфейсы ROS для таких проектировщиков, как MOVEit!. Мы будем использовать пакеты ros_control, новый стандарт в ROS для интерфейсов контроллеров.
+В этом руководстве мы настроим имитационные контроллеры для управления суставами вашего робота. Мы будем использовать пакеты ros_control, новый стандарт в ROS для интерфейсов контроллеров.
 <p>
 Имитация работы контроллеров робота в Gazebo может быть выполнена с помощью ros_control и простого адаптера плагинов Gazebo. Ниже представлен обзор взаимосвязи между моделированием, аппаратным обеспечением, контроллерами и передачами.:
 <p>
@@ -92,65 +103,68 @@
 <p>
 Убедитесь, что вы уже установили ros_control, ros_controllers и их зависимости.
 
-<h4>Добавление &lt;transmission&gt; в URDF</h4>
-Чтобы использовать ros_control в вашем роботе, вам необходимо добавить несколько дополнительных элементов в ваш URDF. Элемент &lt;transmission&gt; используется для привязки приводов к шарнирам, точный формат XML приведен в <a href="http://ros.org/wiki/urdf/XML/Transmission">спецификации &lt;transmission&gt;</a>.
+<h4 align=center>Добавление &lt;transmission&gt; в URDF</h4>
+Чтобы использовать ros_control в вашем роботе, вам необходимо добавить тег &lt;transmission&gt; в ваш URDF. Тег &lt;transmission&gt; используется для привязки приводов к шарнирам, точный формат XML приведен в <a href="http://ros.org/wiki/urdf/XML/Transmission">спецификации &lt;transmission&gt;</a>.
 <p>
-------------------------------------------------------------------------<br>
-Пример:
+Шаблон блока transmission:
 <pre>
 &lt;transmission name="simple_trans"&gt;
-   2   &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-   3   &lt;joint name="foo_joint"&gt;
-   4     &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-   5   &lt;/joint&gt;
-   6   &lt;actuator name="foo_motor"&gt;
-   7     &lt;mechanicalReduction&gt;50&lt;/mechanicalReduction&gt;
-   8     &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-   9   &lt;/actuator&gt;
-  10 &lt;/transmission&gt;</pre>
+     &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
+     &lt;joint name="foo_joint"&gt;
+        &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
+     &lt;/joint&gt;
+     &lt;actuator name="foo_motor"&gt;
+        &lt;mechanicalReduction&gt;50&lt;/mechanicalReduction&gt;
+        &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
+     &lt;/actuator&gt;
+&lt;/transmission&gt;</pre>
+<ul>
+<li> &lt;transmission name=...&gt;<br>
 Атрибут <b>name</b> определяет уникальное имя трансмиссии.<br>
-&lt;type&gt; -  Определяет тип передачи.<br>
-&lt;joint&gt;<br>
-Может быть несколько. Соединение, к которому подключена передача. Соединение определяется его атрибутом name и следующими подэлементами:<br>
-&lt;hardwareInterface&gt; Указывает поддерживаемый аппаратный интерфейс joint-space. Обратите внимание, что значение этого тега должно быть EffortJointInterface, когда эта передача загружается в Gazebo, и hardware_interface/EffortJointInterface, когда эта передача загружается в RobotHW<br>
-&lt;actuator&gt; Привод (мотор), к которому подключена трансмиссия. Привод определяется с помощью атрибута name и следующих подэлементов:<br>
-&lt;mechanicalReduction&gt; (optional)<br>
-Указывает на механическое уменьшение нагрузки на шарнир/приводную коробку передач. Этот параметр может потребоваться не для всех коробок передач.<br>
-&lt;hardwareInterface&gt; (optional) (one or more occurrences)<br>
-Указывает поддерживаемый аппаратный интерфейс joint-space. Обратите внимание, что тег <hardwareInterface> следует указывать только в версиях ROS, предшествующих Indigo. Правильное место для указания этого тега - в теге &lt;joint&gt;.
-<p>----------------------------------------------------------------------------------------------------------------<p>
+Внутренние теги:
+ <ul>
+  <li> <b>&lt;type&gt;</b> тип transmission. Значение transmission_interface/SimpleTransmission в качестве интерфейса передачи, представляет собой простую редукторную передачу. Это именно то, что мы имеем между приводной частью (двигателем) и соединительной частью (выходным валом, к которому прикреплено звено), где редуктор определяет величину уменьшения.
+  <li> <b>&lt;joint name=""&gt;</b> name должен быть равен имени вашего сустава внутри блока robot.<br>
+Может быть несколько. Соединение, к которому подключена передача. Соединение определяется его атрибутом name и следующими подэлементами:
+    <ul>
+       <li> &lt;hardwareInterface&gt; Указывает поддерживаемый аппаратный интерфейс.Указывает плагину gazebo_ros_control, какой аппаратный интерфейс загружать (position (позиция), velocity (скорость) или effort (усилие) interfaces). Значения: EffortJointInterface, JointStateInterface, VelocityJointInterface<br>
+    </ul>
+  <li> <b>&lt;actuator name="..."&gt;</b><br>
+        Привод (мотор), к которому подключена трансмиссия. Привод определяется с помощью атрибута name и следующих подэлементов:
+     <ul>
+         <li> <b>&lt;mechanicalReduction&gt;</b> (optional)<br>
+             Указывает на механическое уменьшение нагрузки на шарнир/приводную коробку передач. Этот параметр 
+             может потребоваться не для всех transmission.<br>
+         <li> <b>&lt;hardwareInterface&gt;</b> (optional) (one or more occurrences)<br>
+                 <font color=brown>Обратите внимание, что тег &lt;hardwareInterface&gt; следует указывать только в версиях
+                 ROS до Indigo включительно.</font> Правильное место для указания этого тега - в теге &lt;joint&gt;.
+     </ul>
+ </ul>
+</ul> 
+Остальные имена и теги в настоящее время игнорируются.
 
-Для целей gazebo_ros_control в его текущей реализации единственной важной информацией в этих тегах передачи являются:
+<h4 align=center>Плагины gazebo</h4>
+В дополнение к тегам передачи в ваш URDF необходимо добавить плагин Gazebo, который фактически анализирует теги передачи и загружает соответствующие аппаратные интерфейсы и диспетчер контроллеров (могут подключать сообщения ROS и вызовы служб для вывода датчиков и ввода двигателя).<br>
+По умолчанию плагин gazebo_ros_control очень прост, хотя он также может быть расширен за счет дополнительной архитектуры плагина, позволяющей опытным пользователям создавать свои собственные аппаратные интерфейсы для роботов между ros_control и Gazebo.
 <p>
-&lt;joint name=""&gt;<br>
-&lt;type&gt; тип передачи. В настоящее время реализован только "transmission_interface/SimpleTransmission". (не стесняйтесь добавлять больше)<br>
-&lt;hardwareInterface&gt; - внутри &lt;actuator&gt; and &lt;joint&gt; тегов. это указывает плагину gazebo_ros_control, какой аппаратный интерфейс загружать (интерфейсы положения, скорости или усилия). В настоящее время реализованы только интерфейсы усилия. (не стесняйтесь добавлять больше)
-<p>
-Остальные имена и элементы в настоящее время игнорируются.
-
-<h4>Добавление gazebo_ros_control plugin</h4>
-В дополнение к тегам передачи в ваш URDF необходимо добавить плагин Gazebo, который фактически анализирует теги передачи и загружает соответствующие аппаратные интерфейсы и диспетчер контроллеров. По умолчанию плагин gazebo_ros_control очень прост, хотя он также может быть расширен за счет дополнительной архитектуры плагина, позволяющей опытным пользователям создавать свои собственные аппаратные интерфейсы для роботов между ros_control и Gazebo.
-<p>
-По умолчанию код плагина (в конце urdf):
+По умолчанию код плагина (в конце urdf перед закрывающимся тегом robot):
 <pre>
 &lt;gazebo&gt;
   &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
     &lt;robotNamespace&gt;/MYROBOT&lt;/robotNamespace&gt;
   &lt;/plugin&gt;
 &lt;/gazebo&gt;</pre>
-Тег &lt;plugin&gt; имеет дочерние теги:
+Тег &lt;plugin&gt; имеет дочерние и необязательные теги:
 <ul>
 <li> &lt;robotNamespace&gt; Пространство имен ROS, которое будет использоваться для этого экземпляра плагина, по умолчанию имеет значение name в теге &lt;robot в URDF/SDF.
 <li> &lt;controlPeriod&gt; Период обновления контроллера (в секундах) по умолчанию равен периоду работы Gazebo
-<li> &gt;robotParam&lt; Расположение robot_description (URDF) на сервере параметров по умолчанию равно "/robot_description"
-<li> &lt;robotSimType&gt; Имя pluginlib пользовательского интерфейса robot sim, который будет использоваться (более подробную информацию смотрите ниже), по умолчанию равно "DefaultRobotHWSim"
+<li> &lt;robotParam&gt; Расположение robot_description (URDF) на сервере параметров по умолчанию равно "/robot_description"
+<li> &lt;robotSimType&gt; Имя pluginlib пользовательского интерфейса robot sim, который будет использоваться.<br>
+По умолчанию, без тега &lt;robotSimType&gt;, gazebo_ros_control попытается получить всю информацию, необходимую для взаимодействия с контроллером на базе ros_control, из URDF.
 </ul>
-<p>
-<a href="https://classic.gazebosim.org/tutorials?tut=ros_gzplugins">Tutorial: Using Gazebo plugins with ROS</a>
 <h4>Поведение gazebo_ros_control по умолчанию</h4>
-По умолчанию, без тега &lt;robotSimType&gt;, gazebo_ros_control попытается получить всю информацию, необходимую для взаимодействия с контроллером на базе ros_control, из URDF. Этого достаточно для большинства случаев и хорошо, по крайней мере, для начала.
-<p>
-Поведение по умолчанию обеспечивает следующие интерфейсы ros_control:
+По умолчанию, без тега &lt;robotSimType&gt;, gazebo_ros_control попытается получить всю информацию, необходимую для взаимодействия с контроллером на базе ros_control, из URDF. Этого достаточно для большинства случаев и хорошо, по крайней мере, для начала.<br>
+Поведение по умолчанию обеспечивает следующие аппаратные интерфейсы ros_control:
 <ul>
 <li> hardware_interface::JointStateInterface
 <li> hardware_interface::EffortJointInterface
@@ -161,7 +175,7 @@
 <p>
 Эти плагины должны наследовать gazebo_ros_control::RobotHWSim, который реализует имитируемый аппаратный интерфейс ros_control::RobotHW. RobotHWSim предоставляет доступ на уровне API для чтения и управления совместными свойствами в Gazebo simulator.
 <p>
-Соответствующий подкласс RobotHWSim указан в модели URDF и загружается при загрузке модели робота. Например, следующий XML-файл загрузит плагин по умолчанию (то же поведение, что и при использовании тега <robotSimType>).:
+Соответствующий подкласс RobotHWSim указан в модели URDF и загружается при загрузке модели робота. Например, следующий XML-файл загрузит плагин по умолчанию (то же поведение, что и при отсутствии тега &lt;robotSimType&gt;).:
 <pre>
 &lt;gazebo&gt;
   &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
@@ -169,51 +183,10 @@
     &lt;robotSimType&gt;gazebo_ros_control/DefaultRobotHWSim&lt;/robotSimType&gt;
   &lt;/plugin&gt;
 &lt;/gazebo&gt;</pre>
-<h4>RRBot Example</h4>
-Мы добавляем блок &lt;transmission&gt;, аналогичный приведенному ниже, для каждого соединения, которое мы хотим задействовать в Gazebo. Обратите внимание, что &lt;hardwareInterface&gt; должен быть включен как в теги &lt;joint&gt;, так и &lt;actuator&gt; (<a href="https://github.com/ros-controls/ros_control/issues/177">смотрите здесь проблему с ros_control</a>). Откройте свой файл rrbot.xacro, и в нижней части файла вы должны увидеть:
-<pre>
-&lt;transmission name="tran1"&gt;
-    &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-    &lt;joint name="joint1"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-    &lt;/joint&gt;
-    &lt;actuator name="motor1"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-      &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
-    &lt;/actuator&gt;
-  &lt;/transmission&gt;
 
-  &lt;transmission name="tran2"&gt;
-    &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-    &lt;joint name="joint2"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-    &lt;/joint&gt;
-    &lt;actuator name="motor2"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-      &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
-    &lt;/actuator&gt;
-  &lt;/transmission&gt;</pre>
-Вы также увидите плагин gazebo_ros_control в rrbot.gazebo, который используется во всех тегах &lt;transmission&gt;
-<pre>
-&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/rrbot&lt;/robotNamespace&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;</pre>
-<h4>Создайте пакет ros_controls</h4>
-Далее нам нужно будет создать файл конфигурации и файл запуска для наших контроллеров ros_control, которые взаимодействуют с Gazebo.
-<p>
-<b>Создаём новый пакет:</b>
-<pre>
-mkdir ~/catkin_ws
-cd ~/catkin_ws
-catkin_create_pkg MYROBOT_control controller_manager joint_state_controller robot_state_publisher
-cd MYROBOT_control
-mkdir config
-mkdir launch</pre>
-Полный рабочий пример пакета, о котором мы говорим в этом разделе, можно найти по адресу <a href="https://github.com/ros-simulation/gazebo_ros_demos/tree/kinetic-devel/rrbot_control">rrbot_control</a>.
-<h4>Создаём конфигурационный файл.yaml</h4>
-Значения коэффициента усиления и настройки контроллера должны быть сохранены в файле yaml, который загружается на сервер параметров через файл roslaunch. В папке config вашего пакета MYROBOT_control адаптируйте следующий пример RRBot к вашему роботу как MYROBOT_control/config/rrbot_control.yaml.:
+<h4 align=center>Конфигурационный файл yaml</h4>
+Помимо файла URDF, мы должны предоставить файл конфигурации, который загружает значения коэффициента усиления и параметры (настройки) контроллеров на сервер параметров через файл.launch. Файл конфигурации хранится в отдельной подпапке с именем config в папке нашего проекта.<br>
+Пример конфигурационного файла для робота RRbot:
 <pre>
 rrbot:
   # Publish all joint states -----------------------------------
@@ -229,11 +202,9 @@ rrbot:
   joint2_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint2
-    pid: {p: 100.0, i: 0.01, d: 10.0}</pre>
-Более подробную информацию об этих контроллерах смотрите в следующем разделе.   
-<h4>Создание launch файла</h4>
-Создайте файл launch для запуска контроллеров ros_control. В папке launch создайте файл MYROBOT_control/launch/MYROBOT_control.launch и вставьте следующий код:
-<pre>
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+</pre>
+Файл.launch для запуска RRbot и этих контроллеров из конфигурационного файла.yaml:<pre>
 &lt;launch&gt;
 
   &lt;!-- Load joint controller configurations from YAML file to parameter server --&gt;
@@ -249,95 +220,53 @@ rrbot:
     &lt;remap from="/joint_states" to="/rrbot/joint_states" /&gt;
   &lt;/node&gt;
 
-&lt;/launch&gt;</pre>
-Первая строка, "rosparam", загружает настройки контроллера на сервер параметров путем загрузки файла конфигурации yaml (обсуждается в следующем разделе).
+&lt;/launch&gt;
+</pre> 
+Первая строка, "rosparam", загружает настройки контроллера на сервер параметров путем загрузки файла конфигурации yaml.
 <p>
 Узел controller_spawner запускает два контроллера совместного позиционирования для RRBot, запуская скрипт на python, который выполняет сервисный вызов для диспетчера контроллеров ros_control. Сервисные вызовы сообщают диспетчеру контроллеров, какие контроллеры вам нужны. Он также загружает третий контроллер, который публикует общие состояния всех соединений с помощью hardware_interfaces и объявляет тему в /joint_states. Spawner - это просто вспомогательный скрипт для использования с roslaunch.
 <p>
 В последней строке запускается узел robot_state_publisher, который просто прослушивает сообщения /join_states от join_state_controller, а затем публикует преобразования в /tf. Это позволяет вам видеть вашего моделируемого робота в Rviz, а также выполнять другие задачи.
-
-<h4>Запускаем контроллеры с помощью roslaunch</h4>
-Запустите симуляцию RRBot:
-<pre>roslaunch rrbot_gazebo rrbot_world.launch</pre>
-Загрузите контроллеры для двух соединений, запустив второй файл запуска:
-<pre>roslaunch rrbot_control rrbot_control.launch</pre>
-
-<h4>Использование сервиса вручную</h4>
-Если вы сначала загрузите rrbot_control.файлы yaml на сервер параметров, вы можете загрузить контроллеры вручную с помощью запросов на обслуживание. Мы приведем их здесь для справки, хотя обычно предпочитаем roslaunch.<br>
-Загрузить контроллеры:
+<h4><a href="https://github.com/AntonSHBK/mobile_robot_base_ros1/blob/main/config/robot_joint_state.yaml">Другой пример конфигурационного файла, robot_joint_state.yaml</a></h4>
 <pre>
-rosservice call /rrbot/controller_manager/load_controller "name: 'joint1_position_controller'"
-rosservice call /rrbot/controller_manager/load_controller "name: 'joint2_position_controller'"</pre>
-Стартовать контроллеры:
-<pre>
-rosservice call /rrbot/controller_manager/switch_controller "{start_controllers:
- ['joint1_position_controller','joint2_position_controller'], stop_controllers: [], strictness: 2}"</pre>
+# Контроллер состояния суставов, который публикует состояние всех суставов в роботе
+joint_state_controller:
+  type: "joint_state_controller/JointStateController"  # Тип контроллера, отвечающий за сбор и публикацию данных о состоянии суставов
+  publish_rate: 50  # Частота публикации данных о состоянии суставов в герцах
 
-<h4>Отправка примеров команд вручную</h4>
-Отправить им примеры совместных команд для тестирования:
-<pre>
-rostopic pub -1 /rrbot/joint1_position_controller/command std_msgs/Float64 "data: 1.5"
-rostopic pub -1 /rrbot/joint2_position_controller/command std_msgs/Float64 "data: 1.0"</pre>
+# Контроллер позиции для управления камерой
+camera_controller:
+  type: "position_controllers/JointPositionController"  # Тип контроллера, отвечающий за управление позицией сустава
+  joint: camera_joint  # Сустав, которым управляет данный контроллер
 
-<h4>Используем RQT Для Отправки Команд</h4>
-В этом разделе мы рассмотрим инструменты, которые помогут вам визуализировать производительность вашего контроллера и настроить любые коэффициенты усиления / параметры, которые могут быть у контроллера, в частности, коэффициент усиления PID. Мы будем использовать RQT, пользовательский интерфейс ROS на основе плагинов, поэтому сначала убедитесь, что он установлен.<br>
-Старт RQT:
-<pre>rosrun rqt_gui rqt_gui</pre>
+# Контроллеры скорости для управления колёсами
+# Каждый контроллер управляет одним колесом
 
-<h4>Add a Command Publisher</h4>
-В меню "Plugins" RQT добавьте плагин "Topics-> Message Publisher'", затем выберите топик из выпадающего списка, которая управляет любым конкретным контроллером, который вы хотите опубликовать. Для RRBot добавьте контроллер:
-<pre>/rrbot/joint1_position_controller/command</pre>
-Затем нажмите зеленую кнопку со знаком "плюс" в правом верхнем углу экрана.
-<p>
-Включите публикатора топика, установив флажок слева от названия топика. Установите в столбце "Частота" значение 100 (частота, с которой мы отправляем ит-команды, в данном случае - 100 Гц).
-<p>
-Затем раскройте тему так, чтобы вы увидели строку "данные". В столбце "выражение", в строке "данные", попробуйте использовать разные значения в радианах между пределами соединения joint1 - в случае RRBot ограничений нет, поскольку соединения непрерывны, поэтому подойдет любое значение. Вы должны быть в состоянии заставить RRBot поворачиваться, если вы выполняете это руководство с этим роботом.
-<p>
-Затем в том же поле выражения мы заставим его автоматически изменять значения, используя синусоидальную волну. Добавьте следующее:
-<pre>sin(i/100)</pre>
-Для более совершенного управления вы можете настроить его таким образом, чтобы он подавал синусоидальную волну в точном соответствии с размерами суставов вашего робота:
-<pre>sin(i/rate*speed)*diff + offset</pre>
-Объяснение переменных:
-<ul>
-<li> i - переменная RQT для определения времени
-<li> rate - частота, с которой вычисляется это выражение. Это должно быть то же число, что и в столбце "Частота" у издателя темы. Рекомендуемое значение - 100.
-<li> speed - как быстро вы хотите, чтобы соединение сработало. Начните с 1 для медленной скорости
-<li> upper_limit и lower_limits - общие ограничения оборудования, управляемого этим контроллером.
-<li> diff = (upper_limit - lower_limit)/2
-<li> offset = upper_limit-diff
-</ul>
-<h4>Визуализируйте работу контроллера</h4>
-Добавьте плагин Plot в RQT и добавьте ту же тему, что и та, которую вы выбрали выше, для темы publisher:
-<pre>/rrbot/joint1_position_controller/command/data</pre>
-Нажмите зеленую кнопку "Добавить". Теперь на экране должна появиться синусоидальная волна.
-<p>
-Добавьте еще один раздел в плагин Plot, который отслеживает фактическое положение управляемого привода. Вы захотите уменьшить разницу между этими двумя значениями, настроив коэффициенты усиления PID, как показано на следующем шаге. Для RRBot:
-<pre>/rrbot/joint1_position_controller/state/process_value</pre>
-Ваш экран должен выглядеть примерно так:
-<p>
-<img src="./images/ros_control2.png">
-<p>
-Примечание: известно, что после запуска плагина RQT plot в течение некоторого времени (>1 минуты) возникают ошибки. Рисунки начинают странно отображаться. Текущее решение - нажать синюю кнопку обновления в правом верхнем углу плагина.
-<h4>Настройка коэффициента усиления PID</h4>
-Наконец, мы будем использовать динамическую реконфигурацию для настройки пропорционального, производного и интегрального коэффициентов усиления ПИД-регулятора, предполагая, что это применимо к вашему роботу.
-<p>
-Добавьте плагин "Dynamic Reconfigure" в RQT и нажмите "Expand All", чтобы просмотреть дополнительные опции. Предполагая, что ваш контроллер использует PID, вам следует использовать параметр "pid". Нажав на нее, вы увидите 5 ползунков, которые позволяют настроить контроллер, как показано на следующем скриншоте. Изменяйте эти значения, пока не добьетесь желаемой производительности вашего контроллера.
-<p>
-<img src="./images/ros_control3.png">
-<p>
-<b>Используйте roslaunch, чтобы сохранить вашу перспективу RQT</b>
-<br>Предварительно настроенную перспективу RQT для rrbot можно легко запустить с помощью следующей команды:
-<pre>roslaunch rrbot_control rrbot_rqt.launch</pre>
-Вы можете использовать это в качестве шаблона для работы с вашим собственным роботом.
+# Контроллер для переднего левого колеса
+front_left_wheel_controller:
+  type: "velocity_controllers/JointVelocityController"  # Контроллер управляет скоростью вращения сустава
+  joint: front_left_wheel_joint  # Сустав переднего левого колеса
 
-<h4>Подключите Rviz к Gazebo</h4>
-еперь, когда вы используете ros_control для отправки команд вашему роботу в симуляторе, вы также можете использовать ros_control jointstatecontroller для считывания состояния робота из Gazebo. Идея хорошего симулятора заключается в том, что вы должны иметь возможность использовать на своем реальном оборудовании то же программное обеспечение, что и при моделировании. Хорошей отправной точкой для этого является визуализация вашего моделируемого робота в Rviz, аналогично тому, как это делается с реальным оборудованием.
-<p>
-Предполагая, что вы уже запускаете joint_state_controller, как описано выше в ваших файлах:
-<pre>rosrun rviz rviz</pre>
-В разделе "Global Options" измените "Fixed Frame" на "world", чтобы устранить все возможные ошибки, которые он может вам выдать.
-<p>
-Затем добавьте в Rviz тип отображения "RobotModel", и вы увидите, как ваш смоделированный робот в Gazebo визуализируется в Rviz!
+# Контроллер для переднего правого колеса
+front_right_wheel_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: front_right_wheel_joint  # Сустав переднего правого колеса
+
+# Контроллер для заднего левого колеса
+back_left_wheel_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: back_left_wheel_joint  # Сустав заднего левого колеса
+
+# Контроллер для заднего правого колеса
+back_right_wheel_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: back_right_wheel_joint  # Сустав заднего правого колеса
+</pre>
+Здесь после joint: пишем имя сустава, для которого назначен контроллер.
+
+
+
+
 
 
 
