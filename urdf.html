@@ -1067,11 +1067,10 @@ root link with an inertia.  As a workaround, you can add an extra dummy link to 
 Чтобы сделать робота интерактивным (с вами и ROS), нам нужно указать две вещи: плагины и передачи (Plugins and Transmissions).
 <p>
 <li> <b>Gazebo Plugin</b><br>
-Ссылки: <a href="https://classic.gazebosim.org/tutorials?tut=ros_gzplugins">Tutorial: Using Gazebo plugins with ROS</a>
-<br><a href="https://studylib.ru/doc/168370/surcukov-m.m.-vvodnoe-rukovodstvo-po-rabote-s-gazebo---m">Вводное руководство по работе с Gazebo (Версия 1.0 от 20.11.2015)</a>
+Ссылки: <a href="https://studylib.ru/doc/168370/surcukov-m.m.-vvodnoe-rukovodstvo-po-rabote-s-gazebo---m">Вводное руководство по работе с Gazebo (Версия 1.0 от 20.11.2015)</a>
 <p>
 <i>
-К таким частям работа, как камеры, моторы, сенсоры и т.д. необходимо подключать плагины,  которые  пишутся  на C++  и  описывают  функциональность  этих  частей. Например,простейший плагин на мотор прикладывает момент силы к некоторой оси при получении соответствующей команды (например, ROS-сообщения).Можно подключать плагины не тольконепосредственно к модели и сенсорам, но и к миру целиком.<br>
+К таким частям работа, как камеры, моторы, сенсоры и т.д. необходимо подключать плагины,  которые  пишутся  на C++  и  описывают  функциональность  этих  частей. Например,простейший плагин на мотор прикладывает момент силы к некоторой оси при получении соответствующей команды (например, ROS-сообщения).Можно подключать плагины не только непосредственно к модели и сенсорам, но и к миру целиком.<br>
 Gazebo не обязателен ROS для функционирования,  в  нем  успешно  можно работать вообще без ROS'а. Однако это менее удобно. Именно наличие некоторого количества   уже   написанных   плагинов   взаимодействующих   методами ROS(сообщения, сервисы, параметры) и интегрируют Gazeboв ROS. 
 </i><p>
 Чтобы заставить ROS взаимодействовать с Gazebo, мы должны динамически подключиться к библиотеке ROS, которая будет указывать Gazebo, что делать. Теоретически это позволяет другим операционным системам роботов взаимодействовать с Gazebo обычным способом. На практике это просто ROS.
@@ -1089,14 +1088,36 @@ Gazebo не обязателен ROS для функционирования,  �
 Однако это пока не принесет ничего нового. Для этого нам нужно указать больше информации за пределами URDF
 <p>
 <li> <b>Spawning Controllers</b><br>
-Теперь, когда мы связали ROS и Gazebo, нам нужно указать некоторые фрагменты кода ROS, которые мы хотим запустить в Gazebo, которые мы обычно называем контроллерами. Изначально они загружаются в пространство параметров ROS. У нас есть <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/config/joints.yaml">yaml-файл joints.yaml</a>, который определяет наш первый контроллер.
+Теперь, когда мы связали ROS и Gazebo, нам нужно указать некоторые фрагменты кода ROS, которые мы хотим запустить в Gazebo, которые мы обычно называем контроллерами. Изначально они загружаются в пространство параметров ROS. У нас есть <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/config/joints.yaml">joints.yaml</a>, который определяет наш первый контроллер:
 <pre>
 type: "joint_state_controller/JointStateController"
 publish_rate: 50</pre>
 Этот контроллер находится в пакете joint_state_controller и публикует состояние суставов робота в ROS непосредственно из Gazebo.
 <p>
-В <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/launch/09-joints.launch">09-joints.launch</a> вы можете увидеть, как мы должны загрузить этот yaml-файл в namespace r2d2_joint_state_controller. Затем мы вызываем скрипт [[controller_manager]]/spawner с namespace, который загружает его в Gazebo.
+<font color=green><b>Между кавычками до знака дроби пишется название пакета, после дроби контроллер.<br>
+Обычно также указывается параметр joint, в нём указывается какой joint назначается этому контроллеру.</b></font>
 <p>
+В <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/launch/09-joints.launch">09-joints.launch</a> вы можете увидеть, как мы должны загрузить этот yaml-файл в namespace r2d2_joint_state_controller. Затем мы вызываем ноду [controller_manager]/spawner с namespace=r2d2_joint_state_controller, который загружает его в Gazebo:
+<pre>
+&lt;launch&gt;
+  &lt;arg name="model" default="$(find urdf_sim_tutorial)/urdf/09-publishjoints.urdf.xacro"/&gt;
+  &lt;arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" /&gt;
+
+  &lt;include file="$(find urdf_sim_tutorial)/launch/gazebo.launch"&gt;
+    &lt;arg name="model" value="$(arg model)" /&gt;
+  &lt;/include&gt;
+
+  &lt;node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" /&gt;
+
+  &lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/joints.yaml"
+            ns="r2d2_joint_state_controller" /&gt;
+
+  &lt;node name="r2d2_controller_spawner" pkg="controller_manager" type="spawner"
+    args="r2d2_joint_state_controller
+          --shutdown-timeout 3"/&gt;
+&lt;/launch&gt;
+</pre>
 Вы можете запустить его, но он все еще не совсем готов:<br>
 <b>roslaunch urdf_sim_tutorial 09-joints.launch</b>
 <br>Команда запустит контроллер и этот контроллер будет публиковать сообщения в топик /joint_states .... но в сообщениях ничего не будет.
@@ -1156,6 +1177,10 @@ position: [-2.9051283156888985e-08]
 velocity: [7.575990694887896e-06]
 effort: [0.0]
 </pre>
+<font color=green><b>Подытожим: назначение блока transmission назначить joint  тип hardware.</b></font>
+<p>
+<img src="./images/urdf27.png">
+<p>
 Мы могли бы продолжить добавлять передачи (transmission) для всех нефиксированных соединений (joint), чтобы все соединения могди публиковать свои сообщения. Но в жизни есть нечто большее, чем просто просмотр роботов. Мы хотим управлять ими. Итак, давайте установим еще один контроллер.<p>
 <li> <b>Joint Control</b> (управление суставами)<br>
 Добавим еще один контроллер в urdf_sim_tutorial/config
@@ -1181,13 +1206,7 @@ joint: head_swivel</pre>
     &lt;limit effort="30" velocity="1.0"/&gt;
   &lt;/joint&gt;
 </pre>
-<i>Я: запустил новый терминал контейнера командой: docker exec -it 9826cde6760f bash<br>
-Непонятно только, где я этот терминал запустил: в контейнере удаленного компьютера или локально в симуляторе этого компьютера. Выполнил команду: rostopic pub /r2d2_head_controller/command std_msgs/Float64 "data: -0.707"<br>
-В графических симуляторах ничего не шевельнулось и не поменялось и непонятно, что должно было произойти.
-<p>
-Закрыл всю графику и выполнил: <b>roslaunch urdf_sim_tutorial 10-head.launch model:=urdf/11-limittransmission.urdf.xacro</b><br>
-Открылись симуляторы. В другом терминале снова: <b>rostopic pub /r2d2_head_controller/command std_msgs/Float64 "data: -0.707"</b><br>
-<font color=red>Снова ничего не поменялось, непонятно.</font></i><p>
+
 <li><b>Another Controller</b><br>
 Аналогичным образом мы можем изменить URDF для соединений захвата (Gripper joints). Однако вместо того, чтобы индивидуально управлять каждым соединением захвата с помощью отдельного топика ROS, мы могли бы сгруппировать их вместе. Для этого нам просто нужно указать другой контроллер в <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/config/gripper.yaml">gripper.yaml</a>:
 <pre>
@@ -1196,11 +1215,35 @@ joints:
  - gripper_extension
  - left_gripper_joint
  - right_gripper_joint</pre>
-Потом в launch файле эти yaml.файлы скармливаем в сервер параметров с помощью:
+Потом в launch/12-gripper.launch эти yaml.файлы скармливаем в сервер параметров:
 <pre>
-&lt;rosparam command="load"
+&lt;launch&gt;
+  &lt;arg name="model" default="$(find urdf_sim_tutorial)/urdf/12-gripper.urdf.xacro"/&gt;
+  &lt;arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" /&gt;
+
+  &lt;include file="$(find urdf_sim_tutorial)/launch/gazebo.launch"&gt;
+    &lt;arg name="model" value="$(arg model)" /&gt;
+  &lt;/include&gt;
+
+  &lt;node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" /&gt;
+
+  <b>&lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/joints.yaml"
+            ns="r2d2_joint_state_controller" /&gt;
+  &lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/head.yaml"
+            ns="r2d2_head_controller" /&gt;
+  &lt;rosparam command="load"
             file="$(find urdf_sim_tutorial)/config/gripper.yaml"
-            ns="r2d2_gripper_controller" /&gt;</pre>
+            ns="r2d2_gripper_controller" /&gt;</b>
+
+  &lt;node name="r2d2_controller_spawner" pkg="controller_manager" type="spawner"
+    args="r2d2_joint_state_controller
+          r2d2_head_controller
+          r2d2_gripper_controller
+          --shutdown-timeout 3"/&gt;
+&lt;/launch&gt;
+</pre>
 Запустить робот:
 <pre>roslaunch urdf_sim_tutorial 12-gripper.launch</pre>
 Таким образом, мы можем вместо этого указать позицию руки с захватом (gripper) с помощью массива значений с плавающей запятой. Вывести руку с захватом и открыть клешни, публикуем сообщение:
@@ -1221,7 +1264,7 @@ rostopic pub  /r2d2_gripper_controller/command std_msgs/Float64MultiArray "layou
     stride: 1
   data_offset: 0
 data: [-0.4, 0, 0]"</pre>
-<font color=green>На этот раз у меня всё работает.</font><p>
+Всё работает, <font color=red>но откуда взялся топик /r2d2_gripper_controller/command.</font><p>
 
 <li> <b>Крутим колеса робота</b><br>
 Чтобы управлять роботом, мы задаем еще одну трансмиссию для каждого из колес в макросе wheel.
@@ -1249,7 +1292,7 @@ data: [-0.4, 0, 0]"</pre>
       &lt;kd value="1.0" /&gt;
       &lt;material&gt;Gazebo/Grey&lt;/material&gt;
     &lt;/gazebo&gt;</pre>
-Мы могли бы указать контроллеры для каждого отдельного колеса, но что в этом интересного? Вместо этого мы хотим управлять всеми колесами вместе. Для этого нам понадобится гораздо больше <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/config/diffdrive.yaml">параметров ROS</a>.
+Мы могли бы указать контроллеры для каждого отдельного колеса, но что в этом интересного? Вместо этого мы хотим управлять всеми колесами вместе. Для этого нам понадобится гораздо больше <a href="https://github.com/ros/urdf_sim_tutorial/blob/master/config/diffdrive.yaml">параметров ROS</a>. Код config/diffdrive.yaml:
 <pre>
 type: "diff_drive_controller/DiffDriveController"
   publish_rate: 50
@@ -1282,12 +1325,74 @@ type: "diff_drive_controller/DiffDriveController"
       has_acceleration_limits: true
       max_acceleration       : 6.0   # rad/s^2
 </pre>
+Код launch/13-diffdrive.launch:
+<pre>
+&lt;launch&gt;
+  &lt;arg name="model" default="$(find urdf_sim_tutorial)/urdf/13-diffdrive.urdf.xacro"/&gt;
+  &lt;arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" /&gt;
+
+  &lt;include file="$(find urdf_sim_tutorial)/launch/gazebo.launch"&gt;
+    &lt;arg name="model" value="$(arg model)" /&gt;
+  &lt;/include&gt;
+
+  &lt;node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" /&gt;
+
+  &lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/joints.yaml"
+            ns="r2d2_joint_state_controller" /&gt;
+  &lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/head.yaml"
+            ns="r2d2_head_controller" /&gt;
+  &lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/gripper.yaml"
+            ns="r2d2_gripper_controller" /&gt;
+  &lt;rosparam command="load"
+            file="$(find urdf_sim_tutorial)/config/diffdrive.yaml"
+            ns="r2d2_diff_drive_controller" /&gt;
+
+  &lt;node name="r2d2_controller_spawner" pkg="controller_manager" type="spawner"
+    args="r2d2_joint_state_controller
+          r2d2_head_controller
+          r2d2_gripper_controller
+          r2d2_diff_drive_controller
+          --shutdown-timeout 3"/&gt;
+
+  &lt;node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering"&gt;
+    &lt;param name="default_topic" value="/r2d2_diff_drive_controller/cmd_vel"/&gt;
+  &lt;/node&gt;
+&lt;/launch&gt;
+</pre>
 DiffDriveController подписывается на стандартное сообщение Twist cmd_vel и соответствующим образом перемещает робота.
 <pre>roslaunch urdf_sim_tutorial 13-diffdrive.launch</pre>
 В дополнение к загрузке симуляторов также открывается панель RobotSteering, позволяющую вам управлять роботом R2D2, одновременно наблюдая за его реальным поведением (в Gazebo) и визуализируемым поведением (в RViz).<br>
 <i>Всё работает</i>
+<pre>
+rostopic list
+/clicked_point
+/clock
+/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/performance_metrics
+/gazebo/set_link_state
+/gazebo/set_model_state
+/initialpose
+/joint_states
+/move_base_simple/goal
+/r2d2_diff_drive_controller/cmd_vel
+/r2d2_diff_drive_controller/odom
+/r2d2_diff_drive_controller/parameter_descriptions
+/r2d2_diff_drive_controller/parameter_updates
+/r2d2_gripper_controller/command
+/r2d2_head_controller/command
+/rosout
+/rosout_agg
+/tf
+/tf_static
+</pre>
 </ol>
-
+<img src="./images/urdf26.png">
 
 
 <h3 align=center><a name="gazebo1"href="https://classic.gazebosim.org/tutorials/?tut=ros_urdf">Tutorial: Using a URDF in Gazebo</a></h3>
