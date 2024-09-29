@@ -186,19 +186,19 @@
         &lt;material&gt;Gazebo/Black&lt;/material&gt;
     &lt;/gazebo&gt;
    
-   &lt;joint name="front_right_wheel_to_base" type="revolute"&gt;
+   &lt;joint name="front_right_wheel_to_base" type="continuous"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="front_right_wheel"/&gt;
        &lt;origin xyz="0.3 -0.2 0"/&gt;
-       &lt;axis xyz="0 0 1"/&gt;
+       &lt;axis xyz="0 1 0"/&gt;
        &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
    &lt;/joint&gt;
 
-   &lt;joint name="front_left_wheel_to_base" type="revolute"&gt;
+   &lt;joint name="front_left_wheel_to_base" type="continuous"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="front_left_wheel"/&gt;
        &lt;origin xyz="0.3 0.2 0"/&gt;
-       &lt;axis xyz="0 0 1"/&gt;
+       &lt;axis xyz="0 1 0"/&gt;
        &lt;limit lower="-0.785" upper="0.785" effort="1000" velocity="1"/&gt;
    &lt;/joint&gt;
 
@@ -206,14 +206,14 @@
        &lt;parent link="base_link"/&gt;
        &lt;child link="back_right_wheel"/&gt;
        &lt;origin xyz="-0.3 -0.2 0"/&gt;
-       &lt;axis xyz="0 0 1"/&gt;
+       &lt;axis xyz="0 1 0"/&gt;
    &lt;/joint&gt;
 
    &lt;joint name="back_left_wheel_to_base" type="continuous"&gt;
        &lt;parent link="base_link"/&gt;
        &lt;child link="back_left_wheel"/&gt;
        &lt;origin xyz="-0.3 0.2 0"/&gt;
-       &lt;axis xyz="0 0 1"/&gt;
+       &lt;axis xyz="0 1 0"/&gt;
    &lt;/joint&gt;
 
    &lt;transmission name="front_right_wheel_trans"&gt;
@@ -238,7 +238,7 @@
    &lt;!-- Добавляем плагин, чтобы могли взаимодействовать с нашим роботом --&gt;
    &lt;gazebo&gt;
       &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-        &lt;robotNamespace&gt;gazonchik&lt;/robotNamespace&gt;
+        &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;
       &lt;/plugin&gt;
    &lt;/gazebo&gt;
 
@@ -296,38 +296,37 @@ front_right_wheel_controller:
     &lt;!-- Загрузим в сервер параметров настройки контроллеров из конфигурационных файлов.yaml --&gt;
     &lt;rosparam file="$(find myrobot_description)/config/gazon.yaml" command="load"/&gt;
 
-    &lt;!-- Загрузим в сервер параметров описание робота .urdf ------------------------------- --&gt;
+    &lt;!-- Загрузим в сервер параметров описание робота .urdf  --&gt;
     &lt;param name="robot_description" command="cat '$(find myrobot_description)/urdf/gazon.urdf'" /&gt;
-        &lt;arg name="x" default="0"/&gt;  &lt;!-- начальные координаты робота в симуляторе --&gt;
+        &lt;arg name="x" default="0"/&gt;
         &lt;arg name="y" default="0"/&gt;
         &lt;arg name="z" default="0"/&gt;
 
-    &lt;!-- Загрузим карту местности в газебо--------------------- --&gt;
+    &lt;!-- Загрузим карту местности в газебо  --&gt;
     &lt;include file="$(find gazebo_ros)/launch/empty_world.launch" /&gt;
 
-    &lt;!-- Выполним питон скрипт, чтобы создать gazebo_ros создал urdf файл моей модели  --&gt;
-    &lt;!-- Так как у меня с самого начала urdf файл, то возможно этот блок не нужен. Закомментирую. --&gt;
-    &lt;!-- &lt;node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" 
-          args="-urdf -param robot_description -model gazonchik -x $(arg x) -y $(arg y) -z $(arg z)" /&gt; --&gt;
+    &lt;!-- Выполним питон скрипт, чтобы gazebo_ros создал urdf файл моей модели  --&gt;
+    &lt;node name="mybot_spawn"
+          pkg="gazebo_ros"
+          type="spawn_model"
+          output="screen" 
+          args="-urdf
+                -param robot_description
+                -model gazonchik
+                -x $(arg x)
+                -y $(arg y)
+                -z $(arg z)" /&gt;
 
     &lt;!-- Загрузим контроллеры --&gt;
-    &lt;!-- The args point to the configuration from the loaded file (load.yml), 
-         and define their names, allowing to build a hierarchical structure --&gt;
-    &lt;node name="robot_base_controllers_spawner" 
-      pkg="controller_manager" 
-      type="spawner"
-      respawn="false" 
-      output="screen" 
-      args="
-           joint_state_controller
-           &lt;!-- camera_controller --&gt;
-
-           front_left_wheel_controller
-           front_right_wheel_controller" /&gt;
-
-           &lt;!-- back_left_wheel_controller
-                back_right_wheel_controller"/&gt; --&gt;
-
+    &lt;node name="gazonchik_controllers_spawner" 
+          pkg="controller_manager" 
+          type="spawner"
+          respawn="false" 
+          output="screen" 
+          args="
+            joint_state_controller
+            front_left_wheel_controller
+            front_right_wheel_controller" /&gt;
 
 &lt;/launch&gt;
 </pre>

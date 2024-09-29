@@ -1082,6 +1082,18 @@ Gazebo не обязателен ROS для функционирования,  �
       &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;
     &lt;/plugin&gt;
   &lt;/gazebo&gt;</pre>
+<i><font color=green>Этот плагин запускает сервисы после выполнения команды roslaunch ...<br>
+rosservice list | grep controller_manager
+<pre>
+/gazonchik/controller_manager/list_controller_types
+/gazonchik/controller_manager/list_controllers
+/gazonchik/controller_manager/load_controller
+/gazonchik/controller_manager/reload_controller_libraries
+/gazonchik/controller_manager/switch_controller
+/gazonchik/controller_manager/unload_controller
+</pre>
+2. Все сервисы controller_manager и нода spawner должны иметь одинаковый namespace.
+</font></i>
 Вы можете увидеть это в https://github.com/ros/urdf_sim_tutorial/blob/master/urdf/09-publishjoints.urdf.xacro и, запустив:<br>
 <b>roslaunch urdf_sim_tutorial gazebo.launch model:=urdf/09-publishjoints.urdf.xacro</b>
 <p>

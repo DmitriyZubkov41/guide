@@ -862,7 +862,7 @@ rostopic list:
 <p>
 Непонятно, почему не видно ноды mybot_spawn (gazebo_ros/spawn_model) и некоторых топиков.
 <p>
-<b><a name="bottom">27.09.2024</b><br>
+<b>27.09.2024</b><br>
 Изменил config/gazon.yaml: правильно написал имена суставов.<br>
 Также в launch/gazebo.launch добавил ноду rviz'а:
 <pre>
@@ -907,11 +907,101 @@ rostopic list
 <font color=red>Непонятно куда, в какой топик публиковать сообщение, чтобы повернуть колесо. И вообще как управлять роботом в газебо. Зачем писал конфигурационный файл контроллеров, зачем блок transmission, зачем плагин.</font><br>
 В общем по новой изучать.
 
-
-
-
-
-
+<p>
+<b><a name="bottom">29.09.2024</b><br>
+1. В urdf/gazon.urdf в блоке плагина строку &lt;robotNamespace&gt;gazonchik&lt;/robotNamespace&gt; поменял на &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;<br>
+2. В launch/gazebo.launch в блоке запуска ноды controller_manager/spawner поменял значение name на "myrobot_controllers_spawner"<br>
+3. roslaunch myrobot_description gazebo.launch
+<pre>
+PARAMETERS                                                                                                                          
+ * /front_left_wheel_controller/joint: front_left_wheel_...                                                                         
+ * /front_left_wheel_controller/type: velocity_controll...                                                                          
+ * /front_right_wheel_controller/joint: front_right_wheel...                                                                        
+ * /front_right_wheel_controller/type: velocity_controll...                                                                         
+ * /gazebo/enable_ros_network: True                                                                                                 
+ * /joint_state_controller/publish_rate: 50                                                                                         
+ * /joint_state_controller/type: joint_state_contr...                                                                               
+ * /joint_state_publisher/use_gui: False                                                                                            
+ * /robot_description: <?xml version="1....                                                                                         
+ * /rosdistro: noetic                                                                                                               
+ * /rosversion: 1.16.0                                                                                                              
+ * /use_sim_time: True
+</pre>
+<pre> NODES                                                                                                                               
+  /                                                                                                                                 
+    gazebo (gazebo_ros/gzserver)
+    gazebo_gui (gazebo_ros/gzclient)
+    joint_state_publisher (joint_state_publisher/joint_state_publisher)
+    mybot_spawn (gazebo_ros/spawn_model)
+    myrobot_controllers_spawner (controller_manager/spawner)
+    robot_state_publisher (robot_state_publisher/robot_state_publisher)
+    rviz (rviz/rviz)
+</pre>
+....................
+<pre>
+[ INFO] [1727604115.821970022, 0.001000000]: Loading gazebo_ros_control plugin
+[ INFO] [1727604115.826681119, 0.001000000]: Starting gazebo_ros_control plugin in namespace: /
+[ INFO] [1727604115.839643793, 0.001000000]: gazebo_ros_control plugin is waiting for model URDF in parameter [robot_description] on
+ the ROS param server.
+[mybot_spawn-7] process has finished cleanly
+log file: /root/.ros/log/ca5935de-7e49-11ef-84f1-0242ac110002/mybot_spawn-7*.log
+[ERROR] [1727604116.351087502, 0.001000000]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/
+front_right_wheel_to_base
+[ERROR] [1727604116.364720464, 0.001000000]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/
+front_left_wheel_to_base
+[ INFO] [1727604116.480890043, 0.001000000]: Loaded gazebo_ros_control.
+[INFO] [1727604116.537242, 0.013000]: Controller Spawner: Waiting for service controller_manager/switch_controller
+[INFO] [1727604116.587729, 0.020000]: Controller Spawner: Waiting for service controller_manager/unload_controller
+[INFO] [1727604116.650766, 0.048000]: Loading controller: joint_state_controller
+[INFO] [1727604116.953764, 0.197000]: Loading controller: front_left_wheel_controller
+[INFO] [1727604117.265973, 0.286000]: Loading controller: front_right_wheel_controller
+[INFO] [1727604117.377571, 0.336000]: Controller Spawner: Loaded controllers: joint_state_controller,
+ front_left_wheel_controller, front_right_wheel_controller
+[INFO] [1727604117.428031, 0.357000]: Started controllers: joint_state_controller, front_left_wheel_controller, front_right_wheel_controller</pre>
+</pre>
+rostopic list
+<pre>
+/clicked_point
+/clock
+/front_left_wheel_controller/command
+/front_right_wheel_controller/command
+/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/performance_metrics
+/gazebo/set_link_state
+/gazebo/set_model_state
+/initialpose
+/joint_states
+/move_base_simple/goal
+/rosout
+/rosout_agg
+/tf
+/tf_static
+</pre>
+<img src="./images/myrobot22.png">
+<p>
+rostopic type /front_left_wheel_controller/command
+<pre>std_msgs/Float64</pre>
+roslaunch myrobot_description gazebo.launch<br>
+rostopic pub /front_left_wheel_controller/command std_msgs/Float64 "data: 2.3"<br>
+Колесо дергалось, но не крутилось.
+<p>
+Поменял в urdf/gazon.urdf joint type с revolute на continuous.<br>
+Снова roslaunch myrobot_description gazebo.launch<br>
+Список топиков не поменялся как и тип сообщений к /front_left_wheel_controller/command.<br>
+rostopic pub /front_left_wheel_controller/command std_msgs/Float64 "data: 3.2"<br>
+<font color=red>В результате левое колесо стало крутиться не по оси Y, а помоему по оси Z.</font>
+<p>
+Так и есть, axis был равен 0 0 1. Поправил на 0 1 0<br>
+rostopic pub /front_left_wheel_controller/command std_msgs/Float64 "data: 2.3"<br>
+Теперь поехал, когда на оба топика отправил сообщения, но боком. Надо подправить оси задних колес.
+<p>
+rostopic pub /front_left_wheel_controller/command std_msgs/Float64 "data: 2.3"<br>
+rostopic pub /front_right_wheel_controller/command std_msgs/Float64 "data: 2.3"<br>
+Теперь робот поехал правильно, прямо вдоль оси X. Единственное, что не понравилось, что задние колеса не крутились, как будто волоком их тащили.<p>
+<font color=green><b>Наверное на этом создание робота закончим.</b></font>
 
 <br><br><br><br>
 </div>
