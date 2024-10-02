@@ -1,6 +1,31 @@
-<html><head></head><body>
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 160px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       /*background-color: #111;  Черный */
+      }
+ .menu a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #818181;
+  display: block;
+          }     
+.content {
+           margin-left: 160px; /* То же, что и ширина боковой панели */
+         }
+</style>
+</head><body>
 <title>Установка и настройка ROS</title>
-<h3 align="center">Установка ROS</h3>
+<div class="menu">
+<a href="#set">Установка ROS</a><br>
+<a href="#setting">Настройка ROS</a><br>
+<a href="#env">Переменные окружения</a><br>
+</div>
+<div class="content">
+<h3 align="center"><a name="set">Установка ROS</h3>
 <a href="https://wiki.ros.org/Distributions">Список дистрибутивов ROS</a><br>
 Страницы установок ROS2: <a href="http://docs.ros.org/en/humble/Installation.html">Humble</a>, <a href="http://docs.ros.org/en/iron/Installation.html">Iron</a>, and <a href="http://docs.ros.org/en/rolling/Installation.html">Rolling</a>.<br>
 <a href="https://wiki.ros.org/noetic/Installation">Выбор установки ROS Noetic Ninjemys в зависимости от ОС</a><br>
@@ -56,7 +81,7 @@ To find available packages, see <a href="https://index.ros.org/packages/page/1/t
 
     
 
-<h3 align=center><b>Настройка ROS:</b></h3>
+<h3 align=center><a name="setting">Настройка ROS:</h3>
 
 <li>Настройка рабочего окружения:
 <p>
@@ -68,8 +93,10 @@ source ~/.bashrc</font>
 Если вы просто хотите загрузить переменные ROS в текущем сеансе, то вы можете ввести:
 <p>
 <font color="green">source /opt/ros/noetic/setup.bash</font>
+
+<h3 align=center><a href="https://wiki.ros.org/ROS/EnvironmentVariables"><a name="env">Переменные окружения:</a></h3>
+Существует множество переменных среды, которые вы можете настроить так, чтобы они влияли на поведение ROS. Из них наиболее важными для понимания являются ROS_MASTER_URI, ROS_ROOT и ROS_PACKAGE_PATH, поскольку они широко используются в системе и часто упоминаются в документации.
 <p>
-<b><a href="https://wiki.ros.org/ROS/EnvironmentVariables#ROS_PACKAGE_PATH">Переменные окружения:</a></b><br>
 Переменные среды выполняют различные функции в ROS:
 <ul>
 <li> Поиск пакетов: Прежде всего, ROS_ROOT и ROS_PACKAGE_PATH позволяют ROS находить пакеты и стеки в файловой системе. Вы также должны задать PYTHONPATH, чтобы интерпретатор Python мог находить библиотеки ROS.
@@ -78,6 +105,7 @@ source ~/.bashrc</font>
 
 <li> Изменение системы сборки: ROS_BINDEPS_PATH, ROS_BOOST_ROOT, ROS_PARALLEL_JOBS и ROS_LANG_DISABLE влияют на то, где находятся библиотеки, как они создаются и какие из них создаются.
 </ul>
+<p>
 Эти и другие переменные среды более подробно описаны ниже.<br>
 В большинстве систем также будет установлен ROS_PACKAGE_PATH, но единственными необходимыми переменными среды для ROS являются ROS_ROOT, ROS_MASTER_URI и PYTHONPATH. По умолчанию они автоматически устанавливаются для вас с помощью source /opt/ros/ROSDISTRO/setup.bash. (Замените ROSDISTRO на желаемый дистрибутив ROS, например noetic.)
 <ol>
@@ -164,7 +192,8 @@ catkin_init_workspace
 <p>
 <font color=brought>Видимо в первый раз после установки ROS, когда еще нет созданных пакетов можно использовать инициализацию раб. пространства, а потом после каждого нового пакета нужно использовать команду сборки раб. пространства.
 <p>
-По умолчанию, пакеты ROS при установке через apt-get устанавливаются в директорию /opt/ros/melodic/share.<br> собранный пакет Команда catkin_make по умолчанию не прописывает в эту директорию созданные пакеты или скачанные с репозиториев.
+По умолчанию, пакеты ROS при установке через apt-get устанавливаются в директорию /opt/ros/melodic/share.<br>
+Команда catkin_make по умолчанию не прописывает в эту директорию созданные пакеты или скачанные с репозиториев.
 <p>
 Для удобства работы, проще всего добавить еще одну директорию, где ROS должен искать установленные пакеты. Тогда установленные пакеты через apt-get будут располагаться в обычном для них месте, а наши пакеты будут находиться в домашней директории пользователя ~/catkin_ws/src/.
 <p>
@@ -174,5 +203,5 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc<br>
 source ~/.bashrc
 
 
-
+</div>
 <br><br><br><br><br></body></html>

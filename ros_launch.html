@@ -65,8 +65,7 @@ while not rospy.is_shutdown():
 Вторым параметром в функции get_param указывается значение по умолчанию, если параметр не определен в .launch файле.
 <p>
 Параметры возможно передавать при запуске через rosrun:
-<pre>rosrun test_package test_params.py _port:=/dev/ttyS1</pre>
-
+<pre>rosrun test_package test_params.py _port:=/dev/ttyS1</pre></pre>
 Еще одна удобная практика для работы с параметрами, это перенос настроек в начала файла, перечислив их как аргументы. Это можно сделать используя элемент <b>arg</b> а далее обращение к этим аргумента в формате $(arg env_name):
 <pre>
 &lt;launch&gt;
@@ -79,6 +78,24 @@ while not rospy.is_shutdown():
     &lt;/node&gt;
 &lt;/launch&gt;</pre>
 Эта практика позволяет не листать большие файлы и всегда иметь перед глазами самые важные настройки.
+<h4 align=center>&lt;rosparam.../&gt;</h4>
+&lt;rosparam file="config/costmap_common.yaml" command="load" ns="global_costmap" /&gt;
+<br>В этом примере показан тэг &lt;rosparam&gt; и его параметры. На самом деле, параметры схожи с опциями утилиты:
+<ul>
+<li> file - файл с сохраненными/подгружаемыми параметрами;
+<li> command - может быть [load / dump / delete];
+<li> ns - пространство имен, куда загрузить / откуда сохранить / что удалить.
+</ul>
+Формат &lt;имя параметра&gt; : &lt;значение&gt; - это специальный формат файлов YAML. Для массивов и вложенных параметров происходит обертка вложенности скобками {} или просто новой строкой и внутри по идентичному принципу.
+<pre>
+ros_glob_param: Hi, I am global =)
+rosdistro: 'melodic'
+roslaunch:
+  uris: {host_user_vb__38669: 'http://user-vb:38669/'}
+run_id: 1b078410-b789-11e8-91b9-0800278832b1
+sample_ns:
+  params_study: {ros_priv_param: 'Hi, I am private =)'}
+  ros_loc_param: Hi, I am local =)</pre>
 
 <h3 align=center>Подключение других .launch файлов <include></h3>
 В реальных проектах, запускаются десятки нод. Конфигурировать каждую из них в одном файле, не всегда удобно. К тому-же обычно сторонние пакеты уже содержат подходящие .launch файлы. Поэтому существуют механизм include, который позволяет подключать другие файлы запуска.
