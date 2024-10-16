@@ -1,0 +1,633 @@
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 140px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       background-color: Gray;  
+      }
+ .menu a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  /*color: #818181;*/
+  display: block;
+          }     
+.content {
+           margin-left: 155px; /* То же, что и ширина боковой панели */
+         }
+</style>
+</head><body>
+<title>Примеры</title>
+<div class="menu">
+<a href="#while">Циклы</a><br>
+<a href="#fun">Функции</a><br>
+<a href="#file">Файлы</a><br>
+<a href="#modul">Модули</a><br>
+</div>
+<div class="content">
+<h2 align=center>Примеры:</h2>
+<ol>
+<li> <a name="while">Напишите программу, которая считывает с консоли числа (по одному в строке) до тех пор, пока сумма введённых чисел не будет равна 0 и сразу после этого выводит сумму квадратов всех считанных чисел.
+<br>Гарантируется, что в какой-то момент сумма введённых чисел окажется равной 0, после этого считывание продолжать не нужно.
+<pre>
+s = 0
+y = 0
+while True:
+    x = int(input())
+    s += x
+    y += x*x
+    if s == 0:
+        break
+print(y)</pre>
+
+<li> Напишите программу, которая выводит часть последовательности 1 2 2 3 3 3 4 4 4 4 5 5 5 5 5 ... (число повторяется столько раз, чему равно). На вход программе передаётся неотрицательное целое число n — столько элементов последовательности должна отобразить программа. На выходе ожидается последовательность чисел, записанных через пробел в одну строку.
+<br>Например, если n = 7, то программа должна вывести 1 2 2 3 3 3 4.<br>
+Мое решение:
+<pre>
+k = 1
+n = int(input())
+m = [] # полный список
+for i in range(1,n+1):
+    m = m + [i]*i
+for a in m:
+    print(a,end=' ')
+    k += 1
+    if k > n:
+        break
+print()</pre>
+Не моё:
+<pre>
+n = int(input())
+a = []
+i = 0
+while len(a) < n:
+    a += [i] * i
+    i += 1
+print(*a[:n])</pre>
+
+
+<li> Напишите программу, которая принимает на вход список чисел в одной строке и выводит на экран в одну строку значения, которые встречаются в нём более одного раза.<br>
+Моё решение:
+<pre>
+list = [int(i) for i in input().split()]
+list_end = []
+i = 0
+while len(list) > 1:
+    find_number = list[i]
+    list.remove(list[i])
+    if find_number in list and not find_number in list_end:
+        list_end.append(find_number)
+for element in list_end:
+    print(element,end=' ')</pre>
+Другое решение:
+<pre>
+a, c = [str(i) for i in input().split()], []
+for i in a:
+    if i not in c and a.count(i) > 1:
+        c.append(i)
+        print(i, end=' ')</pre>
+        
+<li> На вход программы подаётся список чисел lst и число x. Программа должна выдавать на выход в виде одной строки позиции расположения числа х в списке чисел lst. Если число х в списке lst  не обнаружено, необходимо вывести на выход строкой "Отсутствует".
+<pre>
+lst = [int(i) for i in input().split()]
+x = int(input())
+# Перебрать список lst по элементам
+# каждый элемент сравнивать с x
+# если совпадает, то напечатать индекс
+# если же нет, то следующий элемент вытаскиваем
+i = 0  #    определяем переменную, иначе будет ошибка
+if x not in lst:
+    print('Отсутствует')
+else:
+    for lst[i] in lst:
+        if lst[i] == x:
+            print(i, end=' ')
+        i += 1
+
+# 1. Ошибка <font color=red>IndexError: list assignment index out of range</font> возникает в Python, когда нельзя присвоить значение элементу,
+ который ещё не существует в списке. Ошибку устранил, когда в <b>for num[i] in lst:</b> num[i] поменял на lst[i]
+# 2. В <b>for lst[i] in lst:</b> i автоматически не прибавляет на 1</pre>
+
+Не моё решение:
+<pre>
+lst, x = input().split(), input()
+if x in lst:
+    for i in range(len(lst)):
+        if lst[i] == x:
+            print(i, end=' ')
+else:
+    print('Отсутствует')</pre>
+В этом решении цикл по индексу списка, а не по элементу списка, как у меня.
+<p>
+==============================================================================================
+
+<li> 
+<pre>
+#!/usr/bin/env python3
+''' Напишите программу, на вход которой подаётся прямоугольная матрица в виде последовательности строк. После последней строки
+ матрицы идёт строка, содержащая только строку "end"
+
+Программа должна вывести матрицу того же размера, у которой каждый элемент в позиции i, j равен сумме элементов первой матрицы
+ на позициях (i-1, j), (i+1, j), (i, j-1), (i, j+1). У крайних символов соседний элемент находится с 
+ противоположной стороны матрицы.
+
+В случае одной строки/столбца элемент сам себе является соседом по соответствующему 
+направлению.'''
+table = []
+while True:
+    table.append([x for x in input().split()])
+    if table[-1] == ['end']:
+        break
+# удалим end
+table.remove(['end'])
+# str - количество элементов в table - это коли-во строк матрицы
+# stolb - количество элементов в элементе table - это коли-во столбцов матрицы
+if len(table) == 1:
+    delta_str = 0
+else:
+    delta_str = 1
+if len(table[0]) == 1:
+    delta_stolb = 0
+else:
+    delta_stolb = 1
+for str in range(len(table)): # по строкам
+    if str == len(table) - 1:
+        str = str - len(table)
+    for stolb in range(len(table[str])):
+        if stolb == len(table[str]) - 1:
+            stolb = stolb - len(table[str])
+        print(int(table[str + delta_str][stolb]) + int(table[str - delta_str][stolb]) + int(table[str][stolb + delta_stolb]) + int(table[str][stolb - delta_stolb]), end=' ')
+    print()</pre>
+Другое решение:
+<pre>
+a = [[int(i) for i in input().split()]]
+b = input()
+while b != 'end' :
+    a.append([int(i) for i in b.split()])
+    b = input()
+for i in range(len(a)): 
+    for j in range(len(a[i])): 
+        print((a[i-1][j] + a[(i+1) % len(a)][j] + a[i][j-1] + a[i][(j+1) % len(a[i])]), end=' ')
+    print()</pre>
+Еще решение:
+<pre>
+c = []
+while True:
+    a = [i for i in input().split()]
+    if a == ['end']:
+        break
+    c.append(a)
+n, m = len(c), len(c[0])
+for i in range(n):
+    for j in range(m):
+        x = int(c[i][j-1]) + int(c[i][j+1-m]) + int(c[i-1][j]) + int(c[i+1-n][j])
+        print(x, end=' ')
+    print()</pre>
+==============================================================================================
+
+
+
+
+<li>
+<pre>
+Выведите таблицу размером n×n, заполненную числами от 1 до n 2 по спирали, выходящей из левого верхнего угла и закрученной по часовой стрелке:
+n = int(input())
+krug = 1
+stroka = 0 # первая строка
+stolb = 0
+<b>table = [[0 for j in range(n)] for i in range(n)]</b> # создаём n*n таблицу
+# вправо
+while table[stroka][stolb] != n*n:
+    # вправо
+    for stolb in range(krug -1, n - krug + 1):
+        if stolb == 0:
+            table[0][0] = 1
+        else:
+            table[stroka][stolb] = table[stroka][stolb-1] + 1
+    if table[stroka][stolb] == n*n:
+        break
+    # вниз
+    for stroka in range(krug,n - krug + 1):
+        table[stroka][stolb] = table[stroka-1][stolb] + 1
+    if table[stroka][stolb] == n*n:
+        break
+    # влево
+    for stolb in range(-krug - 1, -n + krug - 2, -1):
+        table[stroka][stolb] = table[stroka][stolb+1] + 1
+    if table[stroka][stolb] == n*n:
+        break
+    # вверх
+    for stroka in range(-krug - 1, -n + krug - 1, -1):
+        table[stroka][stolb] = table[stroka+1][stolb] + 1
+    if table[stroka][stolb] == n*n:
+        break
+    krug += 1
+for stroka in range(n):
+    for stolb in range(n):
+        print(table[stroka][stolb], end=' ')
+    print()</pre>
+Вызвало затруднение, определение двухмерного массива, table[] или table[[]]  неправильно. Правильно получилось, когда использовал генератор для формирования таблицы.
+<p>
+Другое решение:
+<pre>
+n=int(input())
+<b>t=[[0]*n for i in range (n)]</b>
+i,j=0,0
+for k in range(1, n*n+1):
+  t[i][j]=k
+  if k==n*n: break
+  if i<=j+1 and i+j<n-1: j+=1
+  elif i<j and i+j>=n-1: i+=1
+  elif i>=j and i+j>n-1: j-=1
+  elif i>j+1 and i+j<=n-1: i-=1
+<b>for i in range(n):
+    print(*t[i])</b></pre>
+Более понятнее выглядит способ задания таблицы.<br>
+Также интересен способ вывода строк с помощью print(*t[i])
+</ol>
+<h4 align=center><a name="fun">Функции</h4>
+<ol>
+<li> Напишите функцию f(x), которая возвращает значение следующей функции, определённой на всей числовой прямой:
+<p>
+<img src="./images/python_base4.png">
+<pre>
+def f(x):
+    if x <= -2:
+        return 1 - (x + 2) ** 2
+    elif -2 < x <= 2:
+        return -x / 2
+    else:
+        return (x - 2) ** 2 + 1</pre>
+
+
+<li><br>
+Напишите функцию modify_list(l), которая принимает на вход список целых чисел, удаляет из него все нечётные значения, а чётные нацело делит на два. Функция не должна ничего возвращать, требуется только изменение переданного списка.
+<pre>
+def modify_list(lst):
+    l = len(lst)
+    for i in range(l-1, -1, -1):
+        if lst[i] % 2 == 0:
+            lst[i] = lst[i] // 2
+        else:
+            del lst[i]</pre>
+Другое решение:
+<pre>def modify_list(l):
+    l[:] = [i//2 for i in l if not i % 2]</pre>
+<i>логика такая, так как список l в памяти уже есть и его нужно перезаписать, то есть изменить сам объект списка, поэтому тут я делаю срез всего списка от начала до конца и меняю сам объект. если написать просто l = [i//2 for i in l if not i % 2] в данном случае будет создан новый объект, под него выделена память и переменная l будет уже ссылаться на него, а старая ссылка на исходный объект списка сотрется. т.е происходит не изменение объекта, а перенаправление ссылки у переменной l. я не проверял может и такой вариант сработает но подумал что он учтет занимаемую память и выдаст ошибку, так как была задача одна и там подобный подход выдавал ошибку, а сделал l[:] (изменил сам весь объект) все заработало.
+<p>
+дело в том что for и while полезны для больших конструкций, а генератор списков [ for ] введен для того что бы писать коротенькие вещи в одну строку, что б ради одной двух операций внутри цикла не писать по 3-4 строчки кода с обычным циклом.
+<p>
+i%2 выдает либо 0 либо 1. или иначе False True. not i - переворачивает выданный результат. Т.е. в данной ситуации мы должны выполнять действие (i//2) если условие if даст True, но четное число при делении даст остаток 0 (6%2=0 - False) поэтому нам необходимо перевернуть результат (not False - True)</i>
+
+<h4>Словарь</h4>
+<li><br>
+Напишите функцию update_dictionary(d, key, value), которая принимает на вход словарь d и два числа: key и value.<br>
+Если ключ key есть в словаре d, то добавьте значение value в список, который хранится по этому ключу. Если ключа key нет в словаре, то нужно добавить значение в список по ключу 2∗key. Если и ключа 2∗key нет, то нужно добавить ключ 2∗key в словарь и сопоставить ему список из переданного элемента [value].
+<pre>
+def update_dictionary(d, key, value):
+    if key in d.keys(): # есть такой ключ
+        d[key] += [value]
+    else:                        # нет ключа
+        if 2*key in d.keys(): #  есть ключ 2*key
+            d[2*key] += [value]
+        else:
+            d[2 * key] = [value]</pre>
+Другое:
+<pre>
+def update_dictionary(d, key, value):
+    if key in d:
+        d[key] += [value]
+    elif 2 * key in d:
+        d[2 * key] += [value]
+    else:
+        d[2 * key] = [value]</pre>
+Ещё:
+<pre>
+def update_dictionary(d, key, value):
+    if key not in d:
+        key = 2 * key
+    if key not in d:
+        d[key] = list()
+    d[key].append(value)</pre>        
+
+<li> <b>Множество, применение одновременно нескольких методов</b>
+<pre>
+'''Программа должна считывать одну строку со стандартного ввода и выводить для каждого уникального слова в
+ этой строке число его повторений (без учёта регистра) в формате "слово количество".
+Порядок вывода слов может быть произвольным, каждое уникальное слово﻿ должно выводиться только один раз.'''
+str = input().lower().split()
+for i in set(str):
+    print(i, str.count(i)</pre>
+<li><br>
+Напишите программу, которая считывает строку с числом n, которое задаёт количество чисел, которые нужно считать. Далее 
+считывает n строк с числами xi, по одному числу в каждой строке. Итого будет n+1 строк.
+При считывании числа xi программа должна на отдельной строке вывести значение f(xi). Функция f(x) уже реализована и доступна 
+для вызова. 
+Функция вычисляется достаточно долго и зависит только от переданного аргумента x. Для того, чтобы уложиться в ограничение по времени, нужно избежать повторного вычисления значений.<br>
+Моё:
+<pre>
+n = int(input())
+l = []
+d = {}
+for i in range(n):
+    l.append(int(input()))
+'''Проходим каждый элемент списка
+Вычисляем функцию и добавляем i и f в словарь
+Если на следующем элементе уже вычисляли функцию (входит в словарь), то выводим значение для текущего ключа из словаря'''
+for i in l:
+    if i not in d.keys(): # еще не выполняли функцию по этому числу
+        d[i] = f(i)
+        print(i, f(i))
+    else:
+        print(i, d[i])</pre>
+Другое:
+<pre>
+a=[int(input()) for i in range(int(input()))]
+b={x:f(x) for x in set(a)}
+for i in a:
+    print(b[i])</pre>
+Ещё:
+<pre>
+d = {}
+for _ in range(int(input())):
+    x = int(input())
+    if x not in d:
+        d[x] = f(x)
+    print(d[x])</pre>         
+
+<li> <a name="file"><b>Файл, методы работы с файлами</b>
+<pre>
+'''Напишите программу, которая считывает из файла строку, соответствующую тексту, сжатому с помощью кодирования повторов, и
+производит обратную операцию, получая исходный текст.'''
+with open('/home/dmitriy/Python/mypython/dataset_3363_2 (1).txt') as inf:
+  for line in inf:
+      line = line.strip()
+      # print(line)
+  simvol = ''
+  num = ''
+  str = ''
+  for i in range(len(line)):
+      ''' если символ является цифрой, тогда запоминаем ее в переменной num строкового типа
+      если следующий символ снова цифра, тогда добавляем ее в num
+      если же буква, тогда переменную символа simvol умножаем на int(num) и записывает эту строку в новый файл new_file.txt'''
+      if '0' <= line[i] <= '9': # цифра
+          num = num + line[i]
+          if i == len(line) - 1: # последний символ
+              str = str + simvol * int(num)
+      else:  # буква
+          # умножаем предыдущую букву на num и обнуляем num
+          # print('simvol=',line[i], 'type(num)=',type(num),'num=',num)
+          if i != 0:
+              str = str + simvol * int(num)
+          # print('stroka=', str)
+          simvol = line[i]
+          num = '0'
+inf.close()
+with open('/home/dmitriy/Python/mypython/dataset_3363_2_modify.txt', 'w') as ouf:
+    ouf.write(str)</pre>
+<b>Не моё:</b>
+<pre>
+with open('dataset_3363_2.txt', 'r') as f:
+    s = f.readline().strip()
+i = 0
+while i < len(s):
+    j = i + 1
+    while j < len(s) and s[j].isdigit():
+        j += 1
+    print(s[i] * int(s[i+1:j]), end='')
+    i = j</pre>
+Первый символ - гарантированно буква.
+Перебираем все последующие, пока они цифровые или пока не достигнут конец строки.<br>
+После внутреннего цикла j либо указывает на следующую букву, либо на конец строки. В обоих случаях между s[i] и s[j] - цифры,
+ составляющие нужное нам число повторов символа s[i].<br>
+Печатаем символ нужное число раз, присваиваем i индекс следующей буквы для новой итерации цикла.    
+<p>
+<li> <b>Файл</b><br>
+Напишите программу, которая считывает текст из файла (в файле может быть больше одной строки) и выводит самое частое слово в 
+этом тексте и через пробел то, сколько раз оно встретилось. Если таких слов несколько, вывести лексикографически первое (можно 
+использовать оператор < для строк).
+<pre>
+word = ''
+d = {} 
+maksimum = 0
+spisok_max = {}
+maks_word = ''
+with open('/home/dmitriy/Python/mypython/dataset_3363_3.txt') as f:
+  for line in f:
+      line.strip() # удаляем служебные символы
+      #print(line)
+      for word in line.split():
+          # заполняем словарь
+          if word in d.keys():
+              d[word] += 1
+          else:
+              d[word] =1 
+# ищем максимальное количество слов
+for key, value in d.items():
+    if value > maksimum:
+        spisok_max = {key:value}
+        maksimum = value
+    elif value == maksimum:
+       spisok_max[key] = value
+for key in spisok_max.keys():
+    if key > maks_word:
+        maks_word = key
+print(maks_word, spisok_max[maks_word])
+# Со строкой метод append не работает, чтобы добавить строку, используем оператор приращения.
+# TypeError: can only concatenate str (not "list") to str: 
+# TypeError: unsupported operand type(s) for +=: 'set' and 'list'
+# for i in stroka переберет строку по буквам, чтобы по словам нужно использовать: for i in stroka.split()
+</pre>
+Ещё:
+<pre>
+<b>with open('dataset_3363_3.txt') as inf, open('MostPopularWord.txt','w') as ouf:
+    maxc = 0
+    s = inf.read().lower().strip().split()</b>
+    s.sort()
+    for word in s:
+        counter = s.count(word)
+        if counter > maxc:
+            maxc = counter
+            result_word = word
+    ouf.write(result_word +' ' + str(maxc))</pre>
+Без словаря, сразу читаем файл и сортируем список слов, чтобы потом первое найденное было лексиграфически впереди.
+<br>
+<b>Оказывается конструкция with является циклом.</b>
+
+<li> <b>Файл, методы, циклы, списки</b>
+<pre>
+19:50 - 21:30 (1 ас и 40 минут)
+Имеется файл с данными по успеваемости абитуриентов. Он представляет из себя набор строк, где в каждой строке записана следующая информация:
+
+Фамилия;Оценка_по_математике;Оценка_по_физике;Оценка_по_русскому_языку
+
+Поля внутри строки разделены точкой с запятой, оценки — целые числа.
+
+Напишите программу, которая считывает исходный файл с подобной структурой и для каждого абитуриента записывает его среднюю оценку по трём предметам на отдельной строке, соответствующей этому абитуриенту, в файл с ответом.
+
+Также вычислите средние баллы по математике, физике и русскому языку по всем абитуриентам и добавьте полученные значения, разделённые пробелом, последней строкой в файл с ответом.'''
+d = {} # ключ - фамилия, значение - список из оценок
+s = ''
+num = 0
+familia = []
+ball = []
+mathem = 0
+phizik = 0
+rus = 0
+with open('/home/dmitriy/Python/mypython/dataset_3363_4.txt') as f:
+    s = f.read().strip().split()
+    for l in s:
+        l = l.split(';')
+        # print(l)
+        for i in range(len(l)):
+            if i % 4 == 0:
+                familia.append(l[i])
+                num = 0
+            elif (i - 3) % 4 == 0:
+                ball.append((num + int(l[i])) / 3)
+                rus = rus + int(l[i])
+            else:
+                num = num + int(l[i])
+                if (i - 1) % 4 == 0:
+                    mathem = mathem + int(l[i])
+                elif (i - 2) % 4 == 0:
+                    phizik = phizik + int(l[i])
+for i in ball:
+    print(i)            
+print(mathem/len(familia), phizik/len(familia), rus/len(familia))</pre>
+<b>Ещё:</b>
+<pre>
+koll, a1, b1, c1 = 0, 0, 0, 0
+with open('dataset_3363_4.txt', 'r') as inf:
+    for line in inf:
+        line = line.strip().split(';')
+        a, b, c = int(line[1]), int(line[2]), int(line[3])
+        print((a+b+c)/3)
+        koll += 1
+        a1 += a
+        b1 += b
+        c1 += c
+print((a1/koll), (b1/koll), (c1/koll))</pre>
+
+<li> <a name="modul"><b>Модули</b><br>
+Напишите программу, которая подключает модуль math и, используя значение числа π из этого модуля, находит для переданного ей на 
+стандартный ввод радиуса круга периметр этого круга и выводит его на стандартный вывод.
+<pre>
+from math import pi
+print(float(input()) * pi * 2)</pre>
+<p>
+<li> Напишите программу, которая запускается из консоли и печатает значения всех переданных аргументов на экран (имя скрипта 
+выводить не нужно). Не изменяйте порядок аргументов при выводе.
+<p>
+Для доступа к аргументам командной строки программы подключите модуль sys и используйте переменную argv из этого модуля.
+<pre>
+import sys
+print(*sys.argv[1::])</pre>
+Метод sys.argv выдаст список, где первый элемент - это имя вызвавшей программы, а следующие - это аргументы программы. Поскольку нам не нужно имя программы, то к списку применяем срез.
+<br><img src="./images/python_example.png"><br>
+Первую и вторую команду применили без среза.<br>
+3 команду без звездочки внутри print()
+<p>
+<li>
+Скачайте файл. В нём указан адрес другого файла, который нужно скачать с использованием модуля requests и посчитать число строк в нём.
+<p>
+Используйте функцию get для получения файла.
+<p>
+После получения файла вы можете проверить результат, обратившись к полю text. Если результат работы скрипта не принимается, проверьте поле url на правильность. Для подсчёта количества строк разбейте текст с помощью метода splitlines.
+<pre>
+import requests
+# Прочитаем url со скачанного файла
+with open('/home/dmitriy/Python/mypython/dataset_3378_2.txt') as f:
+    s = f.read()
+    # print(s)  #  адрес страницы, которую нужно скачать
+r = requests.get(s)  # простой get-запрос
+#print('Ответ сервера:', '\n', r.text.splitlines()) # вывод ответа от сервера
+#print('Ответ сервера:', '\n', r.text)
+for i in r.text.splitlines():
+    print(i)
+print('количество строк=', len(r.text.splitlines()))
+</pre>
+<font color=red>SyntaxError: unexpected character after line continuation character</font><br>
+Данная ошибка означает, что где-то болтается '\'  вне строки. После того, как в print('Ответ сервера:', <font color=red>\n</font>, r.text) <b>\n</b> заключил в кавычки, ошибка исчезла.
+<p>
+r = requests.get(s).splitline()  # простой get-запрос<br>
+<font color=red>AttributeError: 'Response' object has no attribute 'splitline'</font><br>
+Ошибку устранил, когда метод splitline() применил к объекту r.text, а не в команде <b>r = requests.get(s).splitline()</b>, которая вызывала ошибку.
+<p>
+<li><br>
+Имеется набор файлов, каждый из которых, кроме последнего, содержит имя следующего файла.
+Первое слово в тексте последнего файла: "We".
+<p>
+Скачайте предложенный файл. В нём содержится ссылка на первый файл из этого набора.
+<p>
+Все файлы располагаются в каталоге по адресу:
+https://stepik.org/media/attachments/course67/3.6.3/
+<p>
+Загрузите содержимое ﻿последнего файла из набора, как ответ на это задание.
+<pre>
+url = 'https://stepik.org/media/attachments/course67/3.6.3/'
+import requests
+with open('/home/dmitriy/Python/mypython/dataset_3378_3.txt') as f:
+    u = f.read()
+    # u = u[len(url):]  # из файла dataset_3378_3.txt получаем полный url, поэтому чтобы использовать его в цикле обрезаем
+    #print('Адрес 1 файла из набора:', url+u)
+    print('Адрес 1 файла из набора:', u)
+    # u = requests.get(url + u)
+    u = requests.get(u)
+k = 0 # счетчик файлов
+while True:
+    if u.text.split()[0] == 'We':
+        break
+    u = requests.get(url + u.text)
+    print('k=', k, 'адрес следующего файла:', url+u.text)
+    k +=1
+print('Последний файл:\n\n', u.text)
+</pre>
+<font color=red>u = requests.get(str(url+u))<br>
+TypeError: can only concatenate str (not "Response") to str</font><br>
+Так и не смог решить проблему, извращенно сначало первый из набора отдельно вытащил url из файла и только к следующим через цикл посылал запрос. Похоже надо было так: <b>u = requests.get(url + u).text</b>
+
+<p>
+Не моё:
+<pre>
+import requests
+url, name = 'https://stepik.org/media/attachments/course67/3.6.3/', '699991.txt'
+while <b>name[:2] != 'We':</b>
+    name = requests.get(url + name).text
+print(name)</pre>
+Еще:
+<pre>
+import requests
+with open('dataset_3378_3.txt') as txt:
+    a = txt.readline().strip()
+print(a)
+a = str(requests.get(a).text)
+b = 'https://stepik.org/media/attachments/course67/3.6.3/'
+while 'we' not in a:
+    print(a)
+    <b>a = requests.get(b + a).text</b>
+print(a)</pre>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<br><br><br><br></body></html>
