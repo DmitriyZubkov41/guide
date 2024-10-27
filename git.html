@@ -8,26 +8,30 @@
 <li> Сначало нужно зарегистрироваться. Я создал username=DmitriyZubkov41, password: dimaz_z41.<br>
     При создании username были проблемы: пробелы не разрешают, просто Dmitriy и даже DmitriyZubkov не доступны. 
     Пароль простой также не разрешён.
-<li> После регистрации, ответов на вопросы можно создавать репозиторий. Просто заполняем анкету. 
-        Имя репозитория, кто может видеть репозиторий. В итоге создал по адресу 
-        https://github.com/DmitriyZubkov41/test_repository.git/ с именем test_repository.git
-<li> Далее в терминале команда:<p>
-    <font color="green"><b>git remote add origin https://github.com/DmitriyZubkov41/test_repository.git</b></font>
-    <p>
-    Как бы создал удаленный репозиторий под именем origin по указанному адресу.
-<li> Далее, чтобы с терминала иметь доступ к репозиторию нужно создать пароль, потому что пароль от учетной 
-        записи на сайте не действует. Есть 2 способа создания пароля. С помощью SSH и https. Я выбрал вариант в 
-        https с помощью токена beta. Заходим в settings в profyle, далее developer settings, в разделе personal 
-        access tokens выбираем тип создаваемого токена. Нажимаем кнопку generate new token. Я выбрал и создал 
-        токен beta. Токен - это набор символов.
-<li> Далее попробовал выполнить команду: git fetch origin. Получил ошибку: Write access to repository not 
-        granted (Доступ на запись в репозиторий не предоставлен).
-<li> Снова в правом верхнем углу (мой профиль) зашел в settings/develop settings. Удалил токен. Создал новый 
-        fine-grained. В permissions, когда создавал токен, выбрал contents = only read and write и metadata также имел другое значение (но no access), оно не менялось.
-<li> После этого выполнил команду <b>git push -u origin master</b>. Результат получен, на гитхаб в мой репозиторий скачались локальные файлы.
+<li> После регистрации, ответов на вопросы можно создавать репозиторий. Просто заполняем анкету. Имя репозитория, кто может 
+видеть репозиторий. В итоге создал по адресу https://github.com/DmitriyZubkov41/test_repository.git/ с именем test_repository.git
+<li> Далее в терминале команда:
+<p>
+<font color="green"><b>git remote add origin https://github.com/DmitriyZubkov41/test_repository.git</b></font>
+<p>
+Как бы создал удаленный репозиторий под именем origin по указанному адресу.
+<li> Далее, чтобы с терминала иметь доступ к репозиторию нужно создать пароль, потому что пароль от учетной записи на сайте не 
+действует. Есть 2 способа создания пароля. С помощью SSH и https. Я выбрал вариант в https с помощью токена beta.<br>
+Заходим в settings в profyle, далее developer settings, в разделе personal access tokens выбираем тип создаваемого токена. 
+Нажимаем кнопку generate new token. Я выбрал и создал токен beta. Токен - это набор символов.
+<li> Далее попробовал выполнить команду: git fetch origin. Получил ошибку: Write access to repository not granted (Доступ на 
+запись в репозиторий не предоставлен).
+<li> Снова в правом верхнем углу (мой профиль) зашел в settings/develop settings. Удалил токен. Создал новый fine-grained. В 
+permissions, когда создавал токен, выбрал contents = only read and write и metadata также имел другое значение (но no access), 
+оно не менялось.
+<li> После этого выполнил команду <b>git push -u origin master</b>. Результат получен, на гитхаб в мой репозиторий скачались 
+локальные файлы.
+
+
 
 <h2 align="center"><a href="https://github.com/DmitriyZubkov41/guide">Удаленный репозиторий guide</a></h2>
-Создаем локальный репо для каталога Учебник и пушим на предварительно созданный пока ещё пустой удалённый  git@github.com:DmitriyZubkov41/guide.git<br>
+Создаем локальный репо для каталога Учебник и пушим на предварительно созданный пока ещё пустой удалённый  
+git@github.com:DmitriyZubkov41/guide.git<br>
 Взято из подсказки удалённого репозитория<br>
 <font color="brought">
 echo "# guide" >> README.md<br>
@@ -58,6 +62,8 @@ dmitriy@945G-M3:~/Учебник$ git push -u origin main<br>
 dmitriy@945G-M3:~/task5$ git add *<br>
 dmitriy@945G-M3:~/task5$ git commit -m "23.06.2024"<br>
 dmitriy@945G-M3:~/task5$ git push -u git@github.com:DmitriyZubkov41/task5.git main
+<p>
+Думаю в последней команде можно поменять git@github.com:DmitriyZubkov41/task5.git на origin.
 
 <h3>Удаление репозитория</h3>
 Чтобы удалить как минимум локальный репозиторий (насчёт удалённого пока не ясно), нужно перейти в каталог проекта, выполнить команду:
