@@ -71,99 +71,111 @@
 <p>Есть предположение, что какой-то контейнер уже использует порт 80.
 <font color="green">docker rm $(docker ps -a -q)</font> - удалил все контейнеры.
 <p>
-    Повторил:
+Повторил:
 <p><font color="green">docker-compose -f docker-compose2.yml up</font><br>
-<img src="./images/dockercompose.png">
-<br>Не помогло. Теперь идея, что 80 порт должен связан с одним контейнером. Оставим в контейнере head, <font color=red>но тогда как в других контейнерах?</font> Поменял, ошибка повторилась.<br>
+<img src="./images/task5_21.png">
+<br>Не помогло. Теперь идея, что 80 порт должен связан с одним контейнером. Оставим в контейнере head, <font color=red>но тогда 
+как в других контейнерах?</font> Поменял, ошибка повторилась.<br>
 Видимо порт 80 занят на хосте, поменял его на 2000 (head), 2001 (modul1), 2002 (modul2).<br>
-Теперь команда: <font color="green">docker-compose -f docker-compose2.yml up</font> выполнилась без ошибок, но результата, я не увидел.<br>
+Теперь команда: <font color="green">docker-compose -f docker-compose2.yml up</font> выполнилась без ошибок, но результата, я не 
+увидел.<br>
 <img src="./images/dockercompose1.png"><br>
-
 Тогда в docker-compose2.yml значение command изменил на /bin/bash<br>
-  <font color="green">docker-compose -f docker-compose2.yml up</font><br>
-  Результат:<br>
-  <img src="./images/dockercompose2.png"><br>
-  В фоне есть мои контейнеры и порты.
+<font color="green">docker-compose -f docker-compose2.yml up</font><br>
+Результат:<br>
+<img src="./images/task5_2.png"><br>
+В фоне есть мои контейнеры и порты.
 <p>
-    <font color="green">docker exec -it 7f283c42a4f6 /bin/bash</font>
+<font color="green">docker exec -it 7f283c42a4f6 /bin/bash</font>
 <p>
 Запустил командную строку контейнера head.<br>
 <img src="./images/dockerexec.png">
 <p>
-  Запустил командную строку контейнера modul1.<br>
-  <img src="./images/dockerexec1.png">
+Запустил командную строку контейнера modul1.<br>
+<img src="./images/task5_21.png">
 <p>
-  Запустил командную строку контейнера modul2 через его имя.<br>
-  <img src="./images/dockerexec2.png">
+Запустил командную строку контейнера modul2 через его имя.<br>
+<img src="./images/dockerexec2.png">
 
 <h3><font color=red>Проблема с volumes</font></h3>
-Очередная проблема: чтобы посмотреть какие каталоги прикреплены контейнерам, выполнил команду ls. В head нет прикреплённого каталога из хоста. В контейнерах modul* наоборот прикреплен корневой каталог из хоста и заодно там находится task5. Дальше home опуститься нельзя.<br>В docker-compose2.yml, во всех контейнерах:
-  <br><font color=brought><pre>
+Очередная проблема: чтобы посмотреть какие каталоги прикреплены контейнерам, выполнил команду ls. В head нет прикреплённого 
+каталога из хоста. В контейнерах modul* наоборот прикреплен корневой каталог из хоста и заодно там находится task5. Дальше home 
+опуститься нельзя.<br>В docker-compose2.yml, во всех контейнерах:
+  <br><font color=brought>
+<pre>
   volumes: 
     - $HOME/task5:/task5
-  </pre></font>
+</pre></font>
 <br><img src="./images/dockerls.png">
 <br>
-Предлагаемое решение: во всех dockerfile поменять значение WORKDIR на /task5. На dockerfile (rosgazebo) так сразу было установлено, но возможно не обновил образ rosgazebo. Пересоберём все образы.<p>
+Предлагаемое решение: во всех dockerfile поменять значение WORKDIR на /task5. На dockerfile (rosgazebo) так сразу было 
+установлено, но возможно не обновил образ rosgazebo. Пересоберём все образы.<p>
 Удалил контейнеры, собрал образы. Теперь:
 <font color="green">docker-compose -f docker-compose2.yml up</font>
 <p>
-  Создал 3 attaching контейнера. Далее команда: <b>tmux</b>. Дважды <b>tmux split-window -v</b> - разделил окно на 3 панельки.
+Создал 3 attaching контейнера. Далее команда: <b>tmux</b>. Дважды <b>tmux split-window -v</b> - разделил окно на 3 панельки.
 В каждой панельке ввёл команду:
 <p>
-  <font color="green">docker exec -it name_conteiner /bin/bash</font>
+<font color="green">docker exec -it name_conteiner /bin/bash</font>
 В результате в каждой панели командная строка своевого контейнера:<br>
 <img src="./images/dockertmux.png">
 
 <h3 align="center"><font color="red">Теперь задача передать данные от хоста с порта 200* в порт контейнера 8000* и наоборот</font></h3>
 <p>
-  cd task5/docker<br>
-  docker-compose -f docker-compose2.yml up
-  <p>Получились 3 attachung контейнера. Команда: Ctrl+z, чтобы получить командную строку. При этом контейнеры остались рабочими.
-  <p>
-  Далее командами утилиты tmux делю окно горизонтально на 3 окна, одно на хост, среднее на head. Нижнее разделю еще на два по вертикали:
-  <br>
-    <font color="green">tmux</font><br>
-  Два раза: <b>префикс</b> + <b>"</b><br>
-  Нижнее окно делю на два вертикалью:
-  <font color=green>tmux split-window -h</font><br>
-  Или <b>префикс</b> + <b>%</b><br>
-  Устанавливаю размер окон: <b>префикс</b> + <b>Alt + стрелка</b>.
+cd task5/docker<br>
+docker-compose -f docker-compose2.yml up
+<p>
+Получились 3 attachung контейнера. Команда: Ctrl+z, чтобы получить командную строку. При этом контейнеры остались рабочими.
+<p>
+Далее командами утилиты tmux делю окно горизонтально на 3 окна, одно на хост, среднее на head. Нижнее разделю еще на два по 
+вертикали:<br>
+<font color="green">tmux</font><br>
+Два раза: <b>префикс</b> + <b>"</b><br>
+Нижнее окно делю на два вертикалью:
+<font color=green>tmux split-window -h</font><br>
+Или <b>префикс</b> + <b>%</b><br>
+Устанавливаю размер окон: <b>префикс</b> + <b>Alt + стрелка</b>.
 <p>Открываю контейнеры:
 <p>
-  <font color="green">docker exec -it name_container /bin/bash</font> в каждом контейнере, name_container меняем на своё имя.<br>
-  <img src="./images/dockerexec3.png">
+<font color="green">docker exec -it name_container /bin/bash</font> в каждом контейнере, name_container меняем на своё имя.<br>
+<img src="./images/dockerexec3.png">
 <p>
 В контейнере head: <i>nc -l 8000</i><br>
 В окне хоста: <i>nc 127.0.0.1 2000</i><br>
 Теперь пишем сообщения в хосте, они появляются в head. Наоборот также справедливо, получилась двухнаправленная передача данных.
 <p>
-  В контейнере modul1:<br>
-  <i>nc -l 8001</i><br>
-  В окне хоста после закрытия сеанса с head, если напишем: <i>nc 127.0.0.1 2001</i> , то получим сообщение: <font color="red">nc: missing port number</font> .<br>
-  Проблем не будет, если напишем: <i>nc localhost 2001</i><br>
-  <img src="./images/dockernc.png">
-  <br>Все работает.
+В контейнере modul1:<br>
+<i>nc -l 8001</i><br>
+В окне хоста после закрытия сеанса с head, если напишем: <i>nc 127.0.0.1 2001</i> , то получим сообщение: <font 
+color="red">nc: missing port number</font> .<br>
+Проблем не будет, если напишем: <i>nc localhost 2001</i><br>
+<img src="./images/dockernc.png">
+<br>Все работает.
 <h4>Общение между хостом и head через сеть по ip-адресу</h4>
 В head даём команду: <b>nc -l number_port</b><br>
 В хосте команда: <b>nc IP-adres number_port</b><br>
-IP-adres - это ip контейнера head, number_port - любой порт, лишь бы они совпадали на хосте и head. IP можно узнать командой ifconfig.<br>
+IP-adres - это ip контейнера head, number_port - любой порт, лишь бы они совпадали на хосте и head. IP можно узнать командой 
+ifconfig.<br>
 <img src="./images/dockernc1.png">
 <p>
-  Передача данных по ip (через сеть) между head и modul1 также работает.<br>
-  <img src="./images/dockernc2.png">
-<p><font color=red>Непонятно только почему это работает между хостом и modul1, когда сети между ними в настройках docker-compose.yml нет.</font><br>
+Передача данных по ip (через сеть) между head и modul1 также работает.<br>
+<img src="./images/dockernc2.png">
+<p><font color=red>Непонятно только почему это работает между хостом и modul1, когда сети между ними в настройках docker-
+compose.yml нет.</font><br>
 И второе: почему ip-адреса по командам ifconfig и docker network inspect name_net не совпадают. 
 
 <h3 align="center"><font color="red">Теперь задача отключить сеть между head и modul1, соединение только по портам.</font></h3>
- Все же вначале пытаюсь убрать связь между хостом и сетью net1.<br>
- Предположил, что из-за: в свойствах сети (docker network inspect net1) internal : false и еще присутствовал ipam/config/gateway. Типа он и есть хост.<br>
- В docker-compose2.yml в глобальных настройках networks для сети net1 сделал internal: true<br>
- <img src="./images/dockercompose3.png"><br>
- Почему-то совсем другие ip-адреса были контейнеров, не как я установил в docker-compose2.yml. Перезагрузил компьютер, после этого демон не нашел какую-то сеть. Удалил все контейнеры.<br>
- <i>docker network inspect net1</i><br>
- internal: true и более того исчез в ipam/config  gateway.<br>
- Запустил контейнеры, включил в modul1 прослушку, в хосте на IP_адрес modul1 в сети net1 подсоединился командой:<br><i>nc 172.22.0.2 5000</i><br>
- <font color=red>Данные с хоста по-прежнему передаются в modul1 по сети net1.</font>
+Все же вначале пытаюсь убрать связь между хостом и сетью net1.<br>
+Предположил, что из-за: в свойствах сети (docker network inspect net1) internal : false и еще присутствовал ipam/config/
+gateway. Типа он и есть хост.<br>
+В docker-compose2.yml в глобальных настройках networks для сети net1 сделал internal: true<br>
+<img src="./images/dockercompose3.png"><br>
+Почему-то совсем другие ip-адреса были контейнеров, не как я установил в docker-compose2.yml. Перезагрузил компьютер, после 
+этого демон не нашел какую-то сеть. Удалил все контейнеры.<br>
+<i>docker network inspect net1</i><br>
+internal: true и более того исчез в ipam/config  gateway.<br>
+Запустил контейнеры, включил в modul1 прослушку, в хосте на IP_адрес modul1 в сети net1 подсоединился командой:<br><i>nc 
+172.22.0.2 5000</i><br>
+<font color=red>Данные с хоста по-прежнему передаются в modul1 по сети net1.</font>
 
 <br><br><br><br><br></body></html>

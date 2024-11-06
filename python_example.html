@@ -2,20 +2,22 @@
 <style>
 .menu {
        height: 100%;
-       width: 140px;
+       width: 80px;
        position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
        background-color: Gray;  
       }
  .menu a {
-  padding: 6px 8px 6px 16px;
+  padding: 10px 0px 0px 10px;
   text-decoration: none;
   font-size: 15px;
   /*color: #818181;*/
   display: block;
           }     
 .content {
-           margin-left: 155px; /* То же, что и ширина боковой панели */
+           margin-left: 90px; /* То же, что и ширина боковой панели */
+           padding: 0px 0px 0px 5px;
          }
+.no_double{border-collapse: collapse;}
 </style>
 </head><body>
 <title>Примеры</title>
@@ -23,11 +25,15 @@
 
 <a href="#while">Циклы</a><br>
 <a href="#dict">Словари</a><br>
-<a href="#fun">Функции</a><br>
+<a href="#fun">Функции:</a>
+<a href="#lambda">&nbsp;&nbsp; lambda-функции</a>
 <a href="#file">Файлы</a><br>
-<a href="#modul">Модули</a><br>
-<a href="#obiekt">Объекты</a><br>
-<a href="#oop">ООП</a><br>
+<a href="#modul">Модули:</a>
+<a href="#os">&nbsp;&nbsp; os</a>
+<a href="#obiekt">Объекты</a>
+<a href="#oop">ООП</a>
+<a href="#iterator">Итерирование классов</a>
+<a href="#gener">Функции - итераторы</a>
 </div>
 <div class="content">
 <h2 align=center>Примеры:</h2>
@@ -163,7 +169,8 @@ for str in range(len(table)): # по строкам
     for stolb in range(len(table[str])):
         if stolb == len(table[str]) - 1:
             stolb = stolb - len(table[str])
-        print(int(table[str + delta_str][stolb]) + int(table[str - delta_str][stolb]) + int(table[str][stolb + delta_stolb]) + int(table[str][stolb - delta_stolb]), end=' ')
+        print(int(table[str + delta_str][stolb]) + int(table[str - delta_str][stolb]) + \
+        int(table[str][stolb + delta_stolb]) + int(table[str][stolb - delta_stolb]), end=' ')
     print()</pre>
 Другое решение:
 <pre>
@@ -191,13 +198,10 @@ for i in range(n):
         print(x, end=' ')
     print()</pre>
 ==============================================================================================
-
-
-
-
+<p>
 <li>
-<pre>
 Выведите таблицу размером n×n, заполненную числами от 1 до n 2 по спирали, выходящей из левого верхнего угла и закрученной по часовой стрелке:
+<pre>
 n = int(input())
 krug = 1
 stroka = 0 # первая строка
@@ -354,37 +358,6 @@ def closest_mod_5(x):
 
 <h3 align=center><a name="dict">Словарь</h3>
 <ol>
-<li><br>
-Напишите функцию update_dictionary(d, key, value), которая принимает на вход словарь d и два числа: key и value.<br>
-Если ключ key есть в словаре d, то добавьте значение value в список, который хранится по этому ключу. Если ключа key нет в словаре, то нужно добавить значение в список по ключу 2∗key. Если и ключа 2∗key нет, то нужно добавить ключ 2∗key в словарь и сопоставить ему список из переданного элемента [value].
-<pre>
-def update_dictionary(d, key, value):
-    if key in d.keys(): # есть такой ключ
-        d[key] += [value]
-    else:                        # нет ключа
-        if 2*key in d.keys(): #  есть ключ 2*key
-            d[2*key] += [value]
-        else:
-            d[2 * key] = [value]</pre>
-Другое:
-<pre>
-def update_dictionary(d, key, value):
-    if key in d:
-        d[key] += [value]
-    elif 2 * key in d:
-        d[2 * key] += [value]
-    else:
-        d[2 * key] = [value]</pre>
-Ещё:
-<pre>
-def update_dictionary(d, key, value):
-    if key not in d:
-        key = 2 * key
-    if key not in d:
-        d[key] = list()
-    d[key].append(value)</pre>
-
-
 <li> <b>Словарь</b><br>
 Напишите программу, которая принимает на стандартный вход список игр футбольных команд с результатом матча и выводит на стандартный вывод сводную таблицу результатов всех матчей.
 <p>
@@ -481,20 +454,13 @@ for key in  number_game.keys():
 Проблему решил проверкой на вхождение ключа в словарь и в зависимости от результата создавал новую пару или
 делал приращение к существующему ключу
 <p>
-<i>Советую попробовать разобраться в defaultdict из модуля collections (from collections import defaultdict). Для того, чтобы первый раз добавить элемент, когда там еще нет никаких ключей-значений, используйте функцию lambda:<br>
-games = defaultdict(lambda: {'Games': 0, ''Wins': 0,  и т.д.}) 
-<p>
-Далее после этого уже не надо будет делать проверки, есть ли элемент в словаре. Дефолтдикт по умолчанию добавляет новый ключ, если его там нет, присваивая ему значение 0. То есть дальше можно не делать проверки на то, есть ли элемент в словаре, и если нет, то добавить. Можно будет сразу писать СЛОВАРЬ[Ключ] = ЧТО-ТО. И он не будет возвращать KeyError
-<p>
-Он может упростить процесс добавления значений в словарь, если вы будете использовать словарь, а в словаре по ключам значения будут в виде словарей типа games = {"Спартак": {"Wins': 1, 'Loses': 0, 'Games': 0 и т.д.}} Чтобы добавить что-то во вложенный словарь, например, количество побед, надо просто написать: games['Спартак']['Wins'] += 3, и в результате у вас добавится количество побед во вложенном словаре.</i>
-<p>
 <i>"Иллюстрация, как обращаться к элементу списка, если такой список является значением в словаре:
 <pre>example = {'A': [22, 33, 44], 'B': [10, 20]}
 
 print(example['A'][1])</pre>
 Будет напечатано: 33"</i>
 <p>       
-Ещё:
+<b>Ещё не мое решение:</b>
 <pre>
 def command(c, res):
     if not c in dct: dct[c] = [0, 0, 0, 0, 0]
@@ -510,7 +476,7 @@ for i in range(int(input())):
     command(c2, 3 if int(g2) > int(g1) else 1 if int(g1) == int(g2) else 0)
 for c in dct:
     print('{}:{} {} {} {} {}'.format(c, *dct[c]))</pre>
-Ещё:
+<b>Ещё:</b>
 <pre>
 a=[input().split(';') for i in range(int(input()))]
 b={i:[] for i in set([i[0] for i in a])|set([i[2] for i in a])}
@@ -568,6 +534,7 @@ print(''.join(a[b.index(i)] for i in d))</pre>
 Класс обозначается только числом. Буквенные модификаторы не используются. Номер класса может быть от 1 до 11 включительно. В фамилии нет пробелов, а в качестве роста используется натуральное число, но при подсчёте среднего требуется вычислить значение в виде вещественного числа.
 <p>
 Выводить информацию о среднем росте следует в порядке возрастания номера класса (для классов с первого по одиннадцатый). Если про какой-то класс нет информации, необходимо вывести напротив него прочерк.
+<table border=1><tr><td>
 <pre>
 d = {key:[0, 0] for key in range(1,12)} # создали словарь
 with open('/home/dmitriy/Python/mypython/dataset_3380_5.txt') as f:
@@ -581,6 +548,7 @@ for key in d.keys():
         print(key, '-')
     else:
         print(key, d[key][0] / d[key][1])</pre>
+</td></tr></table>
 <b>Другое решение, похоже на мое, но синтаксис грамотный</b>
 <pre>
 # Делаем словарь {1:[0,0], 2:[0,0]... 11:[0,0]}, где [0:0] = [сумма ростов : кол-во учеников]
@@ -701,7 +669,9 @@ lst = ','.join(d[str[1]]).split(',')<br>
 <p>
 Если команда add -- то просто помещаем имя переменной в соответствующее множество.
 <p>
-Если команда get -- то проверяем наличие данной переменной в нашем пространстве имён, если не нашли: проверяем в родителе. Если не нашли в родителе, проверяем в родителе родителя и так далее. Как только нашли имя переменной -- вывели на экран пространство имён, в котором нашли. Если в процессе поиска мы имя не нашли (fst is None) -- выводим None на экран.</i>
+Если команда get -- то проверяем наличие данной переменной в нашем пространстве имён, если не нашли: проверяем в родителе. 
+Если не нашли в родителе, проверяем в родителе родителя и так далее. Как только нашли имя переменной -- вывели на экран 
+пространство имён, в котором нашли. Если в процессе поиска мы имя не нашли (fst is None) -- выводим None на экран.</i>
 <pre>
 n = int(input())
 
@@ -721,12 +691,243 @@ for _ in range(n):
                 break
             fst = parent[fst]
         print(fst)</pre>
-<b>Элементы добавлять в значение словаря удобно с помощью метода add()</b>        
+<b>Элементы добавлять в значение словаря удобно с помощью метода add().</b>  <i>Это если значение является множеством.</i> 
+</ol>     
+<p>        
+=====================================================================================================
+<p>
+31.10.2024:<br>
+Формат входных данных<br>
+В первой строке входных данных содержится целое число n - число классов.
+<p>
+В следующих n строках содержится описание наследования классов. В i-й строке указано от каких классов наследуется i-й класс. 
+Обратите внимание, что класс может ни от кого не наследоваться. Гарантируется, что класс не наследуется сам от себя (прямо или 
+косвенно), что класс не наследуется явно от одного класса более одного раза.
+<p>
+В следующей строке содержится число q - количество запросов.
+<p>
+В следующих q строках содержится описание запросов в формате <имя класса 1> <имя класса 2>.
+Имя класса – строка, состоящая из символов латинского алфавита, длины не более 50.
+<p>
+Формат выходных данных<br>
+Для каждого запроса выведите в отдельной строке слово "Yes", если класс 1 является предком класса 2, и "No", если не является.
+<pre>
+Sample Input:
+4
+A
+B : A
+C : A
+D : B C
+4
+A B
+B D
+C D
+D A
+Sample Output:
+Yes
+Yes
+Yes
+No
+</pre>
+<table border=1>
+<tr>
+<td rowspan=2 valign=top>
+<b>Мое решение:</b>
+<pre>
+d = {}
+
+# Функция перебора родителей
+def find(upclass, class2):
+    for i in class2:
+        if class1 in d[i]:
+            res = True
+            return res
+        else:
+            res = find(class1, d[i])
+            if res == True:
+                return res
+            else:
+                continue    
+    return
+    
+# Цикл добавления классов в словарь
+for _ in range(int(input())):
+    s = input().split(' : ')
+    if len(s) > 1:
+        if s[0] in d.keys():
+            <b>d[s[0]] = d[s[0]] + s[1].split()</b>
+        else:
+            d[s[0]] = s[1].split()
+    else:
+        d[s[0]] = []
+
+# Отправка запросов    
+for _ in range(int(input())):
+    lst = input().split()
+    if len(lst) == 1:
+        print('Yes')
+    else:
+        class1 = lst[0]
+        class2 = lst[1]
+        if class1 == class2:
+            print('Yes')
+        elif class2 not in d.keys() or d[class2] == []:
+            print('No')
+        elif class1 in d[class2]: 
+            print('Yes')
+        else:
+            res = find(class1, d[class2]) 
+            if res == True:
+                print('Yes')
+            else:
+                print('No')
+</pre>
+<b>Добавление элемента в словарь:</b><br>
+В строке <b>d[s[0]] = d[s[0]] + s[1].split()</b> я получаю новое значение словаря: в первоначальный список элементов d[s[0]] 
+вкладываю s[1]<br>
+Если s[1] добавлять сразу: <b>d[s[0]] = d[s[0]] + s[1]</b>, то получим ошибку:
+<br><font color=red>TypeError: can only concatenate list (not "str") to list</font><br>
+Ни append(), ни add, update join не приводили к нужному результату
+</td>
+<td valign=top>
+<b>Другое решение:</b>
+<pre>
+def test(parent, child):
+    if parent == child or parent in base[child]:
+        return 'Yes'
+    for i in base[child]:
+        if test(parent, i) == 'Yes':
+            return 'Yes'
+    return 'No'
+
+base = {}
+<font color=brown>for com in [input().split(' ') for i in range(int(input()))]:</font>
+    base[com[0]] = com[2:len(com)]
+for com in [input().split(' ') for i in range(int(input()))]:
+    print (test(com[0], com[1]))
+</pre>
+<font color=brown>я не могу понять почему вывод идет только после окончания ввода, а не после каждого ввода значений для прове
+рки...</font>
+<p>
+<i>Так происходит потому что в  этой части кода:
+<pre>
+for com in [input().split(' ') for i in range(int(input()))]:
+     print (test(com[0], com[1]))</pre>
+мы сначала с помощью генератора списков [input().split(' ') for i in range(int(input()))]
+создаём собственно список, вводя все данные, и только потом передаём этот 
+список циклу for com in [сформированный список],который прогоняет это список через функцию test.
+ Короче говоря, тут два цикла (первый в генераторе списков). В первом - вводим данные, во втором - проверяем.
+<p>
+Чтобы ответ, как Вы хотите, возвращался сразу после каждого ввода, последние
+ две строчки нужно было бы переписать как-то так:
+<pre>
+for i in range(int(input())):
+
+    com = input().split(' ')
+
+    print (test(com[0], com[1]))</pre>
+https://all-python.ru/osnovy/generator-spiska.html
+</td></tr>
+<tr><td  valign=top>
+<p>
+<b>Другое решение:</b>
+<pre>
+n = int(input())
+
+parents = {}
+for _ in range(n):
+    a = input().split()
+    <b>parents[a[0]] = [] if len(a) == 1 else a[2:]</b>
+
+def is_parent(child, parent):
+    return child == parent or any(map(lambda p: is_parent(p, parent), parents[child]))
+
+q = int(input())
+for _ in range(q):
+    a, b = input().split()
+    print("Yes" if is_parent(b, a) else "No")
+</pre>
+<br>
+<br>
+1. Здесь в <b>parents[a[0]] = [] if len(a) == 1 else a[2:]</b><br>
+идет перезапись в значение словаря, но не добавление, как реализовано у меня.
+<p>
+2. <b>a, b = input().split()</b> вызовет ошибку:
+<font color=red>ValueError: not enough values to unpack (expected 2, got 1)</font><br>
+если ввести запрос из одного элемента, типа A.
+</td></table>
+<p>
+-----------------------------------------------------------------------------------------------------------
+<p>
+Еще одна задачка на так называемые графы.
+<p>
+<table border=1>
+<tr>
+<td>
+<pre>
+n = int(input())
+d = {}
+exceptions = []
+
+def find(ns):
+    if ns in d.keys():
+        for m in d[ns]:
+            if m in exceptions[0 : i]:
+                return True
+            else:
+                if find(m) == True:
+                    return True
+        return False
+    else:
+        return False     
         
+for _ in range(n):
+    s = input().split()
+    if len(s) > 1:
+        d[s[0]] = s[2:]
+    else:
+        d[s[0]] = ''
+       
+
+for i in range(int(input())):
+    s = input()
+    if s not in exceptions:
+        exceptions.append(s)
+
+
+for i in range(1, len(exceptions)):
+    if exceptions[i] in exceptions[0 : i] or find(exceptions[i]) == True:
+        print('Исключить', exceptions[i])</pre>
+</td><td>
+<pre>
+parents = {}
+for _ in range(int(input())):
+    a = input().split()
+    parents[a[0]] = [] if len(a) == 1 else a[2:]
+
+def is_parent(child, parent):
+    if child == parent: return True
+    for p in parents[child]:
+        if is_parent(p, parent ): return True
+    return False
+
+exceptions = []
+for _ in range(int(input())):
+    a = input().strip()
+    for i in exceptions:
+        if is_parent(a,i):
+            print(a)
+            break
+    exceptions.append(a)
+</pre>
+</td>
+</tr></table>        
+        
+        
+
 		
 </ol>
-
-
+<h3 align=center>Множество</h3>
 <ol>
 <li> <b>Преобразование списка в строку и назад в список с целью сделать список из отдельных слов<br>
 <font color=blue>Множество из списка.</font></b><br>
@@ -832,11 +1033,37 @@ for _ in range(int(input())):
     if x not in d:
         d[x] = f(x)
     print(d[x])</pre>         
+</ol>
 
-<li> <a name="file"><b>Файл, методы работы с файлами</b>
+
+
+
+
+
+
+<h3 align=center><a name="lambda">lambda-функции</h3>
+Лямбда функции предоставляют нам удобный способ создать функцию «прямо на месте».<br>
+Но иногда, когда нужно создавать много однотипных лямбда функций, еще удобнее будет создать функцию, которая будет их 
+генерировать.
+<p>
+Реализуйте функцию mod_checker(x, mod=0), которая будет генерировать лямбда функцию от одного аргумента y, которая будет 
+возвращать True, если остаток от деления y на x равен mod, и False иначе.
 <pre>
-'''Напишите программу, которая считывает из файла строку, соответствующую тексту, сжатому с помощью кодирования повторов, и
-производит обратную операцию, получая исходный текст.'''
+def mod_checker(x, mod=0):
+    return lambda y: y % x == mod
+</pre>
+
+
+
+
+
+
+
+
+<h3 align=center><a name="file">Файл, методы работы с файлами</h3>
+Напишите программу, которая считывает из файла строку, соответствующую тексту, сжатому с помощью кодирования повторов, и
+производит обратную операцию, получая исходный текст.
+<pre>
 with open('/home/dmitriy/Python/mypython/dataset_3363_2 (1).txt') as inf:
   for line in inf:
       line = line.strip()
@@ -931,19 +1158,119 @@ print(maks_word, spisok_max[maks_word])
 Без словаря, сразу читаем файл и сортируем список слов, чтобы потом первое найденное было лексиграфически впереди.
 <br>
 <b>Оказывается конструкция with является циклом.</b>
-
-<li> <b>Файл, методы, циклы, списки</b>
+<p>
+====================================================================
+<p>
+<b>Чтение файла, импорт модуля, конструкция try/except/else</b>
+<p>
+Алиса зашифровала свою информацию с помощью библиотеки simple-crypt.<br>
+Она представила информацию в виде строки, и затем записала в бинарный файл результат работы метода simplecrypt.encrypt.
+Вам необходимо установить библиотеку simple-crypt, и с помощью метода simplecrypt.decrypt узнать, какой из паролей служит 
+ключом для расшифровки файла с интересной информацией. Ответом для данной задачи служит расшифрованная интересная информация 
+Алисы.
+<table border=1>
+<tr>
+<td valign=top>
+Моё:
 <pre>
-19:50 - 21:30 (1 ас и 40 минут)
-Имеется файл с данными по успеваемости абитуриентов. Он представляет из себя набор строк, где в каждой строке записана следующая информация:
+from simplecrypt import decrypt
 
+with open('/home/dmitriy/Python/mypython/encrypted.bin', "rb") as inp:
+    encrypted = inp.read()
+    #print(encrypted)
+with open('/home/dmitriy/Python/mypython/passwords.txt') as passw:
+    for lst in passw:
+        print(lst)
+        try:
+            s = decrypt(lst.strip(), encrypted)
+        except Exception as e:
+            print(f'Произошла ошибка: {e}')
+            continue
+        else:
+            print('shifr=', s)</pre>
+</td>
+<td>
+<pre>
+import simplecrypt
+
+encrypted = open("encrypted.bin", "rb").read()
+passwords = open("passwords.txt").readlines()
+
+for p in passwords:
+    p = p.strip()
+    try:
+        s = simplecrypt.decrypt(p, encrypted)
+    except simplecrypt.DecryptionException:
+        continue
+
+    print(s.decode("utf-8"))﻿</pre>
+</td></tr></table>
+<p>
+Еще:
+<pre>
+import urllib
+from simplecrypt import decrypt
+
+ciphertext = <b>urllib.urlopen('https://stepik.org/media/attachments/lesson/24466/encrypted.bin').read()</b>
+passwords = urllib.urlopen('https://stepik.org/media/attachments/lesson/24466/passwords.txt')
+
+for password in passwords:
+    try:
+        plaintext = decrypt(password.strip(), ciphertext)
+    except:
+        pass
+    else:
+        print(plaintext)</pre>
+<p>
+1. Здесь в случае возникновения исключения (ошибка программы просто из-за плохого пароля) в блоке try выполнение программы 
+переходит в блок except, там continue, то есть выполняется следующий итератор цикла. В случае, если пароль хороший, то 
+выполняется блок else.
+<p>
+2. Функция strip() без аргументов удаляет в начале и в конце строки пробел. На этом примере, когда смотрел пароли, пробелы не 
+видел, но был невидимый пернос строки. Возможно его также удаляет.
+<p>
+===========================================================================================
+<p>
+Вам дается текстовый файл, содержащий некоторое количество непустых строк.
+На основе него сгенерируйте новый текстовый файл, содержащий те же строки в обратном порядке.
+<p>
+<table border=1><tr><td>
+Моё:
+<pre>
+with open('/home/dmitriy/Python/mypython/1.txt') as f1:
+    lst = f1.readlines() # вывели файл в список
+    with open('/home/dmitriy/Python/mypython/2.txt', 'w') as f2:
+        for i in range(-1, -len(lst) -1, -1):
+            f2.write(lst[i].rstrip('\n') + "\n")</pre>
+</td><td>
+Не моё:
+<pre>
+with open('dataset_24465_4.txt', 'r') as fr, open('dataset_24465_4_w.txt', 'w') as fw:
+    fw.writelines(fr.readlines()[::-1])</pre>
+Ещё:
+<pre>
+lines = open("input.txt").readlines()
+with open("output.txt", "w") as out:
+    out.writelines(reversed(lines))</pre>
+</td></tr></table>
+
+
+
+<h3 align=center>Файл, методы, циклы, списки</h3>
+
+19:50 - 21:30 (1 час и 40 минут)<br>
+Имеется файл с данными по успеваемости абитуриентов. Он представляет из себя набор строк, где в каждой строке записана следующ
+ая информация: <br>
 Фамилия;Оценка_по_математике;Оценка_по_физике;Оценка_по_русскому_языку
-
+<p>
 Поля внутри строки разделены точкой с запятой, оценки — целые числа.
-
-Напишите программу, которая считывает исходный файл с подобной структурой и для каждого абитуриента записывает его среднюю оценку по трём предметам на отдельной строке, соответствующей этому абитуриенту, в файл с ответом.
-
-Также вычислите средние баллы по математике, физике и русскому языку по всем абитуриентам и добавьте полученные значения, разделённые пробелом, последней строкой в файл с ответом.'''
+<p>
+Напишите программу, которая считывает исходный файл с подобной структурой и для каждого абитуриента записывает его среднюю оце
+нку по трём предметам на отдельной строке, соответствующей этому абитуриенту, в файл с ответом.
+<p>
+Также вычислите средние баллы по математике, физике и русскому языку по всем абитуриентам и добавьте полученные значения, разд
+елённые пробелом, последней строкой в файл с ответом.
+<pre>
 d = {} # ключ - фамилия, значение - список из оценок
 s = ''
 num = 0
@@ -988,7 +1315,7 @@ with open('dataset_3363_4.txt', 'r') as inf:
 print((a1/koll), (b1/koll), (c1/koll))</pre>
 
 <li> <a name="modul"><b>Модули</b><br>
-Напишите программу, которая подключает модуль math и, используя значение числа π из этого модуля, находит для переданного ей на 
+Напишите программу, которая подключает модуль math и, используя значение числа π из этого модуля, находит для переданного ей на
 стандартный ввод радиуса круга периметр этого круга и выводит его на стандартный вывод.
 <pre>
 from math import pi
@@ -1001,7 +1328,8 @@ print(float(input()) * pi * 2)</pre>
 <pre>
 import sys
 print(*sys.argv[1::])</pre>
-Метод sys.argv выдаст список, где первый элемент - это имя вызвавшей программы, а следующие - это аргументы программы. Поскольку нам не нужно имя программы, то к списку применяем срез.
+Метод sys.argv выдаст список, где первый элемент - это имя вызвавшей программы, а следующие - это аргументы программы. Посколь
+ку нам не нужно имя программы, то к списку применяем срез.
 <br><img src="./images/python_example.png"><br>
 Первую и вторую команду применили без среза.<br>
 3 команду без звездочки внутри print()
@@ -1085,11 +1413,108 @@ while 'we' not in a:
     print(a)
     <b>a = requests.get(b + a).text</b>
 print(a)</pre>
+<p>
+===========================================================================================
+<p>
+<li> В первой строке дано три числа, соответствующие некоторой дате date -- год, месяц и день.<br>
+Во второй строке дано одно число days -- число дней.<br>
+Вычислите и выведите год, месяц и день даты, которая наступит, когда с момента исходной даты date пройдет число дней, равное 
+days.<br>
+Примечание: Для решения этой задачи используйте стандартный модуль datetime.
+Вам будут полезны класс datetime.date для хранения даты и класс datetime.timedelta﻿ для прибавления дней к дате.
+<p>
+<table border=1>
+<tr><td rowspan=3 valign=top>
+Моё:
+<pre>
+from datetime import datetime as dt, timedelta
 
+first_date=dt.strptime(input(), '%Y %m %d')
+end_date = first_date + timedelta(int(input()))
+end_date1 = end_date.strftime('%Y %m %d')
+date = end_date1.split()
+for i in date:
+    print(int(i), end=' ')</pre>
+</td>
+<td>
+Другое:
+<pre>
+import datetime
+inp = datetime.datetime.strptime(input(), "%Y %m %d")
+inp += datetime.timedelta(days=int(input())) 
+print(f'{inp.year} {inp.month} {inp.day}')
+
+</pre>
+</td></tr>
+<tr><td>
+Другое:
+<pre>
+import datetime
+y, m, d = map(int, input().split())
+days = int(input())
+current = datetime.date(year=y, month=m, day=d)
+current += datetime.timedelta(days=days)
+print("{} {} {}".format(current.year, current.month, current.day))</pre>
+</td></tr>
+<tr>
+<td>
+Ещё:
+<pre>
+import datetime
+<b>(y,m,d) = [int(n) for n in input().split()]</b>
+d = datetime.date(y, m, d)+ datetime.timedelta(int(input()))
+print(d.year, d.month, d.day)</pre>
+</td></tr></table>
+<p>
+1. Скажите, пожалуйста, почему datetime.datetime...? А если datetime.strptime, то "datetime не имеет атрибута strptime"
+<br>
+Потому что метод класса datetime, который преобразует строку в datetime, есть операция datetime.strptime(date_string, format). 
+То есть, чтобы корректно написать операцию переформатирования введенной строки в формат даты, мы сначала прописываем класс 
+datetime, затем через точку метод datetime.strptime().. в скобках - соответствующие аргументы
 </ol>
+<p>
+=====================================================================================================
+<p>
+<a name='os'><b>Модуль os</b><br>
+Вам дана в архиве (ссылка) файловая структура, состоящая из директорий и файлов.
+<br>Вам необходимо распаковать этот архив, и затем найти в данной файловой структуре все директории, в которых есть хотя бы 
+один файл с расширением ".py". 
+<table border=1><tr><td>
+Моё:
+<pre>
+from os import getcwd, walk, chdir
 
+chdir('/home/dmitriy/Python/mypython/main')
+lst = set()
+for root, directories, filenames in walk(getcwd()):
+    for filename in filenames:
+        if filename.endswith('.py'):
+            lst.add(root[30::])
+for x in sorted(lst):
+    print(x)</pre>
+</td>
+<td valign=top>
+Другое:
+<pre>
+import os
 
-
+for cur_dir, subdirs, files in os.walk("main"):
+    for file in files:
+        if file.endswith(".py"):
+            print(cur_dir)
+            break
+</pre>
+</tr></table>
+<p>
+1. os.walk() идет по директориям в алфавитном порядке. За счет этого можно не сортировать итоговый список.<br>
+2. chdir - переход на нужную папку<br>
+getcwd() - текущая папка<br>
+walk(dir) - выдает генератор - итератор, где его элемент состоит из строки (каталог), списка входящих каталогов и еще один 
+список из файлов. <br>
+3. lst.add(root[30::]) - срез, чтобы обрезать лишний путь к каталогу.
+<p>
+==========================================================================================================
+<p>
 
 
 <h3 align=center><a name="obiekt">Объекты</h3>
@@ -1133,11 +1558,12 @@ print(len(s))</pre>
 <ol>
 <li> Реализуйте класс MoneyBox, для работы с виртуальной копилкой.
 <p>
-Каждая копилка имеет ограниченную вместимость, которая выражается целым числом – количеством монет, которые можно положить в копилку. Класс должен поддерживать информацию о количестве монет в копилке, предоставлять возможность добавлять монеты в копилку и узнавать, можно ли добавить в копилку ещё какое-то количество монет, не превышая ее вместимость.
+Каждая копилка имеет ограниченную вместимость, которая выражается целым числом – количеством монет, которые можно положить в 
+копилку. Класс должен поддерживать информацию о количестве монет в копилке, предоставлять возможность добавлять монеты в 
+копилку и узнавать, можно ли добавить в копилку ещё какое-то количество монет, не превышая ее вместимость.
 <p>
 При создании копилки, число монет в ней равно 0.
-Примечание:
-метод add(self, v) будет вызываться только если can_add(self, v) – True﻿."""
+Примечание: метод add(self, v) будет вызываться только если can_add(self, v) – True﻿.
 <pre>
 class MoneyBox:
     def __init__(self, capacity):
@@ -1162,7 +1588,8 @@ if self.capacity >= v:
             return False</pre>
 можно заменить одной строкой: <b>return self.capacity >= v</b>
 <p>
-<li> Вам дается последовательность целых чисел и вам нужно ее обработать и вывести на экран сумму первой пятерки чисел из этой последовательности, затем сумму второй пятерки, и т. д.
+<li> Вам дается последовательность целых чисел и вам нужно ее обработать и вывести на экран сумму первой пятерки чисел из этой 
+последовательности, затем сумму второй пятерки, и т. д.
 <p>
 Но последовательность не дается вам сразу целиком. С течением времени к вам поступают её последовательные части. Например, 
 сначала первые три элемента, потом следующие шесть, потом следующие два и т. д.
@@ -1175,21 +1602,15 @@ if self.capacity >= v:
 <p>
 Обратите внимание, что во время выполнения метода add выводить сумму пятерок может потребоваться несколько раз до тех пор, 
 пока в буфере не останется менее пяти элементов.
+<table border=1>
+<tr><td>
+<b>Моё:</b>
 <pre>
 class Buffer:
     def __init__(self):
         self.lst = []
                
     def add(self, *a):
-        '''
-        Сохраняем список аргументов в self.lst (как отличить ввод в первый раз от повторного ввода)
-        Считаем количество чисел в lst,
-        если меньше 5, то ничего не делаем.
-        Иначе печатаем сумму среза списка из первых пяти элементов
-        В цикле пока длина не меньше 5:
-          выводим сумму 5 элементов
-          удаляем 5 первых элементов.
-        '''
         for i in a:  # выводим аргументы в список
             self.lst.append(i)
         # print('self.lst=', self.lst)
@@ -1201,8 +1622,9 @@ class Buffer:
                 del self.lst[0:5]
                 
     def get_current_part(self):
-        # вернуть сохраненные в текущий момент элементы последовательности в порядке, в котором они были добавлены
         return self.lst</pre>
+</td>
+<td>
 <b>Грамотное решение:</b>
 <pre>
 class Buffer:
@@ -1219,6 +1641,351 @@ class Buffer:
     def get_current_part(self):
         return self.part</pre>
 Сразу считал 5 элементов, суммировал, выводил и удалял их, а не как я, запоминал весь ввод и потом считывал первые 5 элементов.
+</td></tr></table>
+<p>
+----------------------------------------------------------------------------------------------
+<p>
+<b>Задача:</b> Реализуйте структуру данных, представляющую собой расширенную структуру стек. Необходимо поддерживать 
+добавление элемента на вершину стека, удаление с вершины стека, и необходимо поддерживать операции сложения, вычитания, 
+умножения и целочисленного деления.
+<p>
+Операция сложения на стеке определяется следующим образом. Со стека снимается верхний элемент (top1), затем снимается 
+следующий верхний элемент (top2), и затем как результат операции сложения на вершину стека кладется элемент, равный top1 + 
+top2.
+<p>
+Аналогичным образом определяются операции вычитания (top1 - top2), умножения (top1 * top2) и целочисленного деления (top1 // 
+top2).
+<p>
+Реализуйте эту структуру данных как класс ExtendedStack, отнаследовав его от стандартного класса list.
+<pre>
+class ExtendedStack(<b>list</b>):
+        
+    def sum(self):
+        # операция сложения
+        self.append(self.pop() + self.pop())
+           
+
+    def sub(self):
+        # операция вычитания
+        self.append(self.pop() - self.pop())
+        #print(self.lst) 
+
+    def mul(self):
+        # операция умножения
+        self.append(self.pop() * self.pop())
+        
+
+    def div(self):
+        # операция целочисленного деления
+        self.append(self.pop() // self.pop())</pre>
+1. Здесь поскольку ExtendedStack унаследован от класса list, то при создании экземпляра ExtendedStack нужно в аргументе 
+указать список:
+<br>my_class = ExtendedStack([1, 2, 3])
+<p>
+2 момент: self будет <b>равен не my_class</b>, а списку, указанному при создании экземпляра.
+<p>
+---------------------------------------------------------------------------------
+<p>
+<b>Задача:</b><br>
+Одно из применений множественного наследование – расширение встроенного метода за счет одноименного метода класса.<br>
+Например, если нам понадобится логировать какую-то информацию при обращении к методам класса.
+<p>
+Рассмотрим класс Loggable:
+<pre>
+import time
+
+class Loggable:
+    def log(self, msg):
+        print(str(time.ctime()) + ": " + str(msg))</pre>
+У него есть ровно один метод log, который позволяет выводить в лог (в данном случае в stdout) какое-то сообщение, добавляя при 
+этом текущее время.<br>
+Реализуйте класс LoggableList, отнаследовав его от классов list и Loggable таким образом, чтобы при добавлении элемента в 
+список посредством метода append в лог отправлялось сообщение, состоящее из только что добавленного элемента.
+<br>Примечание: Ваша программа не должна содержать класс Loggable. При проверке вашей программе будет доступен этот класс, и 
+он будет содержать метод log, описанный выше.
+<p>
+<b>По существу нужно расширить функционал обычного метода append, чтобы дополнительно еще шла запись в лог.</b>
+<p>
+<table border=1><tr><td valign=top>
+<pre>
+#!/usr/bin/env python3
+import time
+
+class Loggable:
+    def log(self, msg):
+        print(str(time.ctime()) + ": " + str(msg))
+        
+class LoggableList(list, Loggable):
+           
+    def append(self, elem): 
+        <font color=red>list.append(self, elem)</font>
+        super().log(elem)
+</pre></td>
+<td>
+<b>Выполнение:</b>
+<pre>
+dmitriy@945G-M3:~$ python3 -i ~/Python//mypython/1.py
+>>> my_class = LoggableList()
+>>> my_class.__dict__()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'dict' object is not callable
+>>> <font color=red>my_class.__dict__
+{}</font>
+>>> my_class
+[]
+>>> my_class.append(5)
+Fri Nov  1 13:40:58 2024: 5
+>>> my_class
+[5]
+>>> my_class2 = LoggableList([1, 2, 3, 4])
+>>> my_class2
+[1, 2, 3, 4]
+>>> my_class2.append(5)
+Fri Nov  1 13:46:07 2024: 5
+>>> my_class2
+[1, 2, 3, 4, 5]
+>>> <font color=red>self</font>
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in <module>
+NameError: name 'self' is not defined
+>>> my_log.log('hhhh')
+Fri Nov  1 15:10:24 2024: hhhh
+>>> type(my_log)
+&lt;class '__main__.Loggable'&gt;
+>>> my_log.__dict__
+{}
+>>> my_log.append(5)
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in <module>
+AttributeError: 'Loggable' object has no attribute 'append'
+>>> type(my_class)
+&lt;class '__main__.LoggableList'&gt;
+</pre>
+</td></tr></table>
+<p>
+1. Непонятно, когда нужно создавать конструктор класса, когда нет. В данной задаче с конструктором с аргументом lst stepik 
+решение не принимал.<br>
+Думал, что только через конструктор можно создать экземпляр с конкретным списком, но нет, в примере выше создал my_class2 со 
+списком [1, 2, 3, 4]
+<p>
+2. Непонятно что с  self
+<p>
+3. Почему при вызове my_class.__dict__ ответ - пустой словарь {}. Нет скажем атрибута append()
+<p>
+4. Почему при вызове метода append() его нужно вызывать из класса list.
+<br>Если self.append(elem), то возникает бесконечная рекурсия, т.к. интерпретатор ищет append в классе LoggableList.<br>
+Но опять же почему в классе LoggableList нет метода append. Если родителем является list, то вроде как экземпляр должен 
+унаследовать его методы в том числе append.
+<p>
+<b>Другое грамотное решение:</b>
+<pre>
+class LoggableList(list, Loggable):
+    def append(self, x):
+        list.append(self, x)
+        self.log(x)
+</pre>
+<font color=red>Непонятно почему при вызове метода log() из родительского класса не используется функция super()</font><br>
+<i>Полагаю, прямое обращение self.log(x) в данном случае работает просто быстрее и чуть короче в коде, чем super().log(x). 
+Другого принципиального отличия не вижу. Исходя из описания вот тут https://docs.python.org/3/library/functions.html?
+highlight=super#super﻿ ни что не мешает в этом примере использовать super() для доступа к родительскому методу даже без его 
+модификации.</i>
+<p>
+<b>Почему  в строке: list.append(self, x) метод  append принимает self ?</b><br>
+<i>мы обращаемся к методу класса а не его экземпляра, в этом случае нужно передать и значение для self, если бы мы обращались 
+к нему как к экземпляру, тогда было бы self.append(x)</i>
+<pre>
+>>> a = [1, 2]
+>>> b = 5
+>>> list.append(a, b)
+>>> a
+[1, 2, 5]
+>>> a.append(6)
+>>> a
+[1, 2, 5, 6]
+</pre>
+============================================================================================================
+<p>
+<h3 align=center>Исключения</h3>
+Реализуйте класс PositiveList, отнаследовав его от класса list, для хранения положительных целых чисел.
+Также реализуйте новое исключение NonPositiveError.
+<p>
+В классе PositiveList переопределите метод append(self, x) таким образом, чтобы при попытке добавить неположительное целое 
+число бросалось исключение NonPositiveError и число не добавлялось, а при попытке добавить положительное целое число, число 
+добавлялось бы как в стандартный list.
+<br>В данной задаче гарантируется, что в качестве аргумента x метода append всегда будет передаваться целое число.
+<br>Примечание: Положительными считаются числа, строго большие нуля.'''
+<pre>
+class  NonPositiveError(Exception):
+    print(x, 'меньше нуля')
+    
+class PositiveList(list):
+    def append(self, x):
+        if x <= 0:
+                raise NonPositiveError(x)
+        else:
+            list.append(self, x)</pre>
+===============================================================================
+<p>
+<h3 align=center><a name="iterator">Итерирование классов</h3>
+Задача по перебору класса:<br>
+На вход класса подаем итерируемый объект. Функция класса - перебрать этот объект и выдать в итоге отфильтрованный объект.
+<p>
+<table border=1><tr><td>
+Моё:
+<pre>
+class multifilter:
+    def judge_half(pos, neg):
+        # допускает элемент, если его допускает
+        # хотя бы половина фукнций (pos >= neg)
+        <font color=red>if pos >= neg:
+            return True
+        else:
+            return False</font>
+                
+    def judge_any(pos, neg):
+        # допускает элемент, если его допускает
+        # хотя бы одна функция (pos >= 1)
+        if pos >= 1:
+            return True
+        else:
+            return False
+            
+    def judge_all(pos, neg):
+        # допускает элемент, если его 
+        # допускают все функции (neg == 0)
+        if neg ==0:
+            return True
+        else:
+            return False    
+
+    def __init__(self, iterable, *funcs, judge=judge_any):
+        # создаем экземпляр класса multifilter
+        self.iterable = iterable
+        self.judge = judge
+        <font color=red>self.funcs = []
+        for i in funcs:
+            self.funcs.append(i)</font>
+        
+    def __iter__(self):
+        for i in self.iterable:
+            self.pos = 0
+            self.neg = 0
+            for f in self.funcs:
+                if f(i):
+                    self.pos += 1
+                else:
+                    self.neg += 1
+            if self.judge(<font color=red>self.pos, self.neg</font>):
+                yield i</pre>
+</td>
+<td valign=top>
+Другое:
+<pre>
+class multifilter:
+    def judge_half(pos, neg):
+        <font color=green>return pos >= neg</font>
+
+    def judge_any(pos, neg):
+        return pos > 0
+
+    def judge_all(pos, neg):
+        return neg == 0
+
+    def __init__(self, iterable, *funcs, judge=judge_any):
+        self.iterator = iter(iterable)
+        <b>self.funcs = funcs</b>
+        self.judge = judge
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        while (True):
+            elem = next(self.iterator)
+            pos, neg = 0, 0
+            for func in self.funcs:
+                if func(elem):
+                    pos += 1
+                else:
+                    neg += 1
+
+            if self.judge(pos, neg):
+                return elem</pre>
+</td></tr></table>
+<p>
+<b>Выполнение:</b>
+<pre>
+def mul2(x):
+    return x % 2 == 0
+
+def mul3(x):
+    return x % 3 == 0
+
+def mul5(x):
+    return x % 5 == 0
+
+a = [i for i in range(31)] # [0, 1, 2, ... , 30]
+
+print(list(multifilter(a, mul2, mul3, mul5))) 
+# [0, 2, 3, 4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30]
+
+print(list(multifilter(a, mul2, mul3, mul5, judge=multifilter.judge_half))) 
+# [0, 6, 10, 12, 15, 18, 20, 24, 30]
+
+print(list(multifilter(a, mul2, mul3, mul5, judge=multifilter.judge_all))) 
+# [0, 30]</pre>
+
+
+
+
+
+<h3 align=center><a name="gener">Функции-итераторы</h3>
+Реализуйте функцию-генератор primes, которая будет генерировать простые числа в порядке возрастания, начиная с числа 2.
+<table border=1><tr>
+<td>
+Первоначальный вариант:
+<pre>
+def primes(*args):
+    lst = args
+    print(lst)
+    print(type(lst))
+    count = 0
+    for i in lst:
+        if i < 2:
+            continue
+        for k in range(2, i + 1):
+            if k % i:
+                count +=1
+        if count == 2:
+            yield i
+</pre>
+</td>
+<td valign=top>
+Итоговое решение:
+<pre>
+import itertools
+def primes():
+    a = 1
+    while True:  # просто пример
+        count = 0
+        a += 1
+        for i in range(1, a + 1):
+            if a % i == 0:
+                count +=1
+        if count == 2:
+            yield i</pre>
+</td>
+</tr></table>
+1. Как реализовать бесконечный диапазон?<br>
+2. Где начнется выполняться функция при повторном ее вызове?<br>
+3 lst = [args] <font color=red>not supported between instances of 'tuple' and 'int'</font><br>
+4. Первоначальный вариант был ошибочен из-за команды проверки: <i>print(list(itertools.takewhile(lambda x : x <= 31, 
+primes())))</i>
+
+
+
+
 
 </div>
 <br><br><br><br></body></html>
