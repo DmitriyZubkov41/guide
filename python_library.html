@@ -1,0 +1,1772 @@
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 155px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       background-color: Gray;  
+      }
+ .menu a {
+  padding: 15px 5px 5px 5px;
+  text-decoration: none;
+  font-size: 15px;
+  /*color: #818181;*/
+  display: block;
+          }     
+.content {
+           padding: 0px 0px 0px 0px;
+           margin-left: 155px; /* То же, что и ширина боковой панели */
+         }
+</style>
+</head><body>
+<title>Библиотеки python</title>
+<div class="menu">
+<a href="#lib">Стандартная библиотека:</a>
+<a href="#sys">&nbsp;&nbsp; Модуль sys</a>
+<a href="#subprocess">&nbsp;&nbsp; Модуль subprocess</a>
+<a href="#os">&nbsp;&nbsp; Модуль os</a>
+<a href="#ospath">&nbsp;&nbsp; Модуль os.path</a>
+<a href="#glob">&nbsp;&nbsp; Модуль glob</a>
+<a href="#xml">&nbsp;&nbsp; Пакет xml</a>
+<a href="#collections">&nbsp;&nbsp; Модуль collections</a>
+<a href="#re">&nbsp;&nbsp; Модуль re</a>
+<a href="#csv">&nbsp;&nbsp; Модуль CSV</a>
+<a href="#json">&nbsp;&nbsp; Модуль JSON</a>
+<p>
+Дополнительные библиотеки:
+<a href="#requests">&nbsp;&nbsp; Модуль requests</a>
+<a href="#pandas">&nbsp;&nbsp; Модуль pandas</a>
+<a href="#datetime">&nbsp;&nbsp; Модуль datetime</a>
+<a href="#functools">&nbsp;&nbsp; Модуль functools/partial</a>
+
+
+</div>
+
+<div class="content">
+<h3 align=center><a name="lib">Обзор стандартной библиотеки</h3>
+Ссылки: <a href="https://intuit.ru/studies/courses/49/49/lecture/27060?page=4">Обзор стандартной библиотеки</a><br>
+<a href="https://docs.python.org/3/library/">Список модулей стандартной библиотеки</a><br>
+<a href="https://pythonworld.ru/moduli">Модули</a>
+<p>
+На сайте <a href="https://pypi.org/">Индекс пакетов Python (PyPI) - это хранилище программного обеспечения для языка 
+программирования Python.</a> находятся тысячи готовых пакетов. Скачивают и устанавливают их обычно с помощью 
+питоновского менеджера программ pip. Обычно pip уже установлен. Чтобы проверить это и заодно узнать версию, служит команда:
+<pre>pip3 --version</pre>
+У меня <i>pip 20.0.2 from /usr/lib/python3/dist-packages/pip (python 3.8)</i>
+<p>
+Для того, чтобы установить какую-нибудь библиотеку из Python Package Index (например пакет simple-crypt из следующей задачи), 
+необходимо запустить команду:
+<pre>$ pip install simple-crypt</pre>
+Если операционная система linux скажет, что вам не хватает прав для данной операции, используйте команду:
+<pre>$ sudo pip install simple-crypt</pre>
+========================================================================================================
+
+<p>
+Помимо создания собственных модулей python содержит большое количество собственных (встроенных) модулей, называемых 
+библиотекой стандартных  модулей. Встроенные в смысле, что эти модули в отличии от модулей других библиотек <b>не нужно 
+устанавливать.</b>
+<p>
+Модули стандартной библиотеки можно условно разбить на группы по тематике.
+<ul>
+<li> <b>Сервисы периода выполнения.</b><br>
+Модули: <b>sys</b>, atexit, copy, traceback, math, cmath, random, time, calendar, 
+datetime, sets, array, struct, itertools, locale, gettext.
+
+<a name="sys"><h4>Модуль sys</h4>
+Ссылки: <a href="https://python-scripts.com/module-sys">Разбираем модуль sys</a>
+<p>
+Модуль sys предоставляет системе особые параметры и функции.
+<ol>
+<li> <b>sys.argv</b><br>
+Значение sys.argv – это список аргументов командной строки, которые причастны к скрипту Python. Первый аргумент, argv[0], 
+имеет аналогичное скрипту Python наименование. В зависимости от платформы, на которой вы работаете, первый аргумент может 
+содержать полный путь к скрипту или к названию файла. Для дополнительных деталей обратитесь к документации. А тем временем, 
+попробуем поработать с парочкой примеров, чтобы познакомиться с этим инструментом:<br>
+В интерпретаторе выполним:
+<pre>
+>>> import sys
+>>> print(sys.argv)
+['']</pre>
+Получили пустой список, потому что никакую программу не запускали.
+<p>
+Если создадим скрипт 1.py с кодом:
+<pre>
+import sys
+print(sys.argv)</pre>
+и запустим его с командной строки:
+<br><img src="./images/python_base7.png">
+<p>
+<li> sys.executable
+<li> sys.exit
+<li> sys.modules
+<li> sys.path
+<li> sys.platform
+<li> sys.stdin/stdout/stderr
+</ol>
+
+<a name="subprocess"><h4>Модуль subprocess</h4>
+Ссылки: <a href="https://python-scripts.com/subprocess">Модуль subprocess — Работаем с процессам</a>
+<p>
+Модуль subprocess дает разработчику возможность запускать процессы программ из Python. Другим словами, вы можете запускать 
+приложения и передавать им аргументы при помощи модуля subprocess. Модуль subprocess был внедрен в Python 2.4 для замены 
+настроек вызовов модуля os, таких как os.popen, os.spawn и os.system, а также для замены popen2 и старых командных модулей.
+<p>
+<ul>
+<li> <b>Функция вызова call</b><br>
+Модуль subprocess содержит функцию под названием call. Эта функция позволяет вам вызывать другую программу, дожидаться 
+завершения команды и вернуть код возврата. Она принимает один или несколько аргументов, а также следует ключевым аргументам (с 
+их значениями): stdin=None, stdout=None, stderr=None, shell=False.<br>
+Взглянем на простой пример:
+<pre>
+import subprocess
+ 
+# Для Windows
+subprocess.call("notepad.exe")
+ 
+# Для linux
+subprocess.call("gedit")</pre>
+Если вы запустите этот код на машине, которая работает на Windows Python, вы увидите открывшийся блокнот. Обратите внимание на 
+то, что IDLE (<font color=red>наверное это имя интерпретатора</font>) ожидает, пока вы закроете блокнот, после чего вернет 
+нулевой код (0).
+<br>Это значит, что код был выполнен успешно. Если вы получите что-либо, что не является ноль, то вы столкнулись с какой-то 
+ошибкой.
+<p>
+Метод call также принимает аргументы, для передачи программе, которую вы выполняете. Давайте взглянем на то, как это работает:
+<pre>
+import subprocess
+code = subprocess.call(["ping", "www.yahoo.com"])</pre>
+В ответе получим результат пингования сайта.<br>
+Обратите внимание на то, что в данном примере мы передали список аргументов. Первый объект в списке это программа, которую мы 
+хотим вызвать. Все остальное в списке – это аргументы, которые мы хотим передать программе. Так что в данном примере мы 
+выполняем пинг на сайте Yahoo. Также обратите внимание на то, что код возврата нулевой, так что все прошло успешно. 
+</ul>
+<p>
+Модуль copy содержит функции для копирования объектов.
+<p>
+В модулях math cmath собраны математические функции для действительных и комплексных аргументов.
+<p>
+Модуль random генерирует псевдослучайные числа для нескольких различных распределений.
+<p>
+модуль time дает функции для получения текущего времени и преобразования форматов времени.
+<p>
+Модуль sets реализует тип данных для множеств.
+<p>
+Модули array и struct реализуют низкоуровневый массив и структуру данных. Основное их назначение - разбор двоичных форматов 
+данных.
+<p>
+Модуль itertools содержит набор функций для работы с итераторами. Итераторы позволяют работать с данными последовательно, как 
+если бы они получались в цикле. Альтернативный подход - использование списков для хранения промежуточных результатов - требует 
+подчас большого количества памяти, тогда как использование итераторов позволяет получать значения на момент, когда они 
+действительно требуются для дальнейших вычислений.
+<p>
+Модуль locale применяется для работы с культурной средой. В конкретной культурной среде могут использоваться свои правила для 
+написания чисел, валют, времени и даты и т.п.
+<p>
+Модуль gettext При интернационализации программы важно не только предусмотреть возможность использования нескольких культурных 
+сред, но и перевод сообщений и меню программы на соответствующий язык.
+<p>
+
+<li> <b>Поддержка цикла разработки.</b> Модули: pdb, hotshot, profile, unittest, pydoc. Пакеты docutils, distutils.<br>
+Модули этого раздела помогают поддерживать документацию, производить регрессионное тестирование, отлаживать и профилировать 
+программы на Python, а также обслуживают распространение готовых программ, создавая среду для конфигурирования и установки 
+пакетов.<p>
+
+<li> <b>Взаимодействие с ОС (файлы, процессы).</b> Модули: <b>os, os.path</b>, getopt, <b>glob</b>, popen2, <b>shutil</b>, 
+select, signal, stat, tempfile.
+<p>
+<a name="os"><h4>Модуль os</h4>
+Модуль os предоставляет множество функций для работы с операционной системой, причём их поведение, как правило, не зависит от 
+ОС, поэтому программы остаются переносимыми. Здесь будут приведены наиболее часто используемые из них.
+<p>
+<i>Будьте внимательны: некоторые функции из этого модуля поддерживаются не всеми ОС.</i>
+<p>
+<b>os.name</b> - имя операционной системы. Доступные варианты: 'posix', 'nt', 'mac', 'os2', 'ce', 'java'.
+<p>
+<b>os.environ</b> - словарь переменных окружения. Изменяемый (можно добавлять и удалять переменные окружения).
+<p>
+<b>os.getlogin()</b> - имя пользователя, вошедшего в терминал (Unix).
+<p>
+<b>os.getpid()</b> - текущий id процесса.
+<p>
+<b>os.uname()</b> - информация об ОС. возвращает объект с атрибутами: sysname - имя операционной системы, nodename - имя 
+машины в сети (определяется реализацией), release - релиз, version - версия, machine - идентификатор машины.
+<p>
+<b>os.access(path, mode, *, dir_fd=None, effective_ids=False, follow_symlinks=True)</b> - проверка доступа к объекту у 
+текущего пользователя. Флаги: os.F_OK - объект существует, os.R_OK - доступен на чтение, os.W_OK - доступен на запись, os.X_OK 
+- доступен на исполнение.
+<p>
+<b>os.chdir(path)</b><br>
+Смена текущей директории.<br>
+path - путь к каталогу в виде строки.<br>
+Возвращает None. Чтобы узнать, что изменилась рабочая папка, лучше применить функцию os.getcwd(): print(os.getcwd())
+<br>Примеры использования:
+<pre>
+>>> import os
+>>> os.getcwd()
+# '/home/docs-python'
+>>> os.chdir(os.pardir)
+>>> os.getcwd()
+# '/home'</pre>
+<p>
+<b>os.chmod(path, mode, *, dir_fd=None, follow_symlinks=True)</b> - смена прав доступа к объекту (mode - восьмеричное число).
+<p>
+<b>os.chown(path, uid, gid, *, dir_fd=None, follow_symlinks=True)</b> - меняет id владельца и группы (Unix).
+<p>
+<b>os.getcwd()</b> - текущая рабочая директория.
+<p>
+<b>os.link(src, dst, *, src_dir_fd=None, dst_dir_fd=None, follow_symlinks=True)</b> - создаёт жёсткую ссылку.
+<p>
+<b>os.listdir(path=".")</b> - список файлов и директорий в папке.
+<p>
+<b>os.mkdir(path, mode=0o777, *, dir_fd=None)</b> - создаёт директорию. OSError, если директория существует.
+<p>
+<b>os.makedirs(path, mode=0o777, exist_ok=False)</b> - создаёт директорию, создавая при этом промежуточные директории.
+<p>
+<b>os.remove(path, *, dir_fd=None)</b> - удаляет путь к файлу.
+<p>
+<b>os.rename(src, dst, *, src_dir_fd=None, dst_dir_fd=None)</b> - переименовывает файл или директорию из src в dst.
+<p>
+<b>os.renames(old, new)</b> - переименовывает old в new, создавая промежуточные директории.
+<p>
+<b>os.replace(src, dst, *, src_dir_fd=None, dst_dir_fd=None)</b> - переименовывает из src в dst с принудительной заменой.
+<p>
+<b>os.rmdir(path, *, dir_fd=None)</b> - удаляет пустую директорию.
+<p>
+<b>os.removedirs(path)</b> - удаляет директорию, затем пытается удалить родительские директории, и удаляет их рекурсивно, пока 
+они пусты.
+<p>
+<b>os.symlink(source, link_name, target_is_directory=False, *, dir_fd=None)</b> - создаёт символическую ссылку на объект.
+<p>
+<b>os.sync()</b> - записывает все данные на диск (Unix).
+<p>
+<b>os.truncate(path, length)</b> - обрезает файл до длины length.
+<p>
+<b>os.utime(path, times=None, *, ns=None, dir_fd=None, follow_symlinks=True)</b> - модификация времени последнего доступа и 
+изменения файла. Либо times - кортеж (время доступа в секундах, время изменения в секундах), либо ns - кортеж (время доступа в 
+наносекундах, время изменения в наносекундах).
+<p>
+<b>os.walk(top, topdown=True, onerror=None, followlinks=False)</b> - генерация имён файлов в дереве каталогов, сверху вниз 
+(если topdown равен True), либо снизу вверх (если False). Для каждого каталога функция walk возвращает кортеж (путь к 
+каталогу, список каталогов, список файлов).
+<p>
+<b>os.system(command)</b> - исполняет системную команду, возвращает код её завершения (в случае успеха 0).
+<p>
+<b>os.urandom(n)</b> - n случайных байт. Возможно использование этой функции в криптографических целях.
+<p>
+<a name="ospath"><h4>os.path</h4>
+Модуль, реализующий некоторые полезные функции на работы с путями.<br>
+os.path является вложенным модулем в модуль os, и реализует некоторые полезные функции для работы с путями.
+<p>
+<ul>
+<li> <b>os.path.abspath(path)</b> - возвращает нормализованный абсолютный путь.
+<p>
+<li> <b>os.path.basename(path)</b> - базовое имя пути (эквивалентно os.path.split(path)[1]).
+<p>
+<li> <b>os.path.commonprefix(list)</b> - возвращает самый длинный префикс всех путей в списке.
+<p>
+<li> <b>os.path.dirname(path)</b> - возвращает имя директории пути path.
+<p>
+<li> <b>os.path.exists(path)</b> - возвращает True, если path указывает на существующий путь или дескриптор открытого файла.
+<p>
+<li> <b>os.path.expanduser(path)</b> - заменяет ~ или ~user на домашнюю директорию пользователя.
+<p>
+<li> <b>os.path.expandvars(path)</b> - возвращает аргумент с подставленными переменными окружения ($name или ${name} 
+заменяются переменной окружения name). Несуществующие имена не заменяет. На Windows также заменяет %name%.
+<p>
+<li> <b>os.path.getatime(path)</b> - время последнего доступа к файлу, в секундах.
+<p>
+<li> <b>os.path.getmtime(path)</b> - время последнего изменения файла, в секундах.
+<p>
+<li> <b>os.path.getctime(path)</b> - время создания файла (Windows), время последнего изменения файла (Unix).
+<p>
+<li> <b>os.path.getsize(path)</b> - размер файла в байтах.
+<p>
+<li> <b>os.path.isabs(path)</b> - является ли путь абсолютным.
+<p>
+<li> <b>os.path.isfile(path)</b> - является ли путь файлом.
+<p>
+<li> <b>os.path.isdir(path)</b> - является ли путь директорией.
+<p>
+<li> <b>os.path.islink(path)</b> - является ли путь символической ссылкой.
+<p>
+<li> <b>os.path.ismount(path)</b> - является ли путь точкой монтирования.
+<p>
+<li> <b>os.path.join(path1[, path2[, ...]])</b> - соединяет пути с учётом особенностей операционной системы.
+<p>
+<li> <b>os.path.normcase(path)</b> - нормализует регистр пути (на файловых системах, не учитывающих регистр, приводит путь к 
+нижнему регистру).
+<p>
+<li> <b>os.path.normpath(path)</b> - нормализует путь, убирая избыточные разделители и ссылки на предыдущие директории. На 
+Windows преобразует прямые слеши в обратные.
+<p>
+<li> <b>os.path.realpath(path)</b> - возвращает канонический путь, убирая все символические ссылки (если они поддерживаются).
+<p>
+<li> <b>os.path.relpath(path, start=None)</b> - вычисляет путь относительно директории start (по умолчанию - относительно 
+текущей директории).
+<p>
+<li> <b>os.path.samefile(path1, path2)</b> - указывают ли path1 и path2 на один и тот же файл или директорию.
+<p>
+<li> <b>os.path.sameopenfile(fp1, fp2)</b> - указывают ли дескрипторы fp1 и fp2 на один и тот же открытый файл.
+<p>
+<li> <b>os.path.split(path)</b> - разбивает путь на кортеж (голова, хвост), где хвост - последний компонент пути, а голова - 
+всё остальное. Хвост никогда не начинается со слеша (если путь заканчивается слешем, то хвост пустой). Если слешей в пути нет, 
+то пустой будет голова.
+<p>
+<li> <b>os.path.splitdrive(path)</b> - разбивает путь на пару (привод, хвост).
+<p>
+<li> <b>os.path.splitext(path)</b> - разбивает путь на пару (root, ext), где ext начинается с точки и содержит не более одной 
+точки.
+<p>
+<li> <b>os.path.supports_unicode_filenames</b> - поддерживает ли файловая система Unicode.
+</ul>
+<p>
+<b><a href="https://habr.com/ru/articles/453862/">Почему вам следует использовать pathlib</a></b>
+<p>
+<a name="glob"><h4>Модуль glob</h4>
+Модуль glob в Python предоставляет удобный способ искать файлы с определенными шаблонами.
+<p>
+Функция glob.glob() используется для поиска всех файлов, соответствующих определенному шаблону. В качестве аргумента она 
+принимает строку с шаблоном.
+<br>Пример использования:
+<pre>
+import glob
+ 
+files = glob.glob('*.txt')
+print(files)</pre>
+В данном случае мы ищем все файлы с расширением .txt в текущей директории. Результат будет представлен в виде списка.
+<p>
+Если вы хотите искать файлы не только в текущей директории, но и во всех вложенных папках, используйте аргумент recursive=True.
+<br>Пример использования:
+<pre>
+import glob
+ 
+files = glob.glob('**/*.txt', recursive=True)
+print(files)</pre>
+Теперь функция glob.glob() будет искать файлы с расширением .txt в текущей директории и всех поддиректориях.
+<p>
+В модуле glob поддерживаются следующие символы-шаблоны:
+<pre>
+* — соответствует любому количеству символов (включая пустую строку)
+? — соответствует одному любому символу
+[...] — соответствует одному из символов, заключенных в квадратные скобки (например, [abc] соответствует символам a, b или c)
+</pre>
+Пример использования:
+<pre>
+import glob
+ 
+files = glob.glob('*[0-9].txt')
+print(files)</pre>
+В данном случае мы ищем все файлы, имя которых заканчивается на цифру и расширением .txt.
+<p>
+<i>Важно: символы-шаблоны работают только для имен файлов и папок, а не для их содержимого.</i>
+<p>
+<li> <b>Обработка текстов.</b><br>
+Модули: string, re, StringIO, codecs, difflib, mmap, sgmllib, htmllib, htmlentitydefs.<br>
+Пакет xml.
+<pre>
+
+
+-----------------------------------------------------------------------------------------------------------
+
+
+</pre>
+<a name="xml"><h3 align=center>Пакет xml</h3>
+Ссылки: <a href="https://sky.pro/media/kak-ispolzovat-python-dlya-raboty-s-xml-2/">Как использовать Python для работы с XML</a>
+<p>
+XML - это язык разметки текста в текстовых файлах с помощью тегов. Для работы с такими файлами служит пакет XML.
+<p>
+<h4>Библиотека xml.etree.ElementTree</h4>
+Ссылки: <a href="http://grep.cs.msu.ru/python3.8_RU/digitology.tech/docs/python_3/library/xml.etree.elementtree.html">Перевод 
+документации</a>
+<p>
+Один из основных модулей для работы с XML в Python — это <b>xml.etree.ElementTree</b>. Он предоставляет функциональность для 
+создания, редактирования и парсинга XML-файлов.
+<p>
+Примеры будем смотреть на основе example.xml:
+<p>
+<img src="./images/python_library.png">
+<p>
+<b>Чтение xml-файлов</b>
+<pre>
+import xml.etree.ElementTree as ET
+ 
+tree = ET.parse('/home/dmitriy/Python/mypython/example.xml')# создаем древовидную структуру с функцией синтаксического 
+анализа 
+>>> print(tree)
+&lt;xml.etree.ElementTree.ElementTree object at 0x7f4acf5b6400&gt;
+root = tree.getroot()    #  получаем ее корневой элемент. Получив доступ к корневому узлу, мы можем легко перемещаться по Tree.
+>>> root
+&lt;Element 'studentsList' at 0x7f4acf4c8400&gt;
+</pre>
+Здесь мы импортируем модуль ElementTree, открываем файл example.xml, а затем получаем корневой элемент дерева XML.<br>
+мы 
+<pre>
+>>> root
+&lt;Element 'studentsList' at 0x7f4acf4c8400&gt;
+</pre>
+Можно прочитать  example.xml обычным способом:
+<pre>
+>>> with open('/home/dmitriy/Python/mypython/example.xml') as f:
+...     for line in f:
+...         print(line.strip())
+</pre>
+И получим список строк из example.xml, но видимо нет инструментов для работы с этими тегами.
+<p>
+Можно посмотреть корневой тег с атрибутами:
+<pre>
+>>> print(root.tag, root.attrib)
+studentsList {}
+</pre>
+<p>
+<b>Чтение строки xml-формата</b><br>
+<pre>
+xml_string = '''
+&lt;data&gt;
+    &lt;country name="Russia"&gt;
+        &lt;city&gt;Moscow&lt;/city&gt;
+    &lt;/country&gt;
+    &lt;country name="USA"&gt;
+        &lt;city&gt;New York&lt;/city&gt;
+    &lt;/country&gt;
+&lt;/data&gt;
+'''
+ 
+# Загрузка XML-строки в объект ElementTree
+root = ET.fromstring(xml_string)
+ 
+# Итерация по элементам
+for country in root.findall('country'):
+    name = country.get('name')
+    city = country.find('city').text
+    print(f'{name}: {city}')
+</pre>
+<b>Функция fromstring()</b>: создать элемент из строки<br>
+Вы можете создать элемент или дерево элементов из строки, содержащей XML, с помощью этой функции; она возвращает новый 
+экземпляр Element, представляющий весь этот XML.
+
+etree.fromstring(s)
+где s - строка.
+<p>
+<b>Посмотреть определенный тег по индексу:</b><br>
+Нумерация тегов начинается с нуля.
+<pre>
+print(root[0])
+<Element 'student' at 0x7f4acf4cf770>
+>>> print(root[0].text)
+first studentt
+</pre>
+Здесь root[0] - это первый тег внутри корневого. Им является тег 'student'. Чтобы посмотреть содержимое этого тега, 
+используется метод text.
+<p>
+<pre>
+>>> print(root[0][1])
+&lt;Element 'lastName' at 0x7f4acf4e31d0&gt;
+>>> print(root[0][1].text)
+Pascal
+</pre>
+Сначало смотрим второй тег внутри первого от корневого, а потом смотрим его содержимое.
+
+<h4>Обход элементов XML</h4>
+Мы можем обойти все элементы XML-дерева, используя метод iter():
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+for elem in root.iter():
+    print(elem.tag, elem.attrib)
+Вывод:
+studentsList {}
+student {'id': '1'}
+firstName {}
+lastName {}
+certificate {}
+scores {}
+modele1 {}
+modele2 {}
+modele3 {}
+student {'id': '1'}
+firstName {}
+lastName {}
+certificate {}
+scores {}
+modele1 {}
+modele2 {}
+modele3 {}
+</pre>
+</td></tr></table>
+Это выведет название и атрибуты каждого элемента в дереве.
+<p>
+<b>Увидеть только теги с атрибутами:</b>
+<pre>
+>>> for elem in root:
+...     print(elem.tag, elem.attrib)
+... 
+student {'id': '1'}
+student {'id': '1'}
+</pre>
+<b>Узнать количество определенных элементов (тегов):</b>
+<pre>
+>>> for elem in root.iter('scores'):
+...     print(elem)
+... 
+&lt;Element 'scores' at 0x7f4ace04da40&gt;
+&lt;Element 'scores' at 0x7f4ace05b9a0&gt;
+</pre>
+Внутри нашего example.xml находится два тега 'scores'
+<p>
+<b>Операции с содержимым тегов:</b>
+<pre>
+>>> for element in root.iter('scores'):
+...     score_sum = 0
+...     for child in element:
+...          score_sum += float(child.text)
+...     print(score_sum)
+... 
+240.0
+240.0
+</pre>
+Узнали суммарную сумму баллов для каждого студента.
+<h4>Поиск элементов по тегу</h4>
+Чтобы найти все элементы с определенным тегом, можно использовать метод findall():
+<pre>
+for elem in root.findall('tag_name'):
+    print(elem.attrib)
+</pre>
+Это выведет атрибуты всех элементов с тегом tag_name.
+<h4>Изменение атрибутов и текста элементов</h4>
+Мы можем изменить атрибуты и текст элементов следующим образом:
+<pre>
+for elem in root.iter('tag_name'):
+    elem.set('attribute_name', 'new_value')
+    elem.text = 'new_text'
+</pre>
+Это изменит атрибут attribute_name и текст у всех элементов с тегом tag_name.
+
+<h4>Создание новых элементов (тегов)</h4>
+<pre>
+from xml.etree import ElementTree                    # импорт необходимого ElementTree
+description = ElementTree.Element('description')     # создаем тег description
+description.text = 'Это содержимое тега description' # содержимое этого тега
+root[1].append(description)                          # этот тег будет помещен внутри 2 тега от корневого
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml') # записываем изменения
+</pre>
+Результат:
+<p>
+<img src="./images/python_library1.png">
+
+<h4 align=center>Удаление</h4>
+<p>
+<b>Удаление атрибута</b><br>
+Допустим я хочу удалить из тега student его атрибут 'id = "1"' и содержимое  "first student".
+<pre>
+root[0].attrib.pop('id', None)
+'1'
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Результат:
+<p>
+<img src="./images/python_library2.png">
+<p>
+Удалили из root[0] (первый тег от корня) атрибут.
+<p>
+<pre>
+>>> root[1].attrib.pop('id', None)
+'1'
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Удалили атрибут у второго тега student.
+<p>
+<b>Удаление одного подэлемента</b><br>
+Один конкретный подэлемент можно удалить с помощью remove функции. Эта функция должна указать узел, который мы хотим 
+удалить.
+<p>
+Удалим тег description у второго тега student, это root[1][4]:
+<pre>
+root[1].remove(root[1][4])
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Результат:
+<p>
+<img src="./images/python_library3.png">
+<p>
+<b>root[0].clear()</b> - удалит все теги внутри root[0]
+<p>
+<b>Удаление текстового содержимого</b>:<br>
+Удалить у тегов root[0] и root[1] текстовое содержимое:
+<pre>
+root[0].text = None
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+root[1].text = None
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Результат:
+<p>
+<img src="./images/python_library4.png">
+<p>
+<h4>Сохранение изменений в файл</h4>
+Чтобы сохранить изменения в файл, мы можем использовать метод write():
+<pre>
+tree.write('/home/dmitriy/Python/mypython/example.xml')
+</pre>
+Это сохранит измененное дерево XML в файл example.xml.
+<p>
+Сделал изменения в example.xml, обновил страницу в браузере '/home/dmitriy/Python/mypython/example.xml', ничего не изменилось. 
+Тогда
+<pre>
+>>> tree.write('/home/dmitriy/Python/mypython/example.xml')</pre>
+и снова обновил страницу, страница изменилась.
+<p>
+<b>Создать копию файла example.xml</b>:
+<pre>
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+По указанному пути будет создан файл copy_example.xml - копия example.xml
+
+<h4 align=center>Библиотека lxml</h4>
+Еще одна популярная библиотека для работы с XML в Python — это lxml. Она предоставляет более быстрый и гибкий интерфейс для 
+работы с XML-данными.
+<p>
+Для установки библиотеки lxml, выполните следующую команду:
+<pre>
+pip install lxml
+</pre>
+Основы работы с lxml аналогичны xml.etree.ElementTree. Однако, библиотека lxml также предоставляет дополнительные возможности, 
+такие как поддержка XPath и валидация схемы.
+<pre>
+from lxml import etree
+ 
+tree = etree.parse('example.xml')
+root = tree.getroot()
+ 
+result = root.xpath('//tag_name[@attribute_name="value"]')
+</pre>
+Здесь мы используем метод xpath() для поиска всех элементов с тегом tag_name, у которых атрибут attribute_name равен «value».
+<p>
+Пример:
+<pre>
+from lxml import etree
+import requests
+
+res = requests.get("http://docs.python.org/3/") 
+print(res.status_code) #статус-код страницы
+print(res.headres["Content-Type"]) #тип данных, чтобы убедиться, что работаем с HTML
+
+#Парсер - ПО, выделяющее определенные части информации из массива данных по заданным правилам
+parser = etree.HTMLParser() #parcer позволит работать с теми данными в виде HTML, которые плохо сформированы
+root = etree.fromstring(res.text, parser) #передача данных в формате HTML в переменную
+
+#print(root)
+for element in root.iter("a"): #перебираем все элементы в поддереве корня, которые являются атрибутом "a"
+    print(element, element.attrib) #вывод элементов и их атрибутов
+</pre>
+<pre>
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+<a name="collections"><h3 align=center>Модуль collections</h3>
+Ссылки: <a href="https://sky.pro/media/kak-rabotat-s-modulem-collections-v-python/">Модуль collections</a>
+<p>
+Метод <b>Counter</b>:<br>
+Counter — это подкласс словаря, который предназначен для подсчета количества элементов. Он принимает итерируемый объект и 
+возвращает словарь с количеством каждого элемента.
+<pre>
+from collections import Counter
+ 
+words = ["apple", "banana", "orange", "apple", "banana", "apple"]
+word_count = Counter(words)
+ 
+print(word_count)  # Counter({'apple': 3, 'banana': 2, 'orange': 1})</pre>
+<p>
+<b>defaultdict</b>:<br>
+defaultdict — это подкласс словаря, который используется, когда нужно предоставить значение по умолчанию для ключей, которые 
+еще не существуют в словаре.
+<pre>
+from collections import defaultdict
+ 
+d = defaultdict(int)
+d["a"] += 1
+d["b"] += 2
+ 
+print(d)  # defaultdict(&lt;class 'int'&gt;, {'a': 1, 'b': 2})
+</pre>
+-------------------------------------------------------------------------------------------------------------
+<p>
+<a name="re"><h4 align=center>Модуль re</h4>
+Функции этого модуля:
+<p>
+<ol>
+<li> <b>re.match(pattern, stroka)</b><br>
+Ищет совпадает ли шаблон (pattern) с началом нашей строки.
+<p>
+<li> <b>re.fullmatch(pattern, string)</b><br>
+Проверить, подходит ли строка string под шаблон pattern
+<p>
+<pre>
+>>> match = re.fullmatch(r'\d\d\D\d\d', r'12-12')
+>>> print('YES' if match else 'NO')
+YES
+>>> match = re.fullmatch(r'\d\d\D\d\d', r'Т. 12-12')
+>>> print('YES' if match else 'NO')
+NO
+</pre>
+<p>
+
+
+<li> <b>re.split(pattern, string, maxsplit=0)</b><br>
+Этот метод разделяет строку по заданному шаблону.
+<pre>
+result = re.split(r'y', 'Analytics')
+print result
+
+Результат:
+['Anal', 'tics']</pre>
+
+В примере мы разделили слово «Analytics» по букве «y». Метод split() принимает также аргумент maxsplit со значением по 
+умолчанию, равным 0. В данном случае он разделит строку столько раз, сколько возможно, но если указать этот аргумент, то 
+разделение будет произведено не более указанного количества раз. Давайте посмотрим на примеры Python RegEx:
+<pre>
+result = re.split(r'i', 'Analytics Vidhya')
+print result
+
+Результат:
+['Analyt', 'cs V', 'dhya'] # все возможные участки.</pre>
+<pre>
+result = re.split(r'i', 'Analytics Vidhya',maxsplit=1)
+print result
+
+Результат:
+['Analyt', 'cs Vidhya']</pre>
+Мы установили параметр maxsplit равным 1, и в результате строка была разделена на две части вместо трех.
+<p>
+Если в шаблоне нет группирующих скобок, то re.split работает очень похожим образом на str.split. А вот если группирующие 
+скобки в шаблоне есть, то между каждыми разрезанными строками будут все соответствия каждой из подгрупп.
+<pre>
+import re 
+print(re.split(r'(\s*)([+*/-])(\s*)', r'12  +  13*15   - 6')) 
+# -> ['12', '  ', '+', '  ', '13', '', '*', '', '15', '   ', '-', ' ', '6']</pre>
+В некоторых ситуация эта возможность бывает чрезвычайно удобна! Например, достаточно из предыдущего примера убрать лишние 
+группы, и польза сразу станет очевидна!
+<pre>
+import re 
+print(re.split(r'\s*([+*/-])\s*', r'12  +  13*15   - 6')) 
+# -> ['12', '+', '13', '*', '15', '-', '6']</pre>
+<p> 
+
+<li> <b>re.search(pattern, string)</b><br>
+Найти в строке string первую строчку, подходящую под шаблон pattern<br>
+Примеры:
+<pre>
+>>> import re
+>>> match = re.search(r'\d\d\D\d\d', r'Телефон 123-12-12')
+>>> print(match[0] if match else 'Not found')
+23-12
+>>> match = re.search(r'\d\d\D\d\d', r'Телефон 1231212') 
+>>> print(match[0] if match else 'Not found')
+Not found</pre>
+<p>
+<li> <b>re.findall(pattern, string)</b><br>
+Найти в строке string все непересекающиеся шаблоны pattern
+<pre>
+>>> print(re.findall(r'\d\d\.\d\d\.\d{4}', r'Эта строка написана 19.01.2018, а могла бы и 01.09.2017'))
+['19.01.2018', '01.09.2017']</pre>
+<p>
+Если в шаблоне есть группирующие скобки, то вместо списка найденных подстрок будет возвращён список кортежей, в каждом из 
+которых только соответствие каждой группе. Это не всегда происходит по плану, поэтому обычно нужно использовать негруппирующие 
+скобки (?:...).
+<pre>
+import re 
+print(re.findall(r'([a-z]+)(\d*)', r'foo3, im12, go, 24buz42')) 
+# -> [('foo', '3'), ('im', '12'), ('go', ''), ('buz', '42')]</pre>
+<p>
+<li> <b>re.finditer(pattern, string)</b><br>
+Итератор по всем непересекающимся шаблонам pattern в строке string (выдаются match-объекты)
+<p>
+<pre>
+for m in re.finditer(r'\d\d\.\d\d\.\d{4}', r'Эта строка написана 19.01.2018, а могла бы и 01.09.2017'): 
+    print('Дата', m[0], 'начинается с позиции', m.start()) 
+# -> Дата 19.01.2018 начинается с позиции 20 
+# -> Дата 01.09.2017 начинается с позиции 45 </pre>
+<p>
+<li> <b>re.sub(pattern, replace, string, count=0, flags=0)</b><br>
+заменяет символы по заданному паттерну на заданные символы и возвращает исправленную строку.
+<br>Параметры:
+<p>
+pattern - регулярное выражение<br>
+replace - на что нужно заменить pattern<br>
+string - строка, к которой нужно применить регулярное выражение<br>
+count - необязательный аргумент, максимальное число вхождений, подлежащих замене. Если этот параметр опущен или равен нулю, то 
+произойдет замена всех вхождений.<br>
+flags - флаги<br>
+Возвращаемое значение:
+<p>
+Если совпадения есть - изменённая строка<br>
+string, если совпадений нет
+<p>
+<pre>
+print(re.sub(r'\d\d\.\d\d\.\d{4}', 
+             r'DD.MM.YYYY', 
+             r'Эта строка написана 19.01.2018, а могла бы и 01.09.2017')) 
+# -> Эта строка написана DD.MM.YYYY, а могла бы и DD.MM.YYYY </pre>
+<p>
+<li> <b>stroka.re.group()</b><br>
+Искомая подстрока найдена. Чтобы вывести её содержимое, применим метод group() (мы используем «r» перед строкой шаблона, чтобы 
+показать, что это «сырая» строка в Python):
+<pre>
+result = re.match(r'AV', 'AV Analytics Vidhya AV')
+print result.group(0)
+
+Результат:
+AV</pre>
+<p>
+<li> <b>re.compile(pattern, repl, string)</b><br>
+Мы можем собрать регулярное выражение в отдельный объект, который может быть использован для поиска. Это также избавляет от 
+переписывания одного и того же выражения.
+<pre>
+pattern = re.compile('AV')
+result = pattern.findall('AV Analytics Vidhya AV')
+print result
+result2 = pattern.findall('AV is largest analytics community of India')
+print result2
+
+Результат:
+['AV', 'AV']
+['AV']</pre>
+</ol>
+<p>
+Также есть методы start() и end() для того, чтобы узнать начальную и конечную позицию найденной строки.
+<pre>
+result = re.match(r'AV', 'AV Analytics Vidhya AV')
+print result.start()
+print result.end()
+
+Результат:
+0
+2</pre>
+<p>
+
+
+
+
+
+<p>
+<li> <b>Многопоточные вычисления.</b><br>
+Модули: threading, thread, Queue.
+<p>
+------------------------------------------------------------------------------------------------------------------
+<p>
+<li> <b>Хранение данных. Архивация.</b><br>
+Модули: pickle, shelve, anydbm, gdbm, gzip, zlib, zipfile, bz2, csv, tarfile.<br>
+К этой категории отнесены модули, которые работают с внешними хранилищами данных.
+<h3 align=center><a name="csv">Модуль CSV</h3>
+Ссылки: <a href="https://pyneng.readthedocs.io/ru/latest/book/17_serialization/csv.html">Работа с файлами в формате CSV</a>
+<p>
+CSV (comma-separated value) - это формат представления табличных данных (например, это могут быть данные из таблицы или данные 
+из БД).<br>
+В этом формате каждая строка файла - это строка таблицы. Несмотря на название формата, разделителем может быть не только 
+запятая.<br>
+И хотя у форматов с другим разделителем может быть и собственное название, например, TSV (tab separated values), тем не менее, 
+под форматом CSV понимают, как правило, любые разделители.
+<p>
+<b>Чтение:</b><br>
+Пример чтения файла в формате CSV (файл csv_read.py):
+<p>
+<pre>
+import csv
+
+with open('sw_data.csv') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)
+Вывод будет таким:
+
+$ python csv_read.py
+['hostname', 'vendor', 'model', 'location']
+['sw1', 'Cisco', '3750', 'London']
+['sw2', 'Cisco', '3850', 'Liverpool']
+['sw3', 'Cisco', '3650', 'Liverpool']
+['sw4', 'Cisco', '3650', 'London']</pre>
+В первом списке находятся названия столбцов, а в остальных соответствующие значения.
+<p>
+Обратите внимание, что сам csv.reader возвращает итератор.
+<br>При необходимости его можно превратить в список таким образом:
+<pre>
+with open('sw_data.csv') as f:
+    reader = csv.reader(f)
+    print(list(reader))
+
+[['hostname', 'vendor', 'model', 'location'], ['sw1', 'Cisco', '3750', 'London'], ['sw2', 'Cisco', '3850', 'Liverpool'], 
+['sw3', 'Cisco', '3650', 'Liverpool'], ['sw4', 'Cisco', '3650', 'London']]</pre>
+<p>
+Чаще всего заголовки столбцов удобней получить отдельным объектом. Это можно сделать таким образом (файл csv_read_headers.py):
+<pre>
+import csv
+
+with open('sw_data.csv') as f:
+    reader = csv.reader(f)
+    headers = next(reader)
+    print('Headers: ', headers)
+    for row in reader:
+        print(row)</pre>
+Иногда в результате обработки гораздо удобней получить словари, в которых ключи - это названия столбцов, а значения - значения 
+столбцов.
+<p>
+Для этого в модуле есть DictReader (файл csv_read_dict.py):
+<pre>
+import csv
+
+with open('sw_data.csv') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row)
+        print(row['hostname'], row['model'])
+</pre>
+Вывод будет таким:
+<pre>
+$ python csv_read_dict.py
+{'hostname': 'sw1', 'vendor': 'Cisco', 'model': '3750', 'location': 'London, Globe Str 1 '}
+sw1 3750
+{'hostname': 'sw2', 'vendor': 'Cisco', 'model': '3850', 'location': 'Liverpool'}
+sw2 3850
+{'hostname': 'sw3', 'vendor': 'Cisco', 'model': '3650', 'location': 'Liverpool'}
+sw3 3650
+{'hostname': 'sw4', 'vendor': 'Cisco', 'model': '3650', 'location': 'London, Grobe Str 1'}
+sw4 3650
+</pre>
+<i>Примечание:<br>
+До Python 3.8 возвращался отдельный тип упорядоченные словари (OrderedDict).</i>
+<p>
+
+<b>Запись:</b><br>
+Аналогичным образом с помощью модуля csv можно и записать файл в формате CSV (файл csv_write.py):
+<pre>
+import csv
+
+data = [['hostname', 'vendor', 'model', 'location'],
+        ['sw1', 'Cisco', '3750', 'London, Best str'],
+        ['sw2', 'Cisco', '3850', 'Liverpool, Better str'],
+        ['sw3', 'Cisco', '3650', 'Liverpool, Better str'],
+        ['sw4', 'Cisco', '3650', 'London, Best str']]
+
+
+with open('sw_data_new.csv', 'w') as f:
+    writer = csv.writer(f)
+    for row in data:
+        writer.writerow(row)
+
+with open('sw_data_new.csv') as f:
+    print(f.read())
+</pre>
+В примере выше строки из списка сначала записываются в файл, а затем содержимое файла выводится на стандартный поток вывода.
+<p>
+Вывод будет таким:
+<pre>
+$ python csv_write.py
+hostname,vendor,model,location
+sw1,Cisco,3750,"London, Best str"
+sw2,Cisco,3850,"Liverpool, Better str"
+sw3,Cisco,3650,"Liverpool, Better str"
+sw4,Cisco,3650,"London, Best str"
+</pre>
+Обратите внимание на интересную особенность: строки в последнем столбце взяты в кавычки, а остальные значения - нет.
+<p>
+Так получилось из-за того, что во всех строках последнего столбца есть запятая. И кавычки указывают на то, что именно является 
+целой строкой. Когда запятая находится в кавычках, модуль csv не воспринимает её как разделитель.
+<p>
+Иногда лучше, чтобы все строки были в кавычках. Конечно, в данном случае достаточно простой пример, но когда в строках больше 
+значений, то кавычки позволяют указать, где начинается и заканчивается значение.
+<p>
+Модуль csv позволяет управлять этим. Для того, чтобы все строки записывались в CSV-файл с кавычками, надо изменить скрипт 
+таким образом (файл csv_write_quoting.py):
+<pre>
+import csv
+
+
+data = [['hostname', 'vendor', 'model', 'location'],
+        ['sw1', 'Cisco', '3750', 'London, Best str'],
+        ['sw2', 'Cisco', '3850', 'Liverpool, Better str'],
+        ['sw3', 'Cisco', '3650', 'Liverpool, Better str'],
+        ['sw4', 'Cisco', '3650', 'London, Best str']]
+
+
+with open('sw_data_new.csv', 'w') as f:
+    writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+    for row in data:
+        writer.writerow(row)
+
+with open('sw_data_new.csv') as f:
+    print(f.read())
+</pre>
+Теперь вывод будет таким:
+<pre>
+$ python csv_write_quoting.py
+"hostname","vendor","model","location"
+"sw1","Cisco","3750","London, Best str"
+"sw2","Cisco","3850","Liverpool, Better str"
+"sw3","Cisco","3650","Liverpool, Better str"
+"sw4","Cisco","3650","London, Best str"
+</pre>
+Теперь все значения с кавычками. И поскольку номер модели задан как строка в изначальном списке, тут он тоже в кавычках.
+<p>
+Кроме метода writerow, поддерживается метод writerows. Ему можно передать любой итерируемый объект.
+<p>
+Например, предыдущий пример можно записать таким образом (файл csv_writerows.py):
+<pre>
+import csv
+
+data = [['hostname', 'vendor', 'model', 'location'],
+        ['sw1', 'Cisco', '3750', 'London, Best str'],
+        ['sw2', 'Cisco', '3850', 'Liverpool, Better str'],
+        ['sw3', 'Cisco', '3650', 'Liverpool, Better str'],
+        ['sw4', 'Cisco', '3650', 'London, Best str']]
+
+
+with open('sw_data_new.csv', 'w') as f:
+    writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+    writer.writerows(data)
+
+with open('sw_data_new.csv') as f:
+    print(f.read())
+</pre>
+<p>
+<b>DictWriter</b><br>
+С помощью DictWriter можно записать словари в формат CSV.
+<p>
+В целом DictWriter работает так же, как writer, но так как словари не упорядочены, надо указывать явно в каком порядке будут 
+идти столбцы в файле. Для этого используется параметр fieldnames (файл csv_write_dict.py):
+<pre>
+import csv
+
+data = [{
+    'hostname': 'sw1',
+    'location': 'London',
+    'model': '3750',
+    'vendor': 'Cisco'
+}, {
+    'hostname': 'sw2',
+    'location': 'Liverpool',
+    'model': '3850',
+    'vendor': 'Cisco'
+}, {
+    'hostname': 'sw3',
+    'location': 'Liverpool',
+    'model': '3650',
+    'vendor': 'Cisco'
+}, {
+    'hostname': 'sw4',
+    'location': 'London',
+    'model': '3650',
+    'vendor': 'Cisco'
+}]
+
+with open('csv_write_dictwriter.csv', 'w') as f:
+    writer = csv.DictWriter(
+        f, fieldnames=list(data[0].keys()), quoting=csv.QUOTE_NONNUMERIC)
+    writer.writeheader()
+    for d in data:
+        writer.writerow(d)
+</pre>
+<p>
+<b>Указание разделителя:</b><br>
+Иногда в качестве разделителя используются другие значения. В таком случае должна быть возможность подсказать модулю, какой 
+именно разделитель использовать.
+<p>
+Например, если в файле используется разделитель ; (файл sw_data2.csv):
+<pre>
+hostname;vendor;model;location
+sw1;Cisco;3750;London
+sw2;Cisco;3850;Liverpool
+sw3;Cisco;3650;Liverpool
+sw4;Cisco;3650;London
+</pre>
+Достаточно просто указать, какой разделитель используется в reader (файл csv_read_delimiter.py):
+<pre>
+import csv
+
+with open('sw_data2.csv') as f:
+    reader = csv.reader(f, delimiter=';')
+    for row in reader:
+        print(row)
+</pre>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<a name="json"><h3 align=center>Работа с файлами в формате JSON</h3>
+Ссылки: <a href="https://pyneng.readthedocs.io/ru/latest/book/17_serialization/json.html">Работа с файлами в формате JSON</a>
+<p>
+JSON (JavaScript Object Notation) - это текстовый формат для хранения и обмена данными.
+<br>Как и в случае с CSV, в Python есть модуль, который позволяет легко записывать и читать данные в формате JSON.
+<p>
+<b>Чтение:</b>
+Файл sw_templates.json:
+<pre>
+{
+  "access": [
+    "switchport mode access",
+    "switchport access vlan",
+    "switchport nonegotiate",
+    "spanning-tree portfast",
+    "spanning-tree bpduguard enable"
+  ],
+  "trunk": [
+    "switchport trunk encapsulation dot1q",
+    "switchport mode trunk",
+    "switchport trunk native vlan 999",
+    "switchport trunk allowed vlan"
+  ]
+}
+</pre>
+Для чтения в модуле json есть два метода:
+<p>
+json.load - метод считывает файл в формате JSON и возвращает объекты Python
+<p>
+json.loads - метод считывает строку в формате JSON и возвращает объекты Python
+<p>
+<b>json.load</b><br>
+Чтение файла в формате JSON в объект Python (файл json_read_load.py):
+<pre>
+import json
+
+with open('sw_templates.json') as f:
+    templates = json.load(f)
+
+print(templates)
+
+for section, commands in templates.items():
+    print(section)
+    print('\n'.join(commands))
+</pre>
+Вывод будет таким:
+<pre>
+$ python json_read_load.py
+{'access': ['switchport mode access', 'switchport access vlan', 'switchport nonegotiate', 'spanning-tree portfast',
+ 'spanning-tree bpduguard enable'], 'trunk': ['switchport trunk encapsulation dot1q', 'switchport mode trunk', 
+ 'switchport trunk native vlan 999', 'switchport trunk allowed vlan']}
+access
+switchport mode access
+switchport access vlan
+switchport nonegotiate
+spanning-tree portfast
+spanning-tree bpduguard enable
+trunk
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 999
+switchport trunk allowed vlan
+</pre>
+<b>json.loads</b><br>
+Считывание строки в формате JSON в объект Python (файл json_read_loads.py):
+<pre>
+import json
+
+with open('sw_templates.json') as f:
+    file_content = f.read()
+    templates = json.loads(file_content)
+
+print(templates)
+
+for section, commands in templates.items():
+    print(section)
+    print('\n'.join(commands))
+</pre>
+Результат будет аналогичен предыдущему выводу.
+<p>
+<b>Запись</b>:<br>
+Запись файла в формате JSON также осуществляется достаточно легко.
+<p>
+Модуль json предоставляет метод dump() для записи данных в файлы. Также есть метод dumps() для записей в строку Python.
+<p>
+<b>json.dumps</b><br>
+Преобразование объекта в строку в формате JSON (json_write_dumps.py):
+<pre>
+import json
+
+trunk_template = [
+    'switchport trunk encapsulation dot1q', 'switchport mode trunk',
+    'switchport trunk native vlan 999', 'switchport trunk allowed vlan'
+]
+
+access_template = [
+    'switchport mode access', 'switchport access vlan',
+    'switchport nonegotiate', 'spanning-tree portfast',
+    'spanning-tree bpduguard enable'
+]
+
+to_json = {'trunk': trunk_template, 'access': access_template}
+
+with open('sw_templates.json', 'w') as f:
+    f.write(json.dumps(to_json))
+
+with open('sw_templates.json') as f:
+    print(f.read())
+</pre>
+Метод json.dumps подходит для ситуаций, когда надо вернуть строку в формате JSON. Например, чтобы передать ее API.
+<p>
+<b>json.dump</b><br>
+Запись объекта Python в файл в формате JSON (файл json_write_dump.py):
+<pre>
+import json
+
+trunk_template = [
+    'switchport trunk encapsulation dot1q', 'switchport mode trunk',
+    'switchport trunk native vlan 999', 'switchport trunk allowed vlan'
+]
+
+access_template = [
+    'switchport mode access', 'switchport access vlan',
+    'switchport nonegotiate', 'spanning-tree portfast',
+    'spanning-tree bpduguard enable'
+]
+
+to_json = {'trunk': trunk_template, 'access': access_template}
+
+with open('sw_templates.json', 'w') as f:
+    json.dump(to_json, f)
+
+with open('sw_templates.json') as f:
+    print(f.read())
+</pre>
+Когда нужно записать информацию в формате JSON в файл, лучше использовать метод dump.
+<p>
+<b>Дополнительные параметры методов записи</b><br>
+Методам dump и dumps можно передавать дополнительные параметры для управления форматом вывода.
+<p>
+По умолчанию эти методы записывают информацию в компактном представлении. Как правило, когда данные используются другими 
+программами, визуальное представление данных не важно. Если же данные в файле нужно будет считать человеку, такой формат не 
+очень удобно воспринимать.
+<p>
+К счастью, модуль json позволяет управлять подобными вещами.
+<p>
+Передав дополнительные параметры методу dump (или методу dumps), можно получить более удобный для чтения вывод (файл 
+json_write_indent.py):
+<pre>
+import json
+
+trunk_template = [
+    'switchport trunk encapsulation dot1q', 'switchport mode trunk',
+    'switchport trunk native vlan 999', 'switchport trunk allowed vlan'
+]
+
+access_template = [
+    'switchport mode access', 'switchport access vlan',
+    'switchport nonegotiate', 'spanning-tree portfast',
+    'spanning-tree bpduguard enable'
+]
+
+to_json = {'trunk': trunk_template, 'access': access_template}
+
+with open('sw_templates.json', 'w') as f:
+    json.dump(to_json, f, sort_keys=True, indent=2)
+
+with open('sw_templates.json') as f:
+    print(f.read())
+</pre>
+Теперь содержимое файла sw_templates.json выглядит так:
+<pre>
+{
+  "access": [
+    "switchport mode access",
+    "switchport access vlan",
+    "switchport nonegotiate",
+    "spanning-tree portfast",
+    "spanning-tree bpduguard enable"
+  ],
+  "trunk": [
+    "switchport trunk encapsulation dot1q",
+    "switchport mode trunk",
+    "switchport trunk native vlan 999",
+    "switchport trunk allowed vlan"
+  ]
+}
+</pre>
+<p>
+<b>Изменение типа данных</b><br>
+Еще один важный аспект преобразования данных в формат JSON: данные не всегда будут того же типа, что исходные данные в Python.
+<p>
+Например, кортежи при записи в JSON превращаются в списки:
+<pre>
+In [1]: import json
+
+In [2]: trunk_template = ('switchport trunk encapsulation dot1q',
+   ...:                   'switchport mode trunk',
+   ...:                   'switchport trunk native vlan 999',
+   ...:                   'switchport trunk allowed vlan')
+
+In [3]: print(type(trunk_template))
+<class 'tuple'>
+
+In [4]: with open('trunk_template.json', 'w') as f:
+   ...:     json.dump(trunk_template, f, sort_keys=True, indent=2)
+   ...:
+
+In [5]: cat trunk_template.json
+[
+  "switchport trunk encapsulation dot1q",
+  "switchport mode trunk",
+  "switchport trunk native vlan 999",
+  "switchport trunk allowed vlan"
+]
+In [6]: templates = json.load(open('trunk_template.json'))
+
+In [7]: type(templates)
+Out[7]: list
+
+In [8]: print(templates)
+['switchport trunk encapsulation dot1q', 'switchport mode trunk', 'switchport trunk native vlan 999', 'switchport trunk 
+allowed vlan']
+</pre>
+Так происходит из-за того, что в JSON используются другие типы данных и не для всех типов данных Python есть соответствия.
+<p>
+<b>Таблица конвертации данных Python в JSON:</b>
+<p>
+<img src="./images/python_oop1.png">
+<p>
+Таблица конвертации JSON в данные Python:
+<p>
+<img src="./images/python_oop2.png">
+<p>
+<b>Ограничение по типам данных</b><br>
+В формат JSON нельзя записать словарь, у которого ключи - кортежи:
+<pre>
+In [23]: to_json = {('trunk', 'cisco'): trunk_template, 'access': access_template}
+
+In [24]: with open('sw_templates.json', 'w') as f:
+    ...:     json.dump(to_json, f)
+    ...:
+...
+TypeError: key ('trunk', 'cisco') is not a string
+</pre>
+<p>
+С помощью дополнительного параметра можно игнорировать подобные ключи:
+<p>
+<pre>
+In [25]: to_json = {('trunk', 'cisco'): trunk_template, 'access': access_template}
+
+In [26]: with open('sw_templates.json', 'w') as f:
+    ...:     json.dump(to_json, f, skipkeys=True)
+    ...:
+    ...:
+
+In [27]: cat sw_templates.json
+{"access": ["switchport mode access", "switchport access vlan", "switchport nonegotiate", "spanning-tree portfast", "spanning-
+tree bpduguard enable"]}
+</pre>
+Кроме того, в JSON ключами словаря могут быть только строки. Но, если в словаре Python использовались числа, ошибки не будет. 
+Вместо этого выполнится конвертация чисел в строки:
+<pre>
+In [28]: d = {1: 100, 2: 200}
+
+In [29]: json.dumps(d)
+Out[29]: '{"1": 100, "2": 200}'
+</pre>
+<pre>
+
+
+=================================================================================================================
+
+
+
+</pre>
+<p>
+<li> <b>Платформо-зависимые модули.</b><br>
+Для UNIX: commands, pwd, grp, fcntl, resource, termios, readline, rlcompleter. Для Windows: msvcrt, _winreg, winsound.
+<p>
+<li> <b>Поддержка сети.</b><br>
+Протоколы Интернет. Модули: cgi, Cookie, urllib, urlparse, httplib, smtplib, poplib, telnetlib, socket, asyncore. Примеры 
+серверов: SocketServer, BaseHTTPServer, xmlrpclib, asynchat.<br>
+Почти все модули из этой категории, обслуживающие клиентскую часть протокола, построены по одному и тому же принципу: из 
+модуля необходим только класс, объект которого содержит информацию о соединении с сервером, а методы реализуют взаимодействие 
+с сервером по соответствующему протоколу. Таким образом, чем сложнее протокол, тем больше методов и других деталей требуется 
+для реализации клиента.<br>
+Примеры серверов используются по другому принципу. В модуле с реализацией сервера описан базовый класс, из которого 
+пользователь модуля должен наследовать свой класс, реализующий требуемую функциональность. Правда, иногда замещать нужно всего 
+один или два метода.
+<p>
+<li> <b>Поддержка Internet.</b><br>
+Форматы данных. Модули: quopri, uu, base64, binhex, binascii, rfc822, mimetools, MimeWriter, multifile, mailbox. Пакет 
+email.<br>
+В стандартной библиотеке Python имеются разноуровневые модули для работы с различными форматами, применяющимися для 
+кодирования данных в сети Интернет и тому подобных приложениях.<br>
+Сегодня наиболее мощным инструментом для обработки сообщений в формате является пакет email. С его помощью можно как разбирать 
+сообщения в удобном для программной обработки виде, так и формировать сообщение на основе данных о полях и основном содержимом 
+(включая вложения).
+<p>
+<li> <b>Python о себе.</b><br>
+Модули: parser, symbol, token, keyword, inspect, tokenize, pyclbr, py_compile, compileall, dis, compiler.
+<p>
+<li> <b>Графический интерфейс. Модуль Tkinter.</b><br>
+Почти все современные приложения имеют графический интерфейс пользователя. Такие приложения можно создавать и на языке Python. 
+В стандартной поставке имеется модуль Tkinter, который есть не что иное, как интерфейс к языку Tcl/Tk, на котором можно 
+описывать графический интерфейс.
+<p>
+Следует отметить, что существуют и другие пакеты для программирования графического интерфейса: wxPython (основан на 
+wxWidgets), PyGTK и т.д. Среди этих пакетов в основном такие, которые работают на одной платформе (реже - на двух).
+</ul>
+Примечание:<br>
+Очень часто модули содержат один или несколько классов, с помощью которых создается объект нужного типа, а затем речь идет уже 
+не об именах из модуля, а об атрибутах этого объекта. И наоборот, некоторые модули содержат лишь функции, достаточно общие для 
+того, чтобы работать над произвольными объектами (либо достаточно большой категорией объектов).
+
+<h4><a name="functools"</a>Модуль functools</h4>
+Ссылка: <a href="https://habr.com/ru/companies/otus/articles/504102/">Введение в Python Functools</a>
+<p>
+Functools – это библиотека Python, которая предназначена для работы с функциями высшего порядка. Такие функции могут принимать 
+в себя другие функции и возвращать функции. Они помогают разработчиком писать код, который можно переиспользовать. Функции 
+можно использовать или расширять, не переписывая их полностью. Модуль functools в Python предоставляет различные инструменты, 
+которые позволяют добиться описанного эффекта. Например Partial.
+<p>
+<b>Partial</b><br>
+С помощью partial функции можно заменить существующую функцию, которой уже переданы аргументы. Более того, мы также можем 
+создать новую версию функции, добавив качественную документацию.
+<p>
+Мы можем создавать новые функции, передавая частичные аргументы. Также мы можем заморозить некоторые аргументы функции, что 
+приведет к появлению нового объекта. Еще один способ представить partial, заключается в том, что с ее помощью мы можем создать 
+функцию со значениями по умолчанию. Partial поддерживает ключевые слова и позиционные аргументы в качестве фиксированных.
+<p>
+Чтобы создать partial-функцию, используйте partial() из библиотеки functools. Пишется она следующим образом:
+<pre>partial(func, /, *args, ** kwargs)</pre>
+
+Так вы создадите partial функцию, которая вызовет func, передав ей фиксированные ключевые слова и позиционные аргументы. Здесь 
+обычно передаются несколько необходимых аргументов для вызова функции func. Остальные аргументы передаются в *args и **kwargs.
+<p>
+Допустим, функция ниже складывает два числа:
+<pre>
+def multiply(x, y):
+ 
+    return x * y</pre>
+
+Теперь рассмотрим случай, когда нам понадобилось удвоить или утроить заданное число. В таком случае новые функции мы 
+определим, как показано ниже:
+<pre>
+def multiply(x, y):
+        return x * y
+ 
+def doubleNum(x):
+       return multiply(x, 2)
+ 
+def tripleNum(x):
+       return multiply(x, 3)</pre>
+Когда сценария работы функции всего 2-3, конечно, логичнее сделать, как показано выше. Но когда нужно написать еще 100 таких 
+функций, то смысла переписывать один и тот же код столько раз нет. Здесь нам и пригодятся partial функции. Чтобы ими 
+воспользоваться, во-первых, нам нужно импортировать partial из Functools.
+<pre>
+from functools import partial
+ 
+def multiply(x, y):
+       return x * y
+ 
+doubleNum = partial(multiply, 2)
+tripleNum = partial(multiply, 3)
+ 
+Print(doubleNum(10))
+ 
+Output: 20</pre>
+
+Как видно из примера, значения по умолчанию будут заменены переменными слева. Вместо x будет 2, а вместо y будет 10 при вызове 
+doubleNum(10). В этом примере порядок не будет иметь принципиального значения, но в других вариантах использования он может 
+иметь значение.
+
+
+
+<h2 align=center>Дополнительные библиотеки</h2>
+Python  может работать с дополнительными библиотеками, которые в состав python не входят и их нужно устанавливать в систему.
+<h3><a name="requests">Библиотека requests</h3>
+Служит для отправки запросов на сервер и получения от него ответа.
+<p>
+Для установки служит команда: <b>pip3 install requests</b><br>
+У меня установлен уже в python.
+<p>
+Пример простого запроса в программе:
+<pre>
+import requests
+r = requests.get('htpp://example.com')  # простой get-запрос
+print(r.text) # вывод ответа от сервера</pre>
+<img src="./images/python_base8.png">
+
+
+<h3><a name="pandas">Библиотека pandas</h3>
+Ссылки: <a href="https://education.yandex.ru/handbook/python/article/modul-pandas">Модуль pandas</a>
+<p>
+Применяется для обработки и анализа табличных данных. В этой библиотеке используется numpy для удобного хранения данных и вычислений.
+ <b>Установка:</b>
+<pre>pip install pandas</pre>
+
+<li> NumPy - работа с числовыми массивами<br>
+<b>Установка:</b><br>
+sudo apt-get install python3-numpy<br>
+или<br>
+sudo pip3 install numpy
+<p>
+<b>Функции:</b><br>
+n.ndim - количество строк в двухмерном массиве<br>
+n.shape - количество строк и столбцов в двухмерном массиве<br>
+n.size - количество элементов в двухмерном массиве<br>
+array() - создаёт массив<br>
+linspace(start, end, количество чисел в интервале от start до end) - генерирует числа<br>
+reshape(количество строк, коли-во столбцов) - превращает одномерный массив в двухмерный.
+<p>
+<i>Когда вы используете
+from numpy import *
+<p>
+Это значит, что будут подключены все имеющиеся библиотеки питона. И это очень плохо. Во-первых, все это счастье грузится ну очень долго. А во-вторых, если среди ваших библиотек окажутся взаимоисключающие, т.е. разные библиотеки, но использующие одинаковые имена функций, то ваш питон начнет пестрить сообщениями об ошибках, поскольку он не будет знать из какой библиотеки ему использовать ту или иную функцию. Чтобы этого не происходило, забудьте про эту строку и подключайте только то, что вам действительно необходимо в работе.
+<p>
+Допустим, мы хотим pапустить код из примера:
+<pre>
+x = linspace(0, 5, 10)
+y = x ** 2
+print(x)
+print(y)
+
+figure()
+plot(x, y, 'r')
+xlabel('x')
+ylabel('y')
+title('title')
+show()</pre>
+
+в этом коде используется linspace из numpy и figure(), plot(), xlabel(), ylabel(), title(), show() из matplotlib. Понятно, что подключать ради них абсолютно все библиотеки крайне глупо. Как мы можем поступить в данном случае? Ну, вариантов у нас несколько:
+<pre>
+--- Вариант 1 ---
+from numpy import *
+from matplotlib.pyplot import *
+
+x = linspace(0, 5, 10)
+y = x ** 2
+print(x)
+print(y)
+
+figure()
+plot(x, y, 'r')
+xlabel('x')
+ylabel('y')
+title('title')
+show()
+
+--- Вариант 2 ---
+import numpy, matplotlib.pyplot
+
+x = numpy.linspace(0, 5, 10)
+y = x ** 2
+print(x)
+print(y)
+
+matplotlib.pyplot.figure()
+matplotlib.pyplot.plot(x, y, 'r')
+matplotlib.pyplot.xlabel('x')
+matplotlib.pyplot.ylabel('y')
+matplotlib.pyplot.title('title')
+matplotlib.pyplot.show()
+
+--- Вариант 3 (второй вариант, но чуть короче) ---
+import numpy as a
+import matplotlib.pyplot as b
+
+x = a.linspace(0, 5, 10)
+y = x ** 2
+print(x)
+print(y)
+
+b.figure()
+b.plot(x, y, 'r')
+b.xlabel('x')
+b.ylabel('y')
+b.title('title')
+b.show()
+</pre>
+Можно отдельно каждую функцию импортировать и переименовать... ну и так далее. По большому счету все зависит от того как у вас 
+настроено рабочее окружение питона, т.е. какие библиотеки у него прописаны, а какие установлены, но по каким-то причинам не 
+попадают в поле зрения. Например, данный вариант будет работать на Ubuntu Linux 17.10, но заставить его работать в Slackware 
+Linux окажется весьма не просто.</i>
+<p>
+<li> matplotlob - построение графиков<br>
+Ссылки: <a href="https://stepik.org/lesson/7629/step/1?unit=1285">библиотека matplotlob</a><br>
+<a href="https://stepik.org/lesson/196432/step/1?auth=registration&unit=172894">matplotlib</a>
+<p>
+<i>В чем разница между matplotlib и pylab? Что такое pylab?Почему вызываем его а не matplotlib?<br>
+matplotlib - ﻿это пакет, pylab﻿ - ﻿библиотека из него.<br>
+https://matplotlib.org/api/pyplot_api.html</i>
+<p>
+<i>Импорт рylab неявным образом импортирует все функции из numpy и matplotlib россыпью? Пояснять неплохо бы. Не лучшее решение, по-моему. Во-первых, не очевидно для новичков, во-вторых, пространство имен засоряется неимоверно. Там еще обе библиотеки как np и plt модули импортируются.
+<p>
+Лучше явно:<pre>
+import numpy as np
+import matplotlib.pyplot as plt
+x = np.linspace(0, 5, 10)
+y = x**2
+plt.figure()
+plt.plot(x, y, 'r')</pre>
+
+...и так далее.</i>
+<p>
+<li> SciPy - функции для научных вычислений
+<p>
+<li> Scikit-learn - алгоритмы машинного обучения
+<p>
+<li> PythonSeaborn - визулизация статистических данных
+</ol>
+
+
+
+
+<h3 align=center><a name="datetime">Модуль datetime</h3>
+Ссылка: <a href="https://pythonru.com/primery/kak-ispolzovat-modul-datetime-v-python">Как использовать модуль datetime в 
+Python</a><br>
+<a href="https://timeweb.cloud/tutorials/python/metod-strptime-i-strftime-v-python">Преобразование строки в дату и наоборот</a>
+<p>
+Этот модуль позволяет управлять датами и временем, представляя их в таком виде, в котором пользователи смогут их понимать.
+<p>
+datetime включает различные компоненты. Так, он состоит из объектов (классов) следующих типов:
+<ul>
+<li> date — хранит дату
+<li> time — хранит время
+<li> datetime — хранит дату и время
+</ul>
+<p>
+<b>Как получить текущие дату и время?</b>
+С помощью модуля Python это сделать очень просто. Сначала нужно импортировать класс datetime из модуля datetime, после чего 
+создать объект datetime. Модуль предоставляет метод now(), который возвращает текущие дату и время с учетом локальных настроек.
+<p>
+Пример:
+<pre>
+import datetime
+
+dt_now = datetime.datetime.now()
+print(dt_now)</pre>
+Результ:
+<pre>2020-11-14 15:43:32.249588</pre>
+<p>
+Класс date можно использовать для получения или изменения объектов даты. Например, для получения текущей с учетом настроек 
+подойдет следующее:
+<pre>
+from datetime import date
+
+current_date = date.today()
+print(current_date)
+</pre>
+Результат:<br>
+2020-11-14
+<p>
+<b>Получить текущее время</b><br>
+Для получения текущего локального времени сперва нужно получить текущие дату и время, а затем достать из этого объекта только 
+время с помощью метода time():
+<pre>
+import datetime
+
+current_date_time = datetime.datetime.now()
+current_time = current_date_time.time()
+print(current_time)</pre>
+Результат:<br>
+15:51:05.627643
+<p>
+<b>Компоненты datetime в Python</b><br>
+Модуль datetime в Python может использоваться для получения разных версий времени. Для этого нужно ознакомиться с атрибутами 
+модуля. Используем для этого функцию dir().
+<pre>
+import datetime
+
+attr = dir(datetime)
+print(attr)
+# ['MAXYEAR', 'MINYEAR', '__doc__', '__name__', '__package__', 'date', 'datetime',
+# 'datetime_CAPI', 'time', 'timedelta', 'tzinfo']</pre>
+<p>
+<b>Как создавать объекты даты и времени</b><br>
+Для создания объекта времени используется класс time из модуля datetime в Python. Синтаксис следующий: datetime.time(hour, 
+minutes, seconds).
+<p>
+В этом примере создается объект времени представленный следующим образом (8, 48, 45).
+<pre>
+import datetime
+
+timeobj= datetime.time(8,48,45)
+print(timeobj)</pre>
+Результат такой:
+<pre>08:48:45</pre>
+Сначала импортируется модуль datetime. После этого создается экземпляр класса (объект time). Затем ему присваивается значение 
+datetime.time(8, 48, 45), где параметры 8, 48 и 45 представляют собой часы, минуты и секунды соответственно.
+<p>
+Для создания объекта даты нужно передать дату с использованием следующего синтаксиса:
+<p>
+datetime.datetime(year,month,day))
+Такой пример:
+<pre>
+import datetime
+
+date_obj = datetime.datetime(2020,10,17)
+print(date_obj)</pre>
+Вернет вот такой результат:
+<pre>2020-10-17 00:00:00</pre>
+<p>
+<b>Timedelta</b><br>
+timedelta представляет длительность (даты или времени). Модуль datetime включает атрибут timedelta(), который используется для 
+управления датой в Python. Объект timedelta выглядит следующим образом:
+<pre>
+td_object =timedelta(days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0)
+td_object
+datetime.timedelta(0)</pre>
+Все аргументы опциональные и их значения по умолчанию равно 0. Они могут быть целыми или числами с плавающей точкой, как 
+положительными, так и отрицательными. Благодаря этому можно выполнять математические операции, такие как сложение, вычитание и 
+умножение.
+<p>
+<b>Как вычислить разницу для двух дат</b><br>
+Посмотрим на несколько примеров вычисления разницы во времени. Предположим, есть два объекта datetime:
+<pre>
+first_date = date(2020, 10, 2)
+second_date = date(2020, 10, 30)</pre>
+Для получения разницы нужно лишь вычесть значение одного объекта из второго:
+<pre>
+from datetime import date
+
+first_date = date(2020, 10, 2)
+second_date = date(2020, 10, 30)
+delta = second_date - first_date
+print(delta)</pre>
+Результат:
+<pre>28 days,0:00:00</pre>
+Таким образом между 2 и 30 октября 2020 года 28 дней.
+<p>
+<b>Как вычислить разницу двух объектов datetime.time</b><br>
+С помощью timedelta нельзя выполнять манипуляции над объектами time
+<pre>
+from datetime import datetime, timedelta
+
+current_datetime = datetime.now()
+current_time = current_datetime.time()
+print("Текущее время:", current_time)
+tm_after_1_hr = current_time + timedelta(hours=1)
+print(tm_after_1_hr)</pre>
+Такой код вернет ошибку.
+<p>
+<b>Как получать прошлые и будущие даты с помощью timedelta</b><br>
+Поскольку timedelta — это длительность, то для получения прошлой или будущей даты нужно добавить объект timedelta к 
+существующему или вычесть из него же. Вот пример нескольких уравнений, где n — это целое число, представляющее количество дней:
+<pre>
+import datetime
+
+current_date = datetime.datetime.today()
+past_date = datetime.datetime.today() – datetime.timedelta(days=n)
+future_date = datetime.datetime.today() – datetime.timedelta(days=n)</pre>
+Если нужно, например, получить дату за прошлые две недели, то достаточно вычесть 14 дней из текущей даты:
+<pre>
+import datetime
+
+past_date = datetime.datetime.today() - datetime.timedelta(days=14)
+print(past_date)</pre>
+Результат:
+<pre>2020-10-31 16:12:09.142258</pre>
+Предположим, вы задумали практиковать определенный навык в течение 21 дня. Для получения будущей даты нужно добавить 21 день к 
+текущей дате:
+<pre>
+import datetime
+
+future_date = datetime.datetime.today() + datetime.timedelta(days=21)
+print(future_date)</pre>
+Результат:
+<pre>2020-12-05 16:14:09.718325</pre>
+
+
+
+
+
+</div><br><br><br><br></body</html>
