@@ -1,0 +1,1531 @@
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 90px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       background-color: Gray;  
+      }
+ .menu a {
+  padding: 6px 8px 6px 5px;
+  text-decoration: none;
+  font-size: 15px;
+  /*color: #818181;*/
+  display: block;
+          }     
+.content {
+           margin-left: 95px; /* То же, что и ширина боковой панели */
+           padding: 0px 0px 0px 10px;
+         }
+</style>
+</head><body>
+<title>Примеры</title>
+<div class="menu">
+<a href="#scanf">scanf()</a><br>
+<a href="#bool">Логические операции</a>
+<a href="#ukazat">Указатели</a>
+<a href="#if">Условный оператор if</a>
+<a href="#tern">Тернарные операции</a>
+<a href="#bit">Битовая алгебра</a>
+<a href="#makros">Макродирективы</a>
+<a href="#while">Циклы</a>
+</div>
+
+<div class="content">
+Продолжите программу, которая должна читать из входного потока три первых подряд идущих символа с помощью функции getchar(), а 
+затем вывести их в выходной поток в обратном порядке (от последнего к первому) с помощью функции putchar().
+<p>
+P.S. В тестах гарантируется, что во входном потоке присутствуют, как минимум, три символа.
+<pre>
+Sample Input:
+abcd
+Sample Output:
+cba
+</pre>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    // здесь продолжайте программу
+    int first_simvol = getchar();
+    int second_simvol = getchar();
+    int thirty_simvol = getchar();
+    putchar(thirty_simvol);
+    putchar(second_simvol);
+    putchar(first_simvol);
+    //printf("\n%c%c%c\n", putchar(thirty_simvol), putchar(second_simvol), putchar(first_simvol));
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+1. В команде: printf("\n%c%c%c\n", putchar(thirty_simvol), putchar(second_simvol), putchar(first_simvol));<br>
+putchar(int) будет выводиться в символьном виде, так как <b>n%c</b><br>
+Если бы было <b>n%d</b>, то выводился бы код символа (число).
+<p>
+2. Так и не понял: <i>printf("\n%c%c%c\n", putchar(thirty_simvol), putchar(second_simvol), putchar(first_simvol));</i> выводит 
+одновременно и символы и после коды этих символов.<br>
+Видимо из-за того, что putchar(int) автоматом выводит int в поток вывода и получается, что он 2 раза исполняется. Сначала в 
+\n%c, а потом себя исполняет.
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Продолжите программу, которая должна вывести все объявленные переменные (в порядке их объявления) каждую с новой строки. При 
+этом никаких пробелов в выводе быть не должно. Воспользуйтесь для такого форматированного вывода функцией printf(). Символьная 
+переменная должна быть выведена как символ, вещественная без ограничения точности.<br>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    char byte = 65;
+    unsigned short height = 1055;
+    int distance = 1000000;
+    float pi = 3.1415f;
+
+    // здесь продолжайте программу
+    printf("%c\n%u\n%d\n%f\n", byte, height, distance, pi);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+Вывод:<br>
+A<br>
+1055<br>
+1000000<br>
+3.141500
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу, которая должна с помощью функции printf() вывести текущее время, хранимое в переменных: h - часы; m - 
+минуты; s - секунды в формате: hh:mm:ss<br>
+Например, для h = 12, m = 3, s = 9 должно быть: <i>12:03:09</i>
+<br>Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    unsigned char h = 11, m = 8, s = 1;
+    printf("%02d:%02d:%02d\n", h, m, s);
+    // здесь продолжайте программу
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+Вывод:<br>
+11:08:01
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу, которая должна с помощью функции printf() вывести текущее время, хранимое в переменных: h - часы; m - 
+минуты; s - секунды в формате шестнадцатеричных чисел с выводом префикса 0x: 0xhh:0xmm:0xss<br>
+Например, для h = 12, m = 3, s = 9 должно быть: <i>0x0c:0x03:0x09</i>
+<br>Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    unsigned char h = 17, m = 45, s = 5;
+    printf("%#04x:%#04x:%#04x\n", h, m, s);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+Вывод:<br>
+0x11:0x2d:0x05
+<p>
+Если записать <i>printf("%#04X:%#04X:%#04X\n", h, m, s);</i>, то вывод будет: <i>0X11:0X2d:0X05</i> (большая X).
+<pre>
+
+
+==========================================================================================================================
+
+
+</pre>
+<a name="scanf"><h3 align=center>scanf() - записываем stdin в переменные</h3>
+Продолжите программу, в которой из стандартного входного потока с помощью функции scanf() необходимо прочитать данные, 
+следующие через пробел, в объявленные переменные a, b, c, d (в порядке их объявления). Вывести прочитанные значения с помощью 
+функции printf() в одну строчку через пробел в порядке считывания. Вещественные числа отображать с точностью до сотых.
+<pre>
+Sample Input:
+65000 32000 0.5 -78.5
+Sample Output:
+65000 32000 0.50 -78.50
+</pre>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int a;
+    short b;
+    float c;
+    double d;
+    int in_var = scanf("%d %hd %f %lf\n", &a, &b, &c, &d);
+    printf("%d %d %.2f %.2f", a, b, c, d);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу, в которой из стандартного входного потока с помощью функции scanf() необходимо прочитать данные по 
+следующей схеме: &lt;целое число>, &lt;целое число&gt;, &lt;пропуск вещественного числа&gt;, &lt;вещественное число&gt;
+<p>
+То есть, третье значение заносить в переменную не нужно, оно должно пропускаться.<br>
+Вывести прочитанные значения с помощью функции printf() в одну строчку через пробел в порядке считывания. Вещественные числа 
+отображать с точностью до сотых.
+<pre>
+Sample Input:
+56483, 1234, -4.5, 17.534
+Sample Output:
+56483 1234 17.53
+</pre>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int    number1;
+    int    number2;
+    double number3;
+    int res = scanf("%d, %d, %*f, %lf", &number1, &number2, &number3);
+    printf("%d %d %.2f\n", number1, number2, number3);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<pre>
+example.c: In function ‘main’:
+example.c:8:21: warning: use of assignment suppression and length modifier together in gnu_scanf format [-Wformat=]
+    8 |     int res = scanf("%d, %d, <font color=red>%*lf</font>, %lf", &number1, &number2, &number3);
+      |                     ^~~~~~~~~~~~~~~~~~~
+</pre>
+предупреждение: одновременное использование ограничения присваивания и модификатора длины в формате gnu_scanf [-Wformat=]
+<p>
+В <i>int res = scanf("%d, %d, %*lf, %lf", &number1, &number2, &number3);</i> поменял %*lf на %*f
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает три числа из потока stdin, каждое записанное с новой строки. При этом, первое число - 
+целочисленное в диапазоне [-64000; 100000], второе и третье - вещественные. Выполните чтение этих чисел с помощью функции 
+scanf() и выведите их на экран в одну строчку через пробел в порядке считывания, причем вещественные числа следует выводить с 
+точностью до сотых (два знака после запятой).
+<pre>
+Sample Input:
+100000
+-73.12
+1.234
+Sample Output:
+100000 -73.12 1.23
+</pre>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int    number1;
+    double number2;
+    double number3;
+    int res = scanf("%d %lf %lf", &number1, &number2, &number3);
+    printf("\n%d %.2f %.2f\n", number1, number2, number3);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+В <b>int res = scanf("%d, %lf, %lf", &number1, &number2, &number3);</b> забыл убрать запятые и вывод был: 100000 0.00 0.00
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Необходимо продолжить программу, которая складывает время, указанное в часах, минутах и секундах. Исходное время хранится в 
+переменных time_h, time_m, time_s, а добавляемое - в переменных h, m, s. Гарантируется, что сумма времен не превышает одни 
+сутки. Вывести полученное суммарное время в консоль в формате: hh:mm:ss<br>
+<pre>
+Sample Input:
+2; 45; 10
+Sample Output:
+13:18:15
+</pre>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    unsigned short time_h = 10; // часы
+    unsigned short time_m = 33; // минуты
+    unsigned short time_s = 5; // секунды
+
+    unsigned short h, m, s; // добавляемое время: h - часы; m - минуты; s - секунды
+    scanf("%hu; %hu; %hu", &h, &m, &s);
+    unsigned int summarn_time_in_secund = (time_h + h)*3600 + (time_m + m)*60 + time_s + s;
+    unsigned int sec = summarn_time_in_secund % 60;
+    unsigned int min = (summarn_time_in_secund / 60) % 60;
+    unsigned int hour = summarn_time_in_secund / 3600;
+ 
+    printf("%02d:%02d:%02d\n", hour, min, sec);
+
+    return 0;
+}
+</pre>
+</td></tr></table>
+<pre>
+
+
+==========================================================================================================================
+
+
+</pre>
+<a name="bool"><h3 align=center>Логические операции</h3>
+Напишите программу, которая считывает из входного потока stdin целое число и выводит в консоль значение 100, если число кратно 
+5, и 0 в противном случае.
+<br>P.S. Программу реализовать без применения условных операторов.
+<pre>
+Sample Input:
+15
+Sample Output:
+100
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdbool.h&gt;
+
+int main(void)
+{
+    int num;
+    scanf("%d", &num);
+    bool a = num % 5 == 0;
+    printf("%d", a*100);
+    return 0;
+}
+</pre>
+</td>
+<td valign=top>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int a;
+    
+    scanf("%d", &a);
+    printf("%d\n", (a % 5 == 0) * 100);
+    
+    return 0;
+}
+</pre>
+Непонятно: выходит не обязательно для логических операций включать файл stdbool.h<br>
+Вроде как, если не используется переменная типа bool, то не надо включать stdbool.h
+</td></tr></table>
+<pre>
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая считывает из входного потока stdin вещественное число и выводит в консоль значение 1, если число 
+принадлежит диапазону [-5.45; 10.37], и 0 в противном случае.
+<pre>
+Sample Input:
+-5.44
+Sample Output:
+1
+</pre>
+Моё:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#include <stdio.h>
+
+int main(void)
+{
+    double num;
+    scanf("%lf", &num);
+    printf("%d", num >= -5.45 && num <= 10.37);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+На плоскости размером rect_width x rect_height (ширина x высота) размещены непересекающиеся прямоугольники одинаковых размеров 
+w x h, следующих друг за другом, как показано на рисунке ниже.<br>
+Необходимо продолжить программу, вычислив общее число прямоугольников не умещающихся целиком на плоскости. Результат вывести в 
+консоль в виде одного целого числа.
+<pre>
+Sample Input:
+23; 44
+Sample Output:
+38
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int rect_width = 640, rect_height = 480;
+    int w = 1, h = 1;
+    scanf("%d; %d", &w, &h);
+    int count_width = (rect_height % h != 0) * rect_width/w;
+    int count_height = (rect_width % w != 0) * rect_height/h;
+    int added_element = (rect_height % h != 0) && (rect_width % w != 0);
+    int resault = count_width+count_height+added_element;
+    printf("count_width=%d, count_height=%d, resultat=%d\n", count_width, count_height, resault);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<pre>
+
+
+============================================================================================================================
+
+
+</pre>
+<a name="ukazat"><h3 align=center>Работа с указателями</h3>
+Продолжите программу. Объявите указатель ptr_a на переменную a и указатель ptr_b на переменную b. Вычислите произведение 
+значений переменных a и b, используя указатели ptr_a и ptr_b. Результат присвойте переменной res и выведите ее в консоль в 
+виде целого числа.<br>
+Sample Input: 8, 11
+Sample Output: 88
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    short a, b;
+
+    scanf("%hd, %hd", &a, &b);
+
+    short *ptr_a = &a;
+    short *ptr_b = &b;
+    short res = *ptr_a * *ptr_b;
+    printf("%d", res);
+    
+    return 0;
+}
+</pre>
+</td></tr></table>
+<pre>
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу. Объявите указатель ptr_a на переменную a и указатель ptr_b на переменную b. Поменяйте адреса указателей 
+ptr_a и ptr_b между собой, используя третий вспомогательный указатель с обобщенным типом void*. Выведите в консоль в одну 
+строчку через пробел целочисленные значения, на которые ссылаются указатели ptr_a и ptr_b именно в таком порядке:
+&lt;значение для ptr_a&gt; &lt;значение для ptr_b&gt;<br>
+Sample Input: -5, 10<br>
+Sample Output:10 -5
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    short a, b;
+
+    scanf("%hd, %hd", &a, &b);
+
+    short *ptr_a = &a;
+    short *ptr_b = &b;
+    void *p;
+    <b>p = ptr_a;</b>
+    ptr_a = ptr_b;
+    ptr_b = p;
+    printf("%d %d", *ptr_a, *ptr_b);
+    
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+Сначала делал так: <b>*p = ptr_a;</b> и получалось, что в переменную указателя p заносил адрес указателя ptr_a. Хотя это не условию задания, но формально, если бы тип был не void, то никаких ошибок бы не было. Но видимо в void ничего нельзя заносить. И по заданию, если адрес указателя поменять (не переменную указателя), то правильный синтаксис: <b>p = ptr_a;</b>
+<pre>
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Объявите указатель с именем ptr_var на переменную var.<br>
+Объявите еще один указатель с именем ptr_ch для типа char и присвойте ему адрес, хранимый указателем ptr_var. (Не забудьте 
+прописать операцию приведения типов.)<br>
+Выведите в консоль целочисленное значение, на которое ссылается указатель ptr_ch.<br>
+Sample Input:1037<br>
+Sample Output:13
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int var;
+
+    scanf("%d", &var);
+
+    int *ptr_var = &var;
+    char *ptr_ch = <b>(char *)</b>ptr_var; //объявили указатель и его адресу назначили адрес другого указателя
+    // <b>Правильно вроде как сначало обьявить указатель: char *ptr_ch, а потом только дать другой алрес: ptr_ch = (char *)ptr_var</b>
+    
+    printf("%d", *ptr_ch);
+    
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+Насчет почему из 1037 получаем 13:
+<p>
+<img src="./images/c_example.png">
+<p>
+<i>обьясню по-другому (как в уроке рассказывается). 1037 это 256 * 4 + 13, т.е. в 1037 в ОЗУ хранится как 13 4 0 0 (если int 
+это 4 последовательные ячейки в 1 байт), как известно из лекции адрес переменной это адрес ее первой ячейки, поэтому запись 
+указателя на int в указатель на char позволяет через этот указатель управлять лишь содержимым первой ячейки из 4 ячеек 
+переменной int. а в первой ячейке у нас 13. это значение и выводится при разыменовывании указателя ptr_ch.</i>
+<pre>
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Допишите следующую программу. Необходимо все 8 байт (тип double) переменной value вывести в консоль в виде десятичных чисел, 
+записанных в одну строчку через пробел, начиная с первого байта.<br>
+Sample Input:0.5
+Sample Output:0 0 0 0 0 0 -32 63
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    double value;
+
+    scanf("%lf", &value);
+
+    char *ptr = (char *)&value;
+    for(int i = 0; i < sizeof(value); ++i) {
+                   printf("%d ", *ptr);
+                   ptr++;
+         }
+
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+Не пойму <font color=red>char *ptr = (char *)&value;</font> Почему не char *ptr = (char)&value;<br>
+В этом случае <font color=red>warning: initialization of ‘char *’ from ‘char’ makes pointer from integer without a cast [-Wint-
+conversion]</font> (инициализация ‘char *’ из ‘char’ преобразует указатель в целое число без приведения)
+<p>
+И почему -32 63 вывод.
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает из входного потока целое число в переменную value типа int. Каждые два байта этой 
+переменной следует обработать по следующему алгоритму:<br>
+1. Представить два байта в виде целого числа.<br>
+2. Увеличить каждое полученное двухбайтовое число на единицу.<br>
+3. Увеличенное значение снова побайтно перенести в соответствующие ячейки переменной value.<br>
+Полученное значение переменной value вывести в консоль в виде одного целого числа.<br>
+P. S. При написании программы гарантируется: char = 1 байт; short = 2 байта; int = 4 байта; double = 8 байт.
+<br>Sample Input:325476<br>
+Sample Output:391013
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int value;
+    int x1, x2;
+    scanf("%d", &value);
+
+    short *ptr = (short *)&value;//указатель на 2 байта переменной value
+    *ptr +=1;                   //значение числа в первых двух байтах увеличили на 1
+    *(ptr + 1) +=1;             //значение числа во вторых двух байтах увеличили на 1
+    printf("%d", value);
+    return 0;
+}
+</pre>
+</td></tr></table>
+<p>
+
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+<pre>
+
+
+============================================================================================================================
+
+
+</pre>
+<a name="if"><h3 align=center>Условный оператор if. Конструкция if-else</h3>
+Напишите программу чтения двух целых чисел из входного потока, записанных в одну строчку через пробел. Если эти числа равны, то 
+вывести в консоль любое из этих чисел, а иначе - в порядке возрастания.
+<pre>
+Sample Input:
+11 7
+Sample Output:
+7 11
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int num1, num2;
+    scanf("%d %d", &num1, &num2);
+    if (num1 < num2) printf("%d %d", num1, num2);
+    else if (num1 == num2) printf("%d", num1);
+    else printf("%d %d", num2, num1);
+    return 0;
+}
+</pre>
+</td></tr><tr><td valign=top>
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int x, y;
+    scanf("%d %d", &x, &y);
+    (x == y && printf("%d", x)) || (x < y && printf("%d %d", x, y)) || printf("%d %d",y, x);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу чтения трех вещественных чисел из входного потока, записанных в одну строчку через запятую. Необходимо 
+определить наименьшее среди них и вывести его в консоль с точностью до сотых.
+<pre>
+Sample Input:
+4.5, 7.8, 0.5
+Sample Output:
+0.50
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td rowspan=2>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+  double num1, num2, num3;
+  scanf("%lf, %lf, %lf", &num1, &num2, &num3);
+  if (num1 < num2) {
+      if (num1 < num3) printf("%.2f", num1);
+      else printf("%.2f", num3);
+  }
+  else {
+      if (num2 < num3) printf("%.2f", num2);
+      else printf("%.2f", num3);
+  }
+  return 0;
+}
+</pre></td>
+<td>
+<pre>
+#include <stdio.h>
+
+int main(void)
+{
+    double a, b, c;
+    if(scanf("%lf, %lf, %lf", &a, &b, &c) != 3) {
+        printf("Input error.");
+        return 0;
+    }
+
+    // здесь продолжайте программу
+    if(a > b) a = b;
+    if(a > c) a = c;
+    printf("%.2f", a);
+
+    return 0;
+}
+</pre></tr>
+<tr><td>
+<pre>
+#include <stdio.h>
+
+int main(void)
+{
+    double a, b, c;
+    if(scanf("%lf, %lf, %lf", &a, &b, &c) != 3) {
+        printf("Input error.");
+        return 0;
+    }
+    
+    double <b>min = a;</b>
+    <b>if(b <= a && b <= c)</b>
+        min = b;
+    else if(c <= a && c <= b)
+        min = c;
+    printf("%.2lf", min);
+        
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+========================================================================================================================
+
+
+</pre>
+<a name="tern"><h3 align="center">Тернарные операции</h3>
+Продолжите программу. С помощью вложенных тернарных операций реализуйте следующую логику. Если значение переменной type равно 
+единице, то вычислите площадь прямоугольника со сторонами w и h (то есть, произведение w⋅h). Иначе, если значение type равно 2, 
+то - периметр прямоугольника (по формуле: 2⋅(w+h)). Иначе (если type не 1 и не 2), вернуть значение -1. Результат выведите в 
+консоль. Если это результат вычислений, то как вещественное число с точностью до десятых, иначе, просто целое значение -1.
+<pre>
+Sample Input:
+1 0.5 1.2
+Sample Output:
+0.6
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    short type = 0;
+    double w, h;
+
+    if(scanf("%hd %lf %lf", &type, &w, &h) != 3) {
+        printf("Input error.");
+        return 0;
+    }
+    type == 1 ? printf("%.1f", w * h) : type == 2 ? printf("%.1f", 2*(w + h)) : printf("-1");
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, в которой объявляется макрос с именем MAX_BUFF_SIZE со значением 1024 и выполняется чтение (в функции 
+main()) целочисленного положительного значения в целочисленную переменную buff_size. С помощью тернарного условного оператора 
+скорректируйте значение переменной buff_size, чтобы оно не превосходило значения MAX_BUFF_SIZE. Итоговое значение переменной 
+buff_size выведите в консоль в виде одного целого числа.<br>
+Sample Input:1048<br>
+Sample Output:1024
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+#define MAX_BUFF_SIZE 1024
+
+int main(void)
+{
+    int buff_size;
+    scanf("%d", &buff_size);
+    buff_size = buff_size > MAX_BUFF_SIZE ? MAX_BUFF_SIZE : buff_size;
+    printf("%d\n", buff_size);
+    return 0;
+}
+</pre></td></tr></table>
+Типичная тернарная операция. Плюс макродиректива MAX_BUFF_SIZE
+<pre>
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу. Определите макро-функцию GET_WIDTH так, чтобы она возвращала значение W, если W <= MAX_WIDTH, иначе - 
+значение MAX_WIDTH. Сделайте это с использованием тернарного условного оператора. Вызовите макрос-функцию GET_WIDTH для 
+корректировки значения переменной width. Выведите ее значение в консоль в виде строки (без кавычек): "width = &lt;значение&gt;"
+<br>Sample Input:100<br>
+Sample Output:width = 100
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+#define MAX_WIDTH    1280
+//#define GET_WIDTH(W) <font color=red>W =</font> W <= MAX_WIDTH ? W : MAX_WIDTH
+#define GET_WIDTH(W) W <= MAX_WIDTH ? W : MAX_WIDTH
+
+int main(void)
+{
+    int width;
+    scanf("%d", &width);
+    printf("width = %d\n", GET_WIDTH(width));
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+На строке #define GET_WIDTH(W) <font color=red>W =</font> W <= MAX_WIDTH ? W : MAX_WIDTH получал ошибку <font color=red>lvalue 
+required as left operand of assignment</font> Избавился от нее, когда убрал W = (имя переменной, которой возвращается 
+результат).
+<pre>
+
+
+========================================================================================================================
+
+
+</pre>
+<a name="bit"><h3 align=center>Битовая арифметика</h3>
+Продолжите программу. Необходимо проверить, что биты 3 и 5 переменной bits включены (установлены в 1). Если это так, то 
+выведите в консоль значение переменной bits в виде целого десятичного числа, иначе целое число -1.
+<br>P.S. Нумерация бит числа идет в порядке от младшего к старшему и начинается с нуля: 7, 6, 5, 4, 3, 2, 1, 0
+<pre>
+Sample Input: 43
+Sample Output: 43
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include <stdio.h>
+
+int main(void)
+{
+    unsigned char bits;
+    scanf("%hhu", &bits);
+    unsigned char mask = 40;
+    (bits & mask) == mask ? printf("%d\n", bits) : printf("-1");
+    return 0;
+}
+</pre></td>
+<td>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    unsigned char bits;
+    scanf("%hhu", &bits);
+
+    // здесь продолжайте программу
+    printf("%d", (bits & 0b00101000) == 40 ? bits : -1);
+
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+Долго не мог понять почему при несовпадении по битам с маской выдавал bits. Оказывается из-за низкого приоритета битовых 
+операций. В <b>bits & mask == mask</b> выполнялось сначала сравнение mask с mask. Только когда bits & mask заключил в скобки, 
+всё стало нормально работать. 
+<pre>
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу. Необходимо включить 4, 2 и 0 биты переменной bits (установить в 1). Результат сохраните в байтовой 
+беззнаковой переменной res и выведите ее значение в консоль в виде целого десятичного числа.
+<br>P.S. Нумерация бит числа идет в порядке от младшего к старшему и начинается с нуля: 7, 6, 5, 4, 3, 2, 1, 0
+<pre>
+Sample Input: 128
+Sample Output: 149
+</pre>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include <stdio.h>
+
+int main(void)
+{
+    unsigned char bits;
+    scanf("%hhu", &bits);
+    unsigned char mask = 40;
+    (bits & mask) == mask ? printf("%d\n", bits) : printf("-1");
+    return 0;
+}
+</pre></td>
+<td>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    unsigned char bits;
+    scanf("%hhu", &bits);
+    unsigned char res = bits | 0b010101;
+    printf("%d", res);
+    // здесь продолжайте программу
+
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+Здесь у меня неправильный результат был из-за того что было: <i>unsigned char res = bits | 0<font color=red>0</font>010101;</i>
+<br>Поменял на: <i>unsigned char res = bits | 0<font color=green>b</font>010101;</i><br>
+Проверил, компилятор считает 0b010101 = 21 (правильно), а 00010101 = 4161 (непонятно почему). В двоичной десятичному 4161 
+соответствует 1000001000001.
+<pre>
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает из входного потока целое неотрицательное число и выполняет целочисленное деление этого числа 
+на 4 с использованием сдвиговых битовых операций. Результат выведите в консоль в виде целого десятичного числа.
+<br>Sample Input: 7<br>
+Sample Output:  1
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+   unsigned char num; 
+   scanf("%hhu", &num); 
+   printf("%d\n", num >> 2);
+}
+</pre></td></tr></table>
+<p>
+Деление - это сдвиг вправо. На 1 единицу - это деление на 2, поэтому, чтобы поделить на 4, то сдвинуть нужно на 2 единицы.
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, в которой вводятся два целых неотрицательных числа в одну строчку через пробел, которые заносятся в 
+беззнаковые целочисленные переменные (тип int) с именами flags и mask. Необходимо проверить, включен ли в переменной flags хотя 
+бы один соответствующий бит переменной mask. Например:
+<pre>
+flags = 5; // 00000101
+mask = 20; // 00010100
+</pre>
+В переменной flags включен 2-й бит, который совпадает со 2-м включенным битом из mask, проверка проходит. А если:
+<pre>
+flags = 5; // 00000101
+mask = 18; // 00010010
+</pre>
+В переменной flags нет ни одного включенного бита, совпадающего хотя бы с одним включенным битом переменной mask, проверка не проходит. Если проверка проходит, то в консоль вывести строку "yes", иначе - строку "no".
+<br>Sample Input: 1 3<br>
+Sample Output: yes
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int flags, mask;
+    scanf("%d %d", &flags, &mask);
+    (flags & mask) !=0 ? printf("yes") : printf("no");
+    return 0;
+}
+</pre></td>
+<td>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main (void)
+{
+  unsigned int flags, mask;
+
+  scanf ("%d%d", &flags, &mask);
+  printf (flags & mask ? "yes" : "no");
+
+  return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+===========================================================================================================================
+
+
+</pre>
+<a name="makros"><h3 align=center>Макродирективы</h3>
+Напишите программу, в которой объявляется макроопределение MAX_LENGTH с целочисленным значением 100. В функции main() 
+реализовать чтение двух целочисленных положительных чисел, записанных в одну строчку через пробел, в переменные x и y (именно в 
+таком порядке). Затем, выполнить проверку: если длина радиус-вектора с координатами (x, y) превышает значение MAX_LENGTH, то в 
+консоль вывести сообщение (без кавычек): "Radius length exceeds value of MAX_LENGTH" Иначе вывести в консоль длину радиус-
+вектора в виде вещественного числа с точностью до сотых. Напомню, что длина радиус-вектора с координатами (x, y) вычисляется по 
+формуле: length= корень квадратный из x*x + y*y<br>
+Sample Input: 50 20<br>
+Sample Output: 53.85
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int flags, mask;
+    scanf("%d %d", &flags, &mask);
+    (flags & mask) !=0 ? printf("yes") : printf("no");
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+Получал ошибку: <font color=red>неопределённая ссылка на «sqrt» collect2: error: ld returned 1 exit status</font><br>
+Решение: нужно к компилируемому файлу добавить суффикс -lm: <b>gcc example.c -lm</b>
+<pre>
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Продолжите программу, в которой нужно определить макро-функцию с именем GET_MAX, возвращающую максимальное из двух чисел. 
+Вызовите в функции main макрос GET_MAX следующим образом: double res = GET_MAX(val_1 + 1, val_2 - 1) / (val_1 + val_2);
+<br>Выведите в консоль значение переменной res с точностью до сотых.
+<br>Sample Input:0.3; -45.3<br>
+Sample Output:-0.03
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+#define GET_MAX(a,b) a > b ? a : b 
+
+int main(void)
+{
+    double val_1, val_2;
+    if(scanf("%lf; %lf", &val_1, &val_2) != 2) {
+        printf("Input error");
+        return 0;
+    }
+    double res = (GET_MAX(val_1 + 1, val_2 - 1)) / (val_1 + val_2);
+    printf("%.2f\n", res);
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+Непонятно почему без скобок в <b>(</b>GET_MAX(val_1 + 1, val_2 - 1)<b>)</b> / (val_1 + val_2); неправильно считалось.<br>
+У других почему-то решение принялось.
+<pre>
+
+
+=========================================================================================================================
+
+
+</pre>
+<a name="while"><h3 align=center>Циклы</h3>
+Напишите программу, которая читает из входного потока натуральное число n (целое, положительное), которое содержит от 2-х и 
+более цифр. Используя цикл while, вычислить сумму цифр числа n. Результат вывести в консоль в виде одного целого числа.
+<br>Sample Input:123<br>
+Sample Output:6
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int num, summa=0;
+    scanf("%d", &num);
+    while(num > 0) {
+        summa += num % 10;
+        num = num /10;
+    }
+    printf("%d", summa);
+    return 0;
+}
+</pre></td><td>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    
+    int n, s = 0;
+    while(scanf("%1d", &n) == 1)
+        s += n;
+    printf("%d", s);
+        
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Последовательность Фибоначчи образуется так: первые два числа равны 1 и 1, а каждый следующий равен сумме двух предыдущих. То 
+есть, имеем последовательность вида: 1, 1, 2, 3, 5, 8, 13, ... Вычислите последовательность Фибоначчи длиной n (n - 
+натуральное число, читаемое из входного потока). Выведите числа полученной последовательности в одну строку через пробел.
+<br>Sample Input:13<br>
+Sample Output:
+1 1 2 3 5 8 13 21 34 55 89 144 233
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int num, n=2;
+    int summa =0, summa1 =1, summa2 =1;
+    scanf("%d", &num);
+    printf("1 1 ");
+    while(++n <= num) {
+        summa = summa1 + summa2;
+        printf("%d ", summa);
+        summa2 = summa1;
+        summa1 = summa;
+    }
+    
+    return 0;
+}
+</pre></td><td>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+  
+int main(void) {
+    int n, curr = 1, prev = 0;
+    scanf("%d", &n);
+    while (n > 0) {
+        prev += curr;
+        prev ^= curr;
+        curr ^= prev;
+        prev ^= curr;
+        printf("%d ", prev);
+        n--;
+    }
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает из входного потока два натуральных числа n и m, записанных через пробел, причем n < m. Выведите в консоль в одну строчку через пробел все числа кратные 3 (нацело делятся на 3) из интервала [n, m].
+<br>Sample Input:100 150<br>
+Sample Output:102 105 108 111 114 117 120 123 126 129 132 135 138 141 144 147 150
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int n, m;
+    scanf("%d %d", &n, &m);
+    while(n <= m) {
+        if (n % 3 == 0) {
+        printf("%d ", n);
+        }
+        n +=1;
+    }
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает натуральное число, содержащее одну и более цифр. Определить, что это число является 
+палиндромом, то есть, оно не меняет своего значения при просмотре слева-направо и справа-налево. Например: 121, 23032, 11 и 
+т.п. Если число является палиндромом, то в консоль вывести строку "yes", иначе - строку "no".
+<br>Sample Input:123321<br>
+Sample Output:yes
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int number;
+    int x = 0;
+    scanf("%d", &number);
+    int modif_number = number;
+    while(modif_number != 0) {
+        if (modif_number / 10 != 0) {
+            x = x * 10 + (modif_number % 10);
+        }
+        else {
+            x = x *10 + (modif_number % 10);
+        }
+        modif_number /=10;
+    }
+    x == number ? printf("yes") : printf("no");
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите следующую программу. Из входного потока читаются цифры (от 1 до 9), записанные через пробел, пока не встретится число 
+0. На основе этих цифр сформировать единое число. Например, если на вход поступают цифры: 5 2 9 3 0<br>
+то должно формироваться число: 5293<br>
+Выведите полученное число в консоль.<br>
+Если цифра 0 встречается сразу (первая), то формируемая переменная должна принимать значение 0.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int number = 0;
+    int n=1;
+    
+    for(;n!=0;) {
+        scanf("%d", &n);
+        if(n!=0) number = number * 10 + n;
+        }
+        
+    printf("%d", number);
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает из входного потока натуральное число n. На его основе нужно сформировать другое число m, в 
+котором цифры числа n будут идти в обратном порядке. Например, при n = 235, получаем m = 532. Или, при n = 1, получаем m = 1.
+<br>Sample Input:4235<br>
+Sample Output:5324
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int n, m=0;
+    scanf("%d", &n);
+    
+    while(n!=0) {
+        m = m *10 + (n % 10);
+        n = n / 10;    
+        }
+    printf("%d", m);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая читает из входного потока шестизначное натуральное число n. Определить, является ли оно 
+счастливым. (Счастливым называют такое шестизначное число, в котором сумма его первых трех цифр равна сумме его последних трех 
+цифр.). Вывести в консоль "yes", если счастливое и "no" - в противном случае.
+<br>Sample Input:123231<br>
+Sample Output:yes
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int n;
+    int n1=0, n2=0;
+    
+    scanf("%d", &n);
+    
+    for(int i = 6; i >=1; i--) {
+        if (i >=4) {
+            n1 +=n%10;
+            n /=10;
+            }
+        if (i <4) {
+            n2 +=n%10;
+            n /=10;
+            }    
+        }
+    n1 == n2 ? printf("yes") : printf("no");
+    return 0;
+}
+</pre></td>
+<td valign=top>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main (void)
+{
+    int n, res1 = 0, res2 = 0;
+    scanf("%d", &n);
+    for (int i = 1; n > 0; <b>n /= 10</b>, i++)
+    {
+        if (i <= 3) res1 += n % 10;
+        else res2 += n % 10;
+    }
+    res1 == res2 ? printf("yes") : printf("no");
+    return 0;
+}
+</pre></tr></table>
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+<b>Цикл do-while</b><br>
+Напишите программу с использованием цикла do-while, которая читает из входного потока целые числа (по одному) до тех пор, пока 
+не встретится число 13. Все положительные прочитанные числа просуммировать (включая число 13) и вывести полученную сумму в 
+виде одного целого числа в консоль.
+<br>Sample Input:1 4 -3 10 -1 13<br>
+Sample Output:28
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int num, summa=0;
+    do {
+        scanf("%d", &num);
+        if (num > 0) summa +=num;
+    } while(num !=13);
+    printf("%d", summa);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Напишите программу игры "Угадай число". Задуманное целое число x в диапазоне [1; 1000] считывается из входного потока. 
+Начальный диапазон сохраняется в переменных a = 1, b = 1000. Затем, генерируется случайное целое значение m в диапазоне [a; b]. Далее, рассматриваются три возможных исхода:
+<pre>
+1. Если m == x, то программа завершается и в консоль выводится найденное значение x.
+2. Если m < x, то корректируется интервал возможных значений a = m, b - без изменений.
+3. Если m > x, то корректируется интервал возможных значений a - без изменений, b = m.
+</pre>
+Процесс генерации продолжается (по циклу do-while), пока не будет угадано число x. Угаданное значение вывести в консоль в виде 
+целого числа.
+Sample Input:512<br>
+Sample Output:512
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void)
+{
+    int x, a = 1, b = 1000, m;
+    scanf("%d", &x);
+    do {
+        m = rand() % (b -a + 1) +a;
+        if (m < x) {
+            a = m;
+        }
+        if (m>x) {
+            b =m;
+        }
+    } while(m != x);
+    printf("%d", m);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Напишите программу, которая читает из входного потока два натуральных числа m, n (m < n), записанных в одну строчку через 
+пробел. Необходимо вывести в консоль в одну строчку через пробел все найденные числа-палиндромы в диапазоне [m; n]. Число-
+палиндром - это число, которое не меняет своего значения при чтении слева-направо и справа-налево. Например, числа 121, 1, 11, 
+43034 - палиндромы.
+<br>Sample Input:100 200<br>
+Sample Output:101 111 121 131 141 151 161 171 181 191
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    int m, n;
+    //int x = 0;
+    int modif_number;
+    scanf("%d %d", &m, &n);
+    for (int i=m; i <=n; i++)
+     {
+        modif_number = i;
+        int x =0;
+        while(modif_number != 0)
+          {
+            if (modif_number / 10 != 0)
+               {
+                 x = x * 10 + (modif_number % 10);
+                 //printf("i=%d x=%d\n", i, x);
+               }
+            else 
+               {
+                 x = x *10 + (modif_number % 10);
+               }
+            modif_number /=10;
+          } 
+        if (x == i) printf("%d ", i);   
+     }
+    
+    return 0;
+}
+</pre></td>
+<td valign=top>
+Другое:
+<pre>
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    do {
+        int x = n, t = 0;
+        while (x > 0) {
+            t = t * 10 + x % 10;
+            x /= 10;
+        }
+        if (t == n) {
+            printf("%d ", n);
+        }
+        n++;
+    } while (n <= m);
+}
+</pre></td></tr></table>
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<br><br><br><br></body></html>
