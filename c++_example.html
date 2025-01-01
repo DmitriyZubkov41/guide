@@ -1,0 +1,1191 @@
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 120px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       background-color: Gray;  
+      }
+ .menu a {
+  padding: 6px 8px 6px 5px;
+  text-decoration: none;
+  font-size: 15px;
+  /*color: #818181;*/
+  display: block;
+          }     
+.content {
+           margin-left: 125px; /* То же, что и ширина боковой панели */
+           padding: 0px 0px 0px 10px;
+         }
+</style>
+</head><body>
+<title>Примеры по структурам</title>
+<div class="menu">
+<a href="#std">Ввод/вывод данных</a>
+<a href="#namespace">Пространство имён</a>
+<a href="#using">Оператор using</a>
+<a href="#bool">тип bool</a>
+<a href="#array_m">&nbsp;&nbsp; Многомерные массивы</a>
+<a href="#reload">Перезагрузка функций</a>
+<a href="#extern">Директива extern "C"</a>
+</div>
+
+<div class="content">
+<a name="std"><h3 align=center>Ввод-вывод с помощью объектов cin и cout</h3>
+Напишите программу, которая читает из входного потока stdin два целых числа, записанных в одну строчку через пробел, и выводит их в консоль в формате: &lt;первое число>; &lt;второе число><br>
+P. S. Ввод/вывод данных реализовать через объекты cin/cout.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+int main()
+{
+    int num1, num2;
+    std::cin >> num1 >> num2;
+    std::cout << num1 << "; " << num2;
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Напишите программу, которая читает из входного потока stdin два целых числа a и b (a < b), записанных в одну строчку через пробел, и выводит в консоль все числа диапазона [a; b], кратные 3 в порядке возрастания в одну строчку через пробел.<br>
+P. S. Ввод/вывод данных реализовать через объекты cin/cout.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+int main()
+{
+    int a, b;
+    std::cin >> a >> b;
+    for (int i = a; i <=b; i++)
+    {
+        if (i % 3 == 0) std::cout << i << " ";    
+    }
+    return 0;
+}
+</pre></td>
+<td>
+Другое решение:
+<pre>
+#include &lt;iostream>
+
+int main()
+{
+    int a, b;
+    std::cin >> a >> b;
+    for(<b>;a <= b;</b> a++)
+        if(a % 3 == 0)
+            std::cout << a << " ";
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Определение конца ввода через std::cin</b>
+<p>
+Продолжите программу, которая читает в массив data целые числа из входного потока, записанные в одну строчку через пробел. Необходимо контролировать максимальное количество читаемых значений не более max_size_ar. Выведите в консоль в одну строчку через пробел записанные значения в массив data (по порядку от начала до конца).<br>
+P. S. Ввод/вывод данных реализовать через объекты cin/cout.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+enum {max_size_ar=20};
+
+int main()
+{
+    int data[max_size_ar];
+    int count = 0;
+    // здесь продолжайте программу
+    for (0; count < max_size_ar && !feof(stdin); count++)
+    {
+        std::cin >> data[count]; //запись в переменную с ввода
+    }
+    count -=1;
+    for (int i = 0; i < count; i++)
+    {
+        std::cout << data[i] << " ";  //вывод на экран  
+    }
+   
+    return 0;
+}
+</pre></td>
+<td>
+Другое решение:
+<pre>
+#include &lt;iostream>
+
+enum {max_size_ar=20};
+
+int main()
+{
+    int data[max_size_ar];
+
+    for (int i = 0; i < max_size_ar && <b>std::cin >> data[i]</b>; ++i)
+        std::cout << data[i] << ' ';
+    
+
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. В моей системе ubuntu count надо уменьшать на 1, на stepik это не нужно.
+<p>
+2. std::cin >> data[i] видимо возвращает TRUE, если ввод прочитан и NULL (FALSE) если нажали Ctrl + D 
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Игнорирование символа</b>
+<p>
+Продолжите программу, которая читает в массив data целые числа из входного потока, записанные в одну строчку через точку с запятой (или любой другой символьный не числовой разделитель). Необходимо контролировать максимальное количество читаемых значений не более max_size_ar. Выведите в консоль в одну строчку через пробел значения массива data (по порядку от начала до конца).<br>
+P. S. Ввод/вывод данных реализовать через объекты cin/cout.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+enum {max_size_ar=20};
+
+int main()
+{
+    short data[max_size_ar];
+    char hren;
+        
+    for (int i = 0; i < max_size_ar && std::cin >> data[i]; i++)
+    {
+        std::cin >> hren;
+        std::cout << data[i] << ' ';
+        //printf("%d\n", hren);
+    }
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+=============================================================================================================================
+
+</pre>
+<a name="namespace"><h3 align=center>Пространство имён</h3>
+<b>Две функции с одинаковыми именами</b><br>
+Объявите в программе два пространства имен: triangle и rectangle. В пространстве triangle пропишите функцию с именем perimetr, которая вычисляет периметр треугольника с целочисленными сторонами a, b, c (формула: a+b+c). Вычисленный результат (целочисленный) возвращается этой функцией. По аналогии определите в пространстве имен rectangle функцию с таким же именем perimetr, которая вычисляет периметр прямоугольника с целочисленными сторонами width и height (формула: 2*(width+height)). Вычисленный результат (целочисленный) возвращается этой функцией. 
+<p>
+В функции main прочитайте из входного потока три целых числа a0, a1, a2, записанных в одну строчку через пробел. Вызовите функцию perimetr из пространства triangle с аргументами a0, a1, a2 и функцию perimetr из пространства rectangle с аргументами a0, a1. Выведите в консоль в одну строчку через пробел два вычисленных периметра: сначала для треугольника, а затем для прямоугольника.<br>
+Sample Input: 3 4 5<br>
+Sample Output: 12 14
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+namespace triangle {
+    int perimetr(int a, int b, int c)
+    {
+        return a + b +c;    
+    }
+}
+
+namespace rectangle {
+   int perimetr(int width, int height)
+    {
+        return 2 * (width + height);    
+    }
+}
+
+int main()
+{
+    int a0, a1, a2;
+    std::cin >> a0 >> a1 >> a2;
+    printf("%d %d\n", triangle::perimetr(a0, a1, a2), rectangle::perimetr(a0, a1));
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Объявите в программе пространство имен math, в котором пропишите функцию сравнения двух целочисленных массивов типа short со следующей сигнатурой:<br>
+int ar_compare(const short* a1, size_t len_a1, const short* a2, size_t len_a2);
+<p>
+Функция возвращает 1, если переданные массивы a1 и a2 равны, и 0 в противном случае. Массивы считаются равными, если равны их длины и попарно все  элементы массивов a1 и a2 между собой. То есть, первый элемент массива a1 должен быть равен первому элементу массива a2 и так до конца для всех их элементов.
+<p>
+В функции main с помощью функции ar_compare сравните между собой два следующих массива:
+<pre>
+short ar1[] = {1, 2, 3, 4, 5};
+short ar2[] = {1, 2, 5, 3, 4};
+</pre>
+Результат сравнения сохраните в целочисленной переменной res. P. S. В консоль ничего выводить не нужно.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+namespace math {
+    int ar_compare(const short* a1, size_t len_a1, const short* a2, size_t len_a2)
+    {
+        if  (len_a1 != len_a2) return 0;
+        for (int i = 0; i < len_a1; i++)
+        {
+            if (a1[i] != a2[i]) return 0;
+        }
+        return 1;  
+    }
+}
+
+int main(void)
+{
+    // здесь продолжайте функцию main
+    short ar1[] = {1, 2, 3, 4, 5};
+    short ar2[] = {1, 2, 5, 3, 4};
+    int res = math::ar_compare(ar1, sizeof(ar1)/sizeof(ar1[0]), ar2, sizeof(ar2)/sizeof(ar2[0]));
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>функция и перечисление в пространстве имён и передача его константы через аргумент функции</b><br>
+Объявите в программе пространство имен array_alg. В этом пространстве объявите функцию sorted_int со следующей сигнатурой:<br>
+void sorted_int(int* ar, size_t len_ar, TYPE_SORT type);<br>
+Здесь ar - сортируемый массив; len_ar - число первых сортируемых элементов массива ar; type - тип сортировки (по возрастанию или убыванию). 
+<p>
+Тип сортировки TYPE_SORT определяется в том же пространстве имен array_alg как перечисление с двумя константами:
+<pre>
+sort_asc - сортировка по возрастанию;
+sort_desc - сортировка по убыванию.
+</pre>
+В функции main прочитайте из входного потока целые числа, записанные в одну строчку через пробел, в количестве не более 20. Все эти значения занесите в массив (по порядку) и отсортируйте массив по убыванию с помощью функции sorted_int. Выведите в консоль отсортированные значения в одну строчку через пробел.
+<p>
+В функции main с помощью функции ar_compare сравните между собой два следующих массива:
+<pre>
+short ar1[] = {1, 2, 3, 4, 5};
+short ar2[] = {1, 2, 5, 3, 4};
+</pre>
+Результат сравнения сохраните в целочисленной переменной res. P. S. В консоль ничего выводить не нужно.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+namespace array_alg{
+    enum TYPE_SORT {sort_asc, sort_desc};
+    
+    void sorted_int(int* ar, size_t len_ar, TYPE_SORT type)
+    {
+        int max, min, pos;
+        if (type == array_alg::sort_asc)
+        {
+            for (int i = 0; i < len_ar; i++)
+            {
+                min = ar[i];
+                pos = i;
+                for (int k = i+1; k < len_ar; k++)
+                {
+                    if (ar[k] < min)
+                    {
+                        min = ar[k];
+                        pos = k;
+                    }
+                }
+                if (pos != i)
+                {
+                    ar[pos] = ar[i];
+                    ar[i] = min;
+                }    
+            }
+        }
+        if (type == array_alg::sort_desc)
+        {
+            for (int i = 0; i < len_ar; i++)
+            {
+                max = ar[i];
+                pos = i;
+                for (int k = i+1; k < len_ar; k++)
+                {
+                    if (ar[k] > max)
+                    {
+                        max = ar[k];
+                        pos = k;
+                    }
+                }
+                if (pos != i)
+                {
+                    ar[pos] = ar[i];
+                    ar[i] = max;
+                }    
+            }
+        }    
+    }
+}
+
+int main()
+{
+    int ar[20], count = 0;
+    for (; count < 20 && std::cin >> ar[count]; count++) {}
+    <b>array_alg::sorted_int</b>(ar, count, <b>array_alg::sort_desc</b>);
+    for (int i = 0; i < count; i++)
+    {
+        printf("%d ", ar[i]);   
+    }
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Перечисление из пространства имён, как аргумент функции равен <b>имя пространства :: имя константы</b>
+<p>
+2. Сразу не обратил внимание, но вызвал printf без объявления заголовка stdio.h Пока не знаю, почему так прокатило.
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Указатель на функцию как параметр функции, вложенные пространства имён</b><br>
+Объявите в программе пространство имен array_alg. В этом пространстве объявите функцию filter_int, которая должна оставлять только определенные значения в массиве. Эта функция должна иметь следующую сигнатуру:<br>
+size_t filter_int(int* ar, size_t len_ar, PTR_FILTER_FUNC func);<br>
+Здесь ar - обрабатываемый массив; len_ar - начальная длина массива ar; func - указатель на функцию для отбора (фильтрации) значений массива ar. Функция filter_int должна возвращать результирующую длину массива ar (количество оставшихся в нем элементов).
+<p>
+Указатель PTR_FILTER_FUNC должен быть определен в пространстве имен array_alg для функций с сигнатурой:<br>
+int <имя_функции> (int);
+<p>
+Если такая функция, вызванная для определенного элемента массива, возвращает истину (не нулевое значение), то это значение остается в массиве, а иначе - удаляется. При удалении размер массива len_ar также должен уменьшаться. 
+<p>
+В пространстве имен array_alg объявите еще одно пространство имен (вложенное) с именем filter_func и объявите в нем функцию с именем even для отбора четных значений массива (четные значения должны оставаться).
+<p>
+В функции main прочитайте из входного потока целые числа, записанные в одну строчку через пробел, в количестве не более 20. Все эти значения занесите в массив (по порядку) и отфильтруйте его с помощью функции filter_int с передачей в качестве критерия фильтрации функцию even. То есть, в массиве должны оставаться только четные числа или никаких, если четных чисел нет. Выведите в консоль отфильтрованные значения в одну строчку через пробел.<br>
+Sample Input: 5 34 10 4 7 8 3 2<br>
+Sample Output: 34 10 4 8 2
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+namespace array_alg
+{
+    <b>typedef int (*PTR_FILTER_FUNC) (int);</b>
+        
+    size_t filter_int(int* ar, size_t len_ar, PTR_FILTER_FUNC func)
+    {
+        for(int i = 0; i < len_ar; i++)
+        {
+            if (!func(ar[i]))
+            {
+                for (int k = i; k < len_ar; k++)
+                {
+                    ar[k] = ar[k+1];   
+                }
+                i -=1;
+                len_ar -=1;
+            }
+        }
+        return len_ar;
+    }
+    
+    namespace filter_func
+    {
+        int even(int num)
+        {
+            return num % 2 == 0 ? 1 : 0;  
+        }
+    }
+}
+
+int main()
+{
+    int ar[20], count = 0;
+    
+    for (; count < 20 && std::cin >> ar[count]; count++) {}
+    
+    int res = array_alg::filter_int(ar, count, array_alg::filter_func::even);
+    
+    for (int i = 0; i < res; i++)
+    {
+        std::cout << ar[i] << " ";   
+    }
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Имя (NAME) типу указателя на функцию можно использовать синтаксис: typedef (* NAME)(type var);<br>
+Внутри скобок, а не в конце как обычно.
+<p>
+2. Обычно массив  когда перебирают, то для истинных элементов массива заводят новую переменную под индекс.
+<pre>
+
+
+============================================================================================================================
+
+</pre>
+<a name="using"><h3 align=center>Оператор using</h3>
+<b>Запись и чтение массива</b><br>
+Выполните в программе импорт элементов cin, cout и endl в глобальную область и в функции main прочитайте из входного потока слово (максимальная длина 50 символов) и выведите его в консоль.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+using std::cin;
+using std::cout;
+using std::endl;
+
+int main()
+{
+    char ar[50];
+    <font color=red>for (int i = 0; i < 50 && cin >> ar[i]; i++) {}</font>
+    cout << ar << endl;
+    return 0;
+}
+</pre>
+</td>
+<td>
+Другое:
+<pre>
+#include &lt;iostream>
+
+using std::cin;
+using std::cout;
+using std::endl;
+
+int main() {
+    char str[ 50 ];
+    cin >> str;
+    cout << str << endl;
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Массивы во вложенных структурах</b><br>
+С помощью оператора using объявите в программе новый тип данных FIO_STR, соответствующий массиву символов длиной 50 элементов. С помощью оператора using объявите новый тип FIO, описывающий структуру с тремя полями типа FIO_STR:
+<pre>
+first - имя;
+otch - отчество;
+last - фамилия.
+</pre>
+Продолжите функцию main. Объявите в ней переменную fio типа FIO и прочитайте из входного потока в ее поля имя, отчество и фамилию, записанные в одну строчку через пробел.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+<b>using FIO_STR = char[50]</b>; //объявление типа массива
+
+using FIO = struct {FIO_STR first, otch, last;};
+
+int main()
+{
+    // здесь продолжайте функцию main
+    FIO fio;
+    std::cin >> fio.first >> fio.otch >> fio.last;
+   
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. <pre>
+error: no match for ‘operator>>’ (operand types are ‘std::basic_istream<char>’ and ‘const char [2]’)
+   32 |     std::cin >> fio.first >> " " >> fio.otch >> " " >> fio.last;
+      |     ~~~~~~~~~~~~~~~~~~~~~ ^~ ~~~
+      |              |               |
+      |              |               const char [2]
+      |              std::basic_istream&lt;char>
+
+</pre>
+Что-то не нравится в " "<br>
+Убрал их, записываю в переменные, зачем пробелы ввел, непонятно.
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<p>
+<b>Вложенные структуры, присваивание значений полям сложной структуры, присваивание значений массиву внутри структуры</b><br>
+С использованием оператора using объявите в программе структуру с типом AUTO, содержащую следующие поля:
+<pre>
+model - строка максимальной длины 50 символов;
+max_speed - максимальная скорость (тип unsigned short);
+weight - вес (тип double);
+m - габариты (тип MEASURE).
+</pre>
+Тип MEASURE также следует определить с помощью оператора using и представлять собой структуру со следующими полями типа unsigned short:
+<pre>
+width - ширина;
+height - высота;
+depth - глубина (длина).
+</pre>
+Продолжите функцию main. Занесите в поля переменной auto_sell данные из соответствующих переменных: model, weight, max_speed, width, height, depth. P. S. В консоль ничего выводить не нужно.<br>
+Sample Input: toyota 240 1540.3 230 120 545
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string.h>
+
+using MEASURE = struct {unsigned short width, height, depth;};
+
+using AUTO = struct
+{
+    char           model[50];
+    unsigned short max_speed;
+    double         weight;
+    MEASURE        m;
+};
+
+int main()
+{
+    AUTO auto_sell;
+    char model[50];
+    unsigned short max_speed, width, height, depth;
+    double weight;
+
+    std::cin >> model >> max_speed >> weight >> width >> height >> depth;
+
+    strcpy(auto_sell.model, model);
+        <font color=red>//auto_sell = (AUTO){.max_speed = max_speed, .weight = weight, .m.width = width}; //error: expected primary-expression
+        // before ‘)’ token
+        //auto_sell = (AUTO){.max_speed = max_speed, .weight = weight}; //пропадает model</font>
+        auto_sell.max_speed = max_speed;
+        auto_sell.weight = weight;
+        auto_sell.m.width = width;
+        auto_sell.m.height = height;
+        auto_sell.m.depth = depth;
+    
+    printf("%s %d %f %d %d %d\n", auto_sell.model, auto_sell.max_speed, auto_sell.weight, auto_sell.m.width,
+     auto_sell.m.height, auto_sell.m.depth);
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Если переменная типа struct уже была объявлена (AUTO auto_sell;), то при присваивани значений полям структуры перед переменной не нужно указывать тип. 
+<p>
+2. Как присвоить внутри структуры значение массиву
+<pre>
+error: array must be initialized with a brace-enclosed initializer
+   43 |     auto_sell = (AUTO){model, max_speed, weight, width, height, depth};
+</pre>
+Решил так: strcpy(auto_sell.model, model)
+<p>
+Если далее так: auto_sell = (AUTO){.max_speed = max_speed, .weight = weight};<br>
+то поле model будет пустым. Сделал присваивание каждому полю в отдельной строке.
+<p>
+В других решениях приравнивание сделано одной строкой так:
+<pre>
+<font color=green>AUTO auto_sell {model, max_speed, weight, {width,height,depth} }</font>; //инициализация
+</pre>
+или если по условию задания, объявление и приравнивание отдельно, тогда так:
+<pre>
+<font color=green>auto_sell = (AUTO){.max_speed=max_speed, .weight=weight, .m=(MEASURE){width, height, depth}};</font>
+strcpy(auto_sell.model, model);
+</pre>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Запись через std::cout в массивы</b><br>
+С помощью оператора using объявите в программе тип THING, описывающий структуру со следующими полями:
+<pre>
+name - название предмета; строка максимальной длиной 50 символов;
+weight - вес предмета (тип double).
+</pre>
+В функции main объявите массив с именем th типа THING из max_things элементов. Константа max_things = 20 должна быть определена с помощью перечисления. Прочитайте из входного потока данные по предметам в формате:<br>
+<название_1> <вес_1> <название_2> <вес_2> ... <название_N> <вес_N> 
+<p>
+Общее количество прочитанных из входного потока предметов не должно превышать значения max_things (это нужно контролировать в программе).
+<p>
+Выполните сортировку массива th по возрастанию весов предметов. Выведите в консоль названия предметов в порядке сортировки в одну строчку через пробел.<br>
+Sample Input: карандаш 20 зеркальце 100 зонт 500 рубашка 300<br>
+Sample Output: карандаш зеркальце рубашка зонт
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string.h>
+
+//using THING = {char name[50]; double weight;}; //error: expected type-specifier before ‘{’ token
+//using THING = struct {char<font color=red>[</font>50] name; double weight;}; //error: expected unqualified-id before ‘[’ token
+using THING = struct {char name[50]; double weight;};
+enum {max_things = 20};
+
+int main()
+{
+    THING th[max_things];
+    int count = 0, pos;
+    double tmp_weight;
+    char   tmp_name[50];
+    //for (; count < max_things && std::cin >> th.<font color=red>name</font>[count] >> th.weight[count]; count++) {} //error:
+    // request for member ‘name’ in ‘th’, which is of non-class type ‘THING [20]’ {aka ‘<unnamed struct> [20]’}
+    
+    <b>for (; count < max_things && std::cin >> th[count].name >> th[count].weight; count++) {}</b> //запись в элемент массива
+    
+    for (int i = 0; i < count; i++)
+    {
+        pos = i;
+        tmp_weight = th[i].weight;
+        strcpy(tmp_name, th[i].name);
+        //std::cout << "Предмет:" << th[i].name << std::endl;
+        for (int k = i+1; k < count; k++)
+        {
+            if (th[k].weight < tmp_weight)
+            {
+                tmp_weight = th[k].weight;
+                strcpy(tmp_name, th[k].name);
+                pos = k;
+            }
+        }
+        if (i != pos)
+        {
+            th[pos].weight = th[i].weight;
+            strcpy(th[pos].name, th[i].name);
+            th[i].weight = tmp_weight;
+            strcpy(th[i].name, tmp_name);
+            //std::cout << "111" << th[i].name;
+        }
+        std::cout << th[i].name << " ";
+    }
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. <pre>
+ error: request for member ‘name’ in ‘th’, which is of non-class type ‘THING [20]’ {aka ‘<unnamed struct> [20]’}
+   31 |     for (; count < max_things && std::cin >> th.<font color=red>name</font>[count] >> th.weight[count]; count++) {}
+</pre>
+Исправил строкой:<br>
+for (; count < max_things && std::cin >> th[count].name >> th[count].weight; count++) {}<br>
+Здесь массивом является не name, а th
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Вычисление длины массива</b><br>
+Объявите в программе структуру с именем типа THING со следующими полями:
+<pre>
+name - название предмета; строка максимальной длиной 50 символов;
+weight - вес предмета (тип unsigned int).
+</pre>
+В функции main объявите массив things типа THING со следующими данными (предметами):
+<pre>
+{"карандаш", 20}, {"зеркальце", 100}, {"зонт", 500}, {"рубашка", 300}, 
+{"брюки", 1000}, {"бумага", 200}, {"молоток", 600}, {"пила", 400}, {"удочка", 1200},
+{"расческа", 40}, {"котелок", 820}, {"палатка", 5240}, {"брезент", 2130}, {"спички", 10}
+</pre>
+Здесь указано название и вес предмета в граммах.
+<p>
+Сергей собирается в поход и готов взвалить на свои хрупкие плечи максимальный вес в N кг (вводится с клавиатуры). Он решил класть в рюкзак предметы в порядке убывания их веса (сначала самые тяжелые, затем, все более легкие) так, чтобы их суммарный вес не превысил значения N кг. Все предметы даны в единственном экземпляре. Выведите в консоль названия предметов (в строчку через пробел), которые берет с собой Сергей. P. S. 1 кг = 1000 грамм
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string.h>
+
+//using struct {char name[50]; unsigned int weight;}; //error: expected nested-name-specifier before ‘struct’
+using THING = struct {char name[50]; unsigned int weight;};
+
+int main()
+{
+    THING things[] = {
+        {"карандаш", 20}, {"зеркальце", 100}, {"зонт", 500}, {"рубашка", 300}, 
+        {"брюки", 1000}, {"бумага", 200}, {"молоток", 600}, {"пила", 400}, {"удочка", 1200},
+        {"расческа", 40}, {"котелок", 820}, {"палатка", 5240}, {"брезент", 2130}, {"спички", 10}
+    };
+    int N, massa = 0, pos;
+    double tmp_weight;
+    char tmp_name[50];
+    std::cin >> N;
+    for (int i = 0; i < sizeof(things) / sizeof(things[0]); i++)
+    {
+        pos = i;
+        tmp_weight = things[i].weight;
+        strcpy(tmp_name, things[i].name);
+        for (int k = i+1; k < sizeof(things) / sizeof(things[0]); k++)
+        {
+            if (things[k].weight > tmp_weight)
+            {
+                tmp_weight = things[k].weight;
+                strcpy(tmp_name, things[k].name);
+                pos = k;
+            }
+        }
+        if (i != pos)
+        {
+            things[pos].weight = things[i].weight;
+            strcpy(things[pos].name, things[i].name);
+            things[i].weight = tmp_weight;
+            strcpy(things[i].name, tmp_name);
+        }  
+    }
+    for (int i = 0; i < sizeof(things) / sizeof(things[0]); i++)
+    {
+        if (things[i].weight <= N*1000 && (massa + things[i].weight) <= N*1000)
+        {
+            std::cout << things[i].name << " ";
+            massa +=things[i].weight;
+        }
+    } 
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+============================================================================================================================
+
+</pre>
+<a name="bool"><h3 align=center>Тип переменной bool</h3>
+Напишите программу, в которой происходит считывание целочисленных значений, записанных через пробел, пока не будет введено число 0. Необходимо определить, что хотя бы одно введенное число является четным (последнее число 0 не учитывается). Для этого используйте булеву переменную с именем fl_even и начальным значением false. Если введено хотя бы одно четное число, то fl_even должна быть равна true, иначе - false. Выведите в консоль строку "even" если было найдено четное число, или строку "no" если все числа нечетные.
+<p>
+P. S. Для красоты программного кода используйте операцию (подумайте какую) для обновления значения переменной fl_even на каждой итерации. А при выводе в консоль той или иной строки - тернарный условный оператор.<br>
+Sample Input:  1 2 3 4 5 6 7 0<br>
+Sample Output: even
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+int main()
+{
+    int num;
+    bool fl_even = false;
+    while (std::cin >> num && num != 0)
+    {
+        if (!(num % 2)) fl_even = true;
+    }
+    fl_even == true ? (std::cout << "even" << std::endl) : (std::cout << "no" << std::endl);
+    return 0;
+}
+</pre></td></tr>
+<tr><td>
+Другое:
+<pre>
+#include &lt;iostream>
+
+int main() {
+    int n;
+    bool fl_even = false;
+    while(std::cin >> n && n != 0) fl_even |= (n % 2 == 0);
+    <b>std::cout << (fl_even ? "even" : "no");</b>
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Напишите программу, в которой объявите функцию all со следующей сигнатурой:<br>
+bool all(const int* ar, size_t len, PTR_FUNC filter);
+<p>
+Данная функция должна возвращать true, если для всех первых len элементов массива ar функция filter возвращает истинное значение. Тип PTR_FUNC должен соответствовать указателю на функцию с сигнатурой:<br>
+bool <имя функции>(int );<br>
+и определяться через ключевое слово using.
+<p>
+Для проверки элементов массива в качестве примера объявите функцию со следующей сигнатурой:<br>
+bool positive(int x);<br>
+которая должна возвращать истину, если значение x положительное (строго больше нуля) и ложь в противном случае.
+<p>
+В функции main объявите массив с числами: 2, 3, 1, -10, 15
+<p>
+Вызовите для него функцию all, а в качестве критерия проверки укажите функцию positive. Сохраните возвращенное значение в булевой переменной res.<br>
+P. S. В консоль ничего выводить не нужно.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+using PTR_FUNC = bool (*)(int);
+
+bool all(const int* ar, size_t len, PTR_FUNC filter)
+{
+    bool res = true;
+    for (int i = 0; i < len; i++)
+    {
+        res *=filter(ar[i]);
+        //printf("%d\n", res);
+    }
+    return res;
+}
+
+bool positive(int x)
+{
+    return (x > 0);
+}
+
+int main()
+{
+    int ar[] = {2, 3, 1, -10, 15};
+    int len = sizeof(ar)/sizeof(ar[0]);
+    bool res;
+    res = all(ar, len, positive);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Битовая арифметика</a></b><br>
+Напишите программу, в которой объявите функцию any со следующей сигнатурой:<br>
+bool any(const double* ar, size_t len, PTR_FUNC filter);<br>
+Данная функция должна возвращать true, если хотя бы для одного из первых len элементов массива ar функция filter возвращает истинное значение. Тип PTR_FUNC должен соответствовать указателю на функцию с сигнатурой:<br>
+bool <имя функции>(double );<br>
+и определяться через ключевое слово using.
+<p>
+Для проверки элементов массива в качестве примера объявите функцию со следующей сигнатурой:<br>
+bool range_out(double x);<br>
+которая должна возвращать истину, если значение x выходит за диапазон [-0.5; 0.5], и ложь в противном случае.<br>
+В функции main объявите массив с числами: 0.1, 0.2, 0.3, -0.4, 1.4
+<p>
+Вызовите для него функцию any, а в качестве критерия проверки укажите функцию range_out. Сохраните возвращенное значение в булевой переменной res. P. S. В консоль ничего выводить не нужно.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+using PTR_FUNC = bool (*)(double);
+
+bool any(const double* ar, size_t len, PTR_FUNC filter)
+{
+    bool res = false;
+    for (int i = 0; i < len; i++)
+    {
+        <b>res = res | filter(ar[i]);</b>
+        printf("res=%d\n", res);
+    }
+    return res;
+}
+
+bool range_out(double x)
+{
+    return (x < -0.5 || x > 0.5);
+}
+
+int main()
+{
+    double ar[] = {0.1, 0.2, 0.3, -0.4, 1.4};
+    //double ar[] = {0.1, 2.2, 10.3, -1.4, 1.4};
+    int len = sizeof(ar)/sizeof(ar[0]);
+    bool res;
+    res = any(ar, len, range_out);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+===========================================================================================================================
+
+
+</pre>
+<a name="array_m"><h3 align=center>Многомерные массивы</h3>
+Допишите следующую программу. Из входного потока необходимо прочитать целые числа, записанные через пробел, и занести их по порядку массив matrix (сначала заполняется первая строка, затем вторая, и так далее). Количество чисел во входном потоке от одного и до бесконечности. Необходимо контролировать, чтобы их максимальное количество не превышало размеров массива matrix.
+<p>
+Выведите в консоль сформированную матрицу matrix в виде таблицы matrix_size x matrix_size элементов.<br>
+P. S. Числа разделяются пробелом. В конце строк пробелов быть не должно.<br>
+Sample Input: 5 4 3 7 10 4<br>
+Sample Output:
+<pre>
+5 4 3 7
+10 4 0 0
+0 0 0 0
+0 0 0 0
+</pre>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+enum {matrix_size=4};
+
+int main()
+{
+    short matrix[matrix_size][matrix_size] = {0};
+    
+    for (int i = 0; i < matrix_size; i++)
+    {
+        for (int j = 0; j < matrix_size && <b>std::cin >> matrix[i][j]</b>; j++){}
+    }
+    
+    for (int rows = 0; rows < matrix_size; rows++)
+    {
+        for (int cols = 0; cols < matrix_size; cols++)
+        {
+            std::cout << matrix[rows][cols];
+            if (cols == matrix_size -1) <b>std::cout << std::endl</b>;
+            else std::cout << " ";
+        }
+    }
+
+    return 0;
+}
+</pre></td></tr>
+<tr><td>
+Другое:
+<pre>
+#include &lt;iostream>
+enum {matrix_size=4};
+int main(){
+    short matrix[matrix_size][matrix_size] = {0}, count=0, <b>*ptr = (short*)matrix</b>;
+    <b>while(std::cin >> *(ptr++) && count++ < matrix_size*matrix_size);</b>
+    for (int i = 0; i < matrix_size; i++)
+        for (int j = 0; j < matrix_size; j++)
+            std::cout << matrix[i][j] << (matrix_size - j - 1? ' ': '\n');
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Непонятно, как конец ввода в многомерный массив определить. Если как обычно через && std::cin >> matrix[i], то ошибка.<br>
+Если в тело цикла ввести std::cout, то бесконечный цикл.<br>
+Решил проблему обычным способом в условии внутреннего цикла.<br>
+Или как в другом решении через указатель.
+<p>
+2.Вывод одного перевода строки не std::cout << endl; а std::cout << std::endl;
+<pre>
+
+==========================================================================================================================
+
+</pre>
+<a name="reload"><h3 align=center>Перезагрузка функций</h3>
+Объявите в программе две функции с именем get_square, которые вычисляют площадь фигуры и возвращают ее. Функции должны иметь следующие наборы параметров типа int:
+<p>
+1. у одной функции три параметра для вычисления площади треугольника; вычисленная площадь возвращается (тип double);
+<p>
+2. у другой функции два параметра для вычисления площадь прямоугольника; вычисленная площадь возвращается (тип int).
+<p>
+Напомню, что площадь треугольника по трем его сторонам можно вычислить по формуле Герона: S= p⋅(p−a)⋅(p−b)⋅(p−c)
+​<p>
+где p=(a+b+c)/2 - полупериметр треугольника.
+<p>
+В функции main прочитайте из входного потока три первых целых числа для длин сторон треугольника, а вторые два - для длин сторон прямоугольника. Все числа во входном потоке записаны в одну строчку через пробел. Вызовите функции get_square для вычисления площади треугольника и прямоугольника. Выведите вычисленные значения площади треугольника и прямоугольника (именно в таком порядке) в консоль в одну строчку через пробел с точностью до десятых.<br>
+Sample Input: 6 4 9 10 15<br>
+Sample Output: 9.6 150.0
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;math.h>
+
+double get_square(int a, int b, int c)
+{
+    printf("%d %d %d\n", a, b, c);
+    double p = (a + b + c)/2.0;
+    return sqrt(p * (p - a) * (p - b) * (p - c));
+}
+
+
+int get_square(int a, int b)
+{
+    printf("%d %d\n", a, b);
+    return a * b;
+}
+
+int main()
+{
+    int a, b, c;
+    double sq_tr;
+    int sq_pr;
+    std::cin >> a >> b >> c;
+    sq_tr = get_square(a, b, c);
+    std::cin >> a >> b;
+    sq_pr = get_square(a, b);
+    printf("%.1f %.1f\n", sq_tr, (double)sq_pr);
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Объявите в программе перегруженные функции get_mean со следующими сигнатурами:
+<pre>
+double get_mean(const short* d, const size_t len);
+double get_mean(const int* d, const size_t len);
+double get_mean(const double* d, const size_t len);
+</pre>
+Эти функции должны вычислять и возвращать среднее арифметическое переданного массива d длиной len элементов.
+<p>
+В функции main объявите массив с типом short, длиной 100 и прочитайте из входного потока целые числа, записанные через пробел. Вызовите для этого массива функцию get_mean и вычислите среднее арифметическое для прочитанных чисел из входного потока. Результат выведите в консоль с точностью до сотых.<br>
+Sample Input: 5 4 3 10 -12 9 8 34 2 13 11 7<br>
+Sample Output: 7.83
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+double <b>get_mean</b>(const short* d, const size_t len)
+{
+    double summa = 0;
+    for (int i = 0; i < len; i++)
+    {
+        summa +=d[i];
+    }
+    return summa/len;
+}
+
+double <b>get_mean</b>(const int* d, const size_t len)
+{
+    int summa = 0;
+    for (int i = 0; i < len; i++)
+    {
+        summa +=d[i];
+    }
+    return summa/(double)len;
+}
+
+double <b>get_mean</b>(const double* d, const size_t len)
+{
+    double summa = 0;
+    for (int i = 0; i < len; i++)
+    {
+        summa +=d[i];
+    }
+    return summa/len;
+}
+
+int main(void)
+{
+    short ar[100] = {0};
+    int count = 0;
+    
+    for (; count < sizeof(ar) && std::cin >> ar[count]; count++) {}
+    
+    printf("%.2f\n", get_mean(ar, count));
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+========================================================================================================================
+
+</pre>
+<a name="extern"><h3 align=center>Директива extern "C"</h3>
+Объявите в программе функцию через директиву extern "C" следующей сигнатуры:<br>
+double mean_2(int a, int b);<br>
+которая вычисляет среднее арифметическое значений a и b и возвращает вычисленный результат. Программа должна быть составлена так, чтобы она компилировалась на Си и С++.
+<p>
+В функции main прочитайте из входного потока два целых значения, записанных через пробел, и вызовите для них функцию mean_2. Возвращенное значение выведите в консоль с точностью до десятых.<br>
+Sample Input: 54 37<br>
+Sample Output: 45.5
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#ifdef __cplusplus
+#   include &lt;iostream>
+extern "C"
+{
+#else
+#   include &lt;stdio.h>
+
+#endif
+
+double mean_2(int a, int b)
+{
+    return (a + b)/2.0;
+}
+#ifdef __cplusplus
+}
+#endif
+
+int main(void)
+{
+    int a, b;
+    scanf("%d %d", &a, &b);
+    printf("%.1f\n", mean_2(a, b));
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+Шаблон:
+<pre>
+#ifdef __cplusplus
+extern "C" {
+#endif
+void show_msg(const char* msg)
+{
+    puts("-----------------------");
+    puts(msg);
+    puts("-----------------------");
+}
+ 
+#ifdef __cplusplus
+}
+#endif
+</pre>
+<pre>
+
+========================================================================================================================
+
+</pre>
+<a name=parametr"><h3 align=center>Параметры функции по умолчанию</h3>
+<b>Строка как параметр функции по умолчанию</b><br>
+Объявите функцию с именем check_password, которая первым параметром принимает корректную Си-строку (пароль), а вторым - строку chars с начальным значением в виде строки "$%!?@#". Функция должна проверять, есть ли в пароле хотя бы один символ из chars и что он (пароль) состоит минимум из 8 символов. Если проверка проходит, то функция check_password возвращает булево значение true, а иначе - false.
+<p>
+В функции main прочитайте пароль из входного потока (записанного в виде слова, без пробелов). Вызовите для прочитанной строки функцию check_password и выведите в консоль строку "yes", если пароль корректен, и "no" в противном случае.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include <iostream>
+#include <string.h>
+
+<font color=red>//bool check_password(char *password, char *chars = "$%!?@#") //warning: ISO C++ forbids converting a string constant to ‘char*’
+//bool check_password(char *password, char chars[] = "$%!?@#") //warning: ISO C++ forbids converting a string constant to ‘char*’
+//bool check_password(char *password, char[] chars = "$%!?@#")</font> //error: expected ‘,’ or ‘...’ before ‘chars’
+bool check_password(char *password, <b>const char* chars="$%!?@#"</b>) //шаблон: const char* str="Hi!"
+{
+    return (strpbrk(password, chars) && (strlen(password) > 7));   
+}
+
+int main()
+{
+    char password[100] = {0};
+    std::cin >> password;
+    std::cout << (check_password(password) ? "yes" : "no");
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+</pre>
+</div></body></html>
