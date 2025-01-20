@@ -15,7 +15,7 @@
           }     
 .content {
            padding: 0px 0px 0px 0px;
-           margin-left: 155px; /* То же, что и ширина боковой панели */
+           margin-left: 160px; /* То же, что и ширина боковой панели */
          }
 </style>
 </head><body>
@@ -104,7 +104,7 @@ print(sys.argv)</pre>
 <li> sys.stdin/stdout/stderr
 </ol>
 
-<a name="subprocess"><h4>Модуль subprocess</h4>
+<a name="subprocess"><h3 align=center>Модуль subprocess</h3>
 Ссылки: <a href="https://python-scripts.com/subprocess">Модуль subprocess — Работаем с процессам</a>
 <p>
 Модуль subprocess дает разработчику возможность запускать процессы программ из Python. Другим словами, вы можете запускать 
@@ -138,9 +138,42 @@ code = subprocess.call(["ping", "www.yahoo.com"])</pre>
 В ответе получим результат пингования сайта.<br>
 Обратите внимание на то, что в данном примере мы передали список аргументов. Первый объект в списке это программа, которую мы 
 хотим вызвать. Все остальное в списке – это аргументы, которые мы хотим передать программе. Так что в данном примере мы 
-выполняем пинг на сайте Yahoo. Также обратите внимание на то, что код возврата нулевой, так что все прошло успешно. 
+выполняем пинг на сайте Yahoo. Также обратите внимание на то, что код возврата нулевой, так что все прошло успешно.
 </ul>
 <p>
+2. <b>Функция run()</b><br>
+Функция subprocess.run() может выполнять команды терминала (башевские) и затем выводить результат выполнения команды в виде строки.<br>
+Пример:
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#!/usr/bin/env python3
+
+import <b>subprocess</b>, locale
+procObj = <b>subprocess.run(['ls', '-al'], stdout=subprocess.PIPE)</b>
+outputStr = procObj.stdout.decode(locale.getdefaultlocale()[1])
+print(outputStr)
+</pre></td></tr></table>
+<p>
+Вывод в терминале:
+<pre>
+итого 8072
+drwxrwxr-x  4 dmitriy dmitriy    4096 янв 20 15:29 .
+drwxr-xr-x 49 dmitriy dmitriy    4096 янв 20 14:59 ..
+-rwxrw-r--  1 dmitriy dmitriy     195 янв 20 15:29 1.py
+drwxrwxr-x  2 dmitriy dmitriy    4096 окт  7 12:03 .ipynb_checkpoints
+drwxrwxr-x  5 dmitriy dmitriy    4096 янв 20 14:34 mypython
+-rw-rw-r--  1 dmitriy dmitriy 8243089 янв 20 15:25 Свейгарт Эл - Python. Чистый код для продолжающих
+</pre>
+<p>
+Функции subprocess.run() передается список ['ls', '-al']. Он содержит имя команды ls , за которым следуют аргументы в виде отдельных строк. Обратите внимание: с передачей ['ls -al'] функция работать не будет. Вывод команды хранится в виде строки в outputStr. Электронная документация функций subprocess run() и locale.getdefaultlocale() даст вам лучшее представление о том, как они действуют, причем с ними ваш код будет работать в любой операционной системе, где функционирует Python.
+<pre>
+
+
+================================================================================================================
+
+
+</pre>
 Модуль copy содержит функции для копирования объектов.
 <p>
 В модулях math cmath собраны математические функции для действительных и комплексных аргументов.
@@ -1764,9 +1797,12 @@ future_date = datetime.datetime.today() + datetime.timedelta(days=21)
 print(future_date)</pre>
 Результат:
 <pre>2020-12-05 16:14:09.718325</pre>
+<pre>
 
 
 
 
 
-</div><br><br><br><br></body</html>
+
+</pre>
+</div></body</html>

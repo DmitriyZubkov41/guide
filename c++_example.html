@@ -19,15 +19,30 @@
          }
 </style>
 </head><body>
-<title>Примеры по структурам</title>
+<title>Примеры по языку С++</title>
 <div class="menu">
+<a href="index.html">Главная</a>
+--------------------
 <a href="#std">Ввод/вывод данных</a>
 <a href="#namespace">Пространство имён</a>
 <a href="#using">Оператор using</a>
 <a href="#bool">тип bool</a>
-<a href="#array_m">&nbsp;&nbsp; Многомерные массивы</a>
+<a href="#array_m">Многомерные массивы</a>
+<a href="#links">Ссылки</a>
+<a href="#link_parametr">&nbsp;&nbsp; Ссылки на массивы структуры, как параметр функции</a>
+<a href="#string">Строки</a>
+<a href="#file">Файловые потоки</a>
+<a href="#binar">&nbsp;&nbsp; Чтение/запись из/в файл в бинарном режиме</a>
 <a href="#reload">Перезагрузка функций</a>
 <a href="#extern">Директива extern "C"</a>
+<a href="#lambda">Лямбда-функции</a>
+<a href="#struct">Структуры</a>
+<a href="#struct_mode">Режим доступа</a>
+<a href="#konstr">Конструктор</a>
+<a href="#new">&nbsp;&nbsp; new delete</h3>
+<a href="#smart">указатели unique_ptr</a>
+<a href="#shared">Указатели shared_ptr</a>
+
 </div>
 
 <div class="content">
@@ -934,7 +949,7 @@ enum {matrix_size=4};
 
 int main()
 {
-    short matrix[matrix_size][matrix_size] = {0};
+    <b>short matrix[matrix_size][matrix_size] = {0}</b>;
     
     for (int i = 0; i < matrix_size; i++)
     {
@@ -945,7 +960,7 @@ int main()
     {
         for (int cols = 0; cols < matrix_size; cols++)
         {
-            std::cout << matrix[rows][cols];
+            <b>std::cout << matrix[rows][cols]</b>;
             if (cols == matrix_size -1) <b>std::cout << std::endl</b>;
             else std::cout << " ";
         }
@@ -975,6 +990,849 @@ int main(){
 Или как в другом решении через указатель.
 <p>
 2.Вывод одного перевода строки не std::cout << endl; а std::cout << std::endl;
+<pre>
+
+==========================================================================================================================
+
+</pre>
+<a name="links"><h3 align=center>Ссылки</h3>
+<b>Новая форма for</b>
+Прочитайте из входного потока целые числа, записанные через пробел, в массив marks. Количество читаемых данных не должно превышать константы total_marks. Затем, с помощью цикла<br>
+for(&lt;переменная> : &lt;коллекция>) {[тело цикла]}<br>
+нужно перебрать все элементы массива marks и каждое значение элемента, которое меньше трех, нужно обнулить (приравнять нулю). Выведите в консоль в одну строчку через пробел полученный массив marks в порядке следования его элементов (от начала и до конца).<br>
+Sample Input: 1 2 3 4 5 6 7 6 5 4 3 2 5 4 6 7 8 9 10 100 11 1 2 3 4 5 6 7<br>
+Sample Output: 0 0 3 4 5 6 7 6 5 4 3 0 5 4 6 7 8 9 10 100 11 0 0
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+enum { total_marks=23 };
+
+int main()
+{
+    short marks[total_marks] = {0};
+    for(int i = 0; i < total_marks && std::cin >> marks[i]; i++) {}
+    // здесь продолжайте программу
+    <b>for(short& x : marks)</b>
+    {
+        if (x < 3) x = 0;
+    }
+    
+    for (short& x : marks)
+    {
+         std::cout << x << " ";   
+    }
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Ссылки в параметрах функции</b><br>
+Объявите в программе структуру с именем типа POINT, который определите с помощью оператора using. Структура должна содержать два поля:<br>
+x, y - координаты точки на плоскости (тип double).
+<p>
+Затем объявите функцию с именем get_length, которая должна вычислять и возвращать (тип double) евклидовое расстояние между двумя точками по формуле
+<p>
+Соответственно, функция get_length должна иметь два параметра в виде константных ссылок на тип POINT - координаты двух точек.
+<p>
+В функции main объявите две переменные типа POINT и присвойте им координаты:<br>
+(-2.5; 7.8) и (11.4; 43.2)
+<p>
+Вызовите функцию get_length для вычисления расстояния между этими двумя точками и выведите вычисленное значение в консоль в виде вещественного числа с точностью до сотых.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;math.h>
+
+using POINT = struct {double x, y;};
+
+//double get_length(&POINT pt1, &POINT pt2) //error: expected primary-expression before ‘pt1’
+double get_length(<b>const POINT&</b> pt1, const POINT& pt2)
+{
+    double L;
+    L = sqrt(pow((pt1.x - pt2.x),2) + pow((pt1.y - pt2.y),2));
+    return L;
+}
+
+int main()
+{
+    POINT pt0 = {-2.5, 7.8}, pt1 = {11.4, 43.2};
+    printf("%.2f\n", get_length(pt0, pt1));
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<a name="link_parametr"><h3 align=center>Ссылки на массив, структуру как параметр функции</h3>
+Ссылка на источник: <a href="https://metanit.com/cpp/tutorial/4.7.php">Передача массив по ссылке</a>
+<p>
+<b>Возврат массива структуры, константные ссылки на элемент массива (массив) как параметр функции</b><br>
+Четырехугольник описан четырьмя точками на плоскости.<br>
+Необходимо написать программу, которая бы вычисляла количество точек с целочисленными координатами (x, y) принадлежащих заданному четырехугольнику.
+<p>
+Один из алгоритмов проверки попадания точки в четырехугольник следующий. Точку (x, y) нужно (условно) соединить со всеми вершинами четырехугольника (см. рисунок) и если сумма площадей образованных треугольников будет равна площади исходного четырехугольника, то точка (x, y) принадлежит этой фигуре. Площадь самого четырехугольника можно найти как сумму двух треугольников, на которые легко разбивается любой четырехугольник.
+<p>
+Для вычисления площади треугольника с произвольными сторонами a, b, c можно воспользоваться формулой Герона:
+<p>
+p=(a+b+c)/2 - полупериметр треугольника.
+<p>
+В программе ниже уже реализовано представление и считывание координат из входного потока. Продолжите ее, добавив вычисление числа точек с целочисленными координатами, принадлежащих четырехугольнику figure. Выведите в консоль количество таких точек в виде одного целого числа.
+<p>
+P. S. Повторяющиеся вычисления выносите в функции. В параметрах функций используйте ссылки. Текст программы должен хорошо читаться.<br>
+Sample Input: 5;2 10;15 20;7 13;1
+Sample Output: 116
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;math.h>
+
+enum { corners = 4 };
+
+struct point {
+    int x, y;
+};
+
+void get_min_max(<b>const point (&pt)[4]</b>, int *minX, int *maxX, int *minY, int *maxY)
+{
+    for (int i = 0; i < corners; i++)
+    {
+        if (pt[i].x < *minX) *minX = pt[i].x;
+        
+        if (pt[i].x > *maxX) *maxX = pt[i].x;
+        
+        if (pt[i].y < *minY) *minY = pt[i].y;
+        
+        if (pt[i].y > *maxY) *maxY = pt[i].y;
+    }
+    
+}
+
+double sq_tr(<b>const point& pt1, const point& pt2, const point& pt3</b>)
+{
+    double p, a, b, c, S;
+    a = sqrt(pow((pt1.x - pt2.x),2) + pow((pt1.y - pt2.y),2));
+    b = sqrt(pow((pt2.x - pt3.x),2) + pow((pt2.y - pt3.y),2));
+    c = sqrt(pow((pt3.x - pt1.x),2) + pow((pt3.y - pt1.y),2));
+    p = (a + b + c)/2;
+    S = sqrt(p * (p - a) * (p - b) * (p - c));
+    return S;
+}
+
+int main()
+{
+    point figure[corners];
+
+    int count = 0;
+    while(count < corners && scanf("%d; %d", &figure[count].x, &figure[count].y) == 2)
+        count++;
+
+    if(count != corners) {
+        puts("Неверное количество или формат входных данных.");
+        return 1;
+    }
+
+    // здесь продолжайте функцию main
+    int minX = figure[0].x, maxX = 0, minY = figure[0].y, maxY = 0;
+    get_min_max(figure, &minX, &maxX, &minY, &maxY);
+    
+    double S = sq_tr(figure[0], figure[1], figure[2]) + sq_tr(figure[0], figure[2], figure[3]);
+    for (int i = (minX+1); i < maxX; i++)
+    {
+        for (int j = (minY+1); j < maxY; j++)
+        {
+            double S1 = 0, S2 = 0, S3 = 0, S4 = 0;
+            S1 = sq_tr(figure[0], figure[1], {i, j}); //<font color=red>последний аргумент похоже простой массив, но почему как point</font>
+            S2 = sq_tr(figure[1], figure[2], {i, j});
+            S3 = sq_tr(figure[2], figure[3], {i, j});
+            S4 = sq_tr(figure[3], figure[0], {i, j});
+            if (abs(S - S1 - S2 - S3 - S4) < 0.00001) count +=1;   
+        }
+    }
+    printf("%d\n", count);
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Для вычисления минимума, максимума из координат можно не функцию писать а так:
+<pre>
+for(point& pt : figure) {
+        if(pt.x < x_min) x_min = pt.x;
+        if(pt.y < y_min) y_min = pt.y;
+        if(pt.x > x_max) x_max = pt.x;
+        if(pt.y > x_max) y_max = pt.y;
+    }
+</pre>
+2. <font color=red size=4>Странно, почему - то у других точки считаются с диапазона [x_min, x_max]</font> 
+<pre>
+
+==========================================================================================================================
+
+</pre>
+<a name="string"><h3 align=center>Строки</h3>
+<b>1. Объявление переменных класса string, объединение строк</b><br>
+Объявите в функции main переменные fname, lname типа string. Прочитайте из входного потока имя в переменную fname и фамилию в переменную lname (имя и фамилия записаны через пробел каждое по одному слову). Затем третья переменная fio типа string должна содержать строку в формате:<br>
+&lt;имя>, &lt;фамилия><br>
+Выведите полученную строку fio в консоль.<br>
+Sample Input: Bjarne Stroustrup<br>
+Sample Output: Bjarne, Stroustrup
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+using std::string;
+using std::cin;
+using std::cout;
+using std::endl;
+
+int main()
+{
+	// здесь продолжайте программу
+    //string<font color=red>::</font>fname, string::lname; //error: ‘fname’ is not a member of ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’}
+    <b>string fname, lname;</b> //объявление переменных класса string
+    cin >> fname >> lname;
+    <b>string fio = fname + ", " + lname;</b> //объединение строк
+    cout << fio << endl;
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>2. Функция преобразования чисел в строки</b><br>
+В функции main объявите две целочисленные переменные с именами width и height. Прочитайте из входного потока два целых числа, записанных через пробел, первое - в переменную width, а второе - в переменную height. Затем, объявите объект-строку с именем data_str и запишите в нее информацию в виде строки формата:<br>
+"Переменная width = <&lt;значение>, переменная height = &lt;значение>"<br>
+Выведите в консоль сформированную строку data_str.<br>
+P. S. Для конвертации чисел в объект-строку используйте функцию to_string.<br>
+Sample Input: 10 20<br>
+Sample Output: Переменная width = 10, переменная height = 20
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+using std::string;
+using std::to_string;   // для конвертации чисел в строки
+using std::cin;
+using std::cout;
+using std::endl;
+
+int main()
+{
+	int width, height;
+    cin >> width >> height;
+    string data_str;
+    data_str = "Переменная width = " + <b>to_string(width)</b> + ", переменная height = " + <b>to_string(height)</b>;
+    cout << data_str << endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>3. Запись строки с пробелами в переменную через getline, вывод строки через обычный цикл</b><br>
+В функции main объявите объект-строку с именем msg. Прочитайте в нее строку целиком (до символа переноса строки или до конца данных во входном потоке). Выведите в консоль по порядку первые четыре символа строки msg. (В тестах гарантируется, что строка имеет минимум 4 символа.)<br>
+P. S. Эффективнее выводить отдельные символы функцией putchar.<br>
+Sample Input: Bjarne Stroustrup<br>
+Sample Output: Bjar
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+using std::cin;
+using std::cout;
+using std::endl;
+
+int main()
+{
+    string msg;
+    getline(cin, msg);
+    for(int i = 0; i < 4; i++) // лучше одной строкой: <b>for(int i = 0; i < 4, putchar(msg[i]); i++){}</b>
+    {
+        putchar(msg[i]);   
+    }
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>4. Чтение string с конца</b><br>
+В функции main объявите объект-строку с именем msg. Прочитайте в нее строку целиком (до символа переноса строки или до конца данных во входном потоке). Выведите в консоль последние три символа строки msg в обратном порядке (с конца). (В тестах гарантируется, что строка имеет минимум 3 символа.). P. S. Эффективнее выводить отдельные символы функцией putchar.<br>
+Sample Input: I love C<br>
+Sample Output: C e
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+//#include &lt;cstring>
+#include &lt;string>
+
+using std::string;
+using std::cin;
+using std::cout;
+using std::endl;
+
+int main()
+{
+    string msg;
+    getline(cin, msg);
+    int i = 0;
+    for(auto it = (msg.cend() - 1); i < 3; it--, i++) putchar(*it);
+ 
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Почему если воспользоваться функцией strrchr(msg, 0) или strlen(msg), то компилятор ругается:<br>
+error: cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘const char*’<br>
+Судя по сообщению сначала должен преобразовать string в сисовскую строку.
+<p>
+2. Если несколько переменных задать в начале цикла:<br>
+for (int i = 0, auto ...; ...; ...) {}<br>
+то компилятор ругается:<br>
+error: expected unqualified-id before ‘auto’<br>
+По-моему можно через запятую задать несколько начальных значений или я не прав?
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>5. Перебор элементов массива типа string через новую форму for</b><br>
+В функции main объявите массив объектов-строк с именем cities длиной max_cities. Константу max_cities = 10 определите через перечисление. Из входного потока по порядку прочитайте названия городов, записанных через пробел, в массив cities. Количество читаемых данных не должно превышать значения max_cities. После этого в объект-строку res запишите по порядку (с начала) через пробел все города, длины имен которых больше пяти символов. Выведите в консоль полученную строку res.<br>
+Sample Input: Moscow Ufa Tver Piter Toliatti Samara Kazan<br>
+Sample Output: Moscow Toliatti Samara
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+using std::string;
+using std::cin;
+using std::cout;
+using std::endl;
+
+enum {max_cities = 10};
+
+int main()
+{
+    string cities[max_cities];
+    for (int i = 0; i < max_cities && cin >> cities[i]; i++) {}
+    string res;
+    <b>for(string str : cities)</b> //тип переменной (элемента коллекции) / имя переменной / имя коллекции без скобок
+    {
+        if (str.size() > 5) res =  res + str + " "; //size() - количество символов в str 
+    }
+    cout << res << endl;
+ 
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>6. Перебор строки по элементам с помощью обычного for. Изменение размера измененной строки с resize()</b><br>
+Напишите программу, в которой из входного потока считывается строка целиком в объект-строку. Строка представляет собой фрагмент URL-адреса страницы сайта и может содержать несколько подряд идущих дефисов. Например:<br>
+cpp-obekt--stroka----string-operacii-s-obektami--klassa-string<br>
+Необходимо преобразовать эту строку так, чтобы все дублирующиеся дефисы (более одного подряд) были заменены на один дефис. Результат преобразования вывести в консоль в виде строки.<br>
+Sample Input: c_standartnye---potoki-vvodavyvoda--funkcii-putchar----i-getchar<br>
+Sample Output: c_standartnye-potoki-vvodavyvoda-funkcii-putchar-i-getchar
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
+
+int main()
+{
+    string url;
+    <font color=red>int first_defis = 0;</font> //можно все сделать без этой переменной, просто брать url[i+1] или url[i-1]
+    cin >> url;
+    int length = url.size();
+    //for (char& ch : url) //не подходит та как непонятно как брать из текущей позиции следующий символ
+    //printf("%ld\n", url.size());
+    for (int i = 0; url[i] != '\0'; i++)
+    {
+        if (url[i] != '-') first_defis = 0;
+        
+        if (url[i] == '-' && first_defis == 0)
+        {
+            first_defis = 1;
+            continue;
+        }
+        
+        if (url[i] == '-' && first_defis != 0) //второй подряд дефис
+        {
+            for (int j = i; j < url.size(); j++)
+            {
+                url[j] = url[j+1];
+            }
+            i -=1; //остаёмся на той же позиции
+            length -=1;
+        }
+    }
+    
+    <b>url.resize(length);</b>
+    //printf("%ld\n", url.size());
+    cout << url << endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>7. Способы преобразования string в char *, копирование одной строки в другую, считывание строки с пробелами (fgets, getline) с stdin, параметры функции по умолчанию</b><br>
+Объявите функцию с именем set_tag и следующими параметрами (порядок важен):
+<pre>
+строка, которая заключается в тег (тип char*, эта строка будет меняться в функции);
+максимальная длина строки (целое число);
+тег (строка), в который заключается переданная строка, с начальным значением "h1".
+</pre>
+(Все строки в параметрах функции должны быть представлены массивами символов.)<br>
+Например, при передаче в функцию set_tag строки "Hello C++", заключаем ее (по умолчанию) в тег "h1". В результате, переданная строка после обработки должна иметь вид:<br>
+"&lt;h1>Hello C++&lt;/h1>"<br>
+То есть, сначала прописывается открывающийся тег &lt;h1>, а в конце строки - закрывающийся &lt;/h1>. И так для любых указанных тегов. При этом функция set_tag ничего не должна возвращать, только менять переданную строку, не выходя за пределы ее максимальной длины.
+<p>
+В функции main первый раз вызовите функцию set_tag только со строкой title, а второй раз - со строкой title (исходной) и tag. Полученные строки выведите в консоль каждую с новой строки. В начале и конце строк не должно быть пробелов.
+<pre>
+Sample Input:
+I love C
+div
+Sample Output:
+&lt;h1>I love C&lt;/h1>
+&lt;div>I love C&lt;/div>
+</pre>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё решение, где считываем stdin с помощью функции fgets():
+<pre>
+#include &lt;iostream>
+#include &lt;string.h>
+
+void set_tag(char *str, int length, const char* tag="h1")
+{
+    char tmp_str[length] = {0};
+    <b>sprintf(tmp_str, "<%s>%s</%s>", tag, str, tag);</b>
+    strcpy(str, tmp_str);
+}
+
+int main()
+{
+    //std::string title, tag;
+    //getline(std::cin, title);
+    //getline(std::cin, tag);
+    
+    /*Решение задачи методами Си
+    char str[100] = {0};
+    char tag[20] ={0};
+    int count = 0;
+    
+    //for (; count<100 && std::cin >> str[count]; count++); //"I love C" преобразует в IloveC
+    //std::cin >> str; //"I love C" получаем I, а остальное идет в tag
+    
+    <b>fgets(str, 100, stdin);</b> //считываю строку с пробелами, функция из языка Си
+    char *ptr = strchr(str, '\n');
+    if(ptr != NULL) *ptr = '\0';
+    //printf("str=%s\n", str);
+    
+    
+    char orig_str[80] = {0};
+    strcpy(orig_str, str);
+        
+    fgets(tag, 20, stdin);
+    ptr = strchr(tag, '\n');
+    if(ptr != NULL) *ptr = '\0';
+    
+    
+    
+    set_tag(str,100);
+    std::cout << str << std::endl;
+    
+    set_tag(orig_str,100, tag);
+    std::cout << orig_str << std::endl;
+    
+    return 0; 
+}
+</pre></td></tr></table>
+<p>
+1. Сначала считывал строку с stdin с помощью fgets, решение принято.
+<p>
+2. Сделал также как по заданию, считал строку через string и getline().
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string.h>
+
+void set_tag(char *str, int length, const char* tag="h1")
+{
+    char tmp_str[length] = {0};
+    <b>sprintf(tmp_str, "<%s>%s</%s>", tag, str, tag);</b>
+    strcpy(str, tmp_str);
+}
+
+
+int main()
+{
+    <b>std::string title, tag;
+
+    getline(std::cin, title);
+    getline(std::cin, tag);</b>
+    
+    
+    char str[80] = {0};
+    <b>for (int i = 0; title[i] != '\0'; i ++)</b> //получаем сишную строку со string считыванием посимвольно
+    <b>{
+        str[i] = title[i];
+    }</b>
+    
+    char str_tag[10] = {0};
+    for (int i = 0; tag[i] != '\0'; i ++) 
+    {
+        str_tag[i] = tag[i];
+    }
+    
+    char orig_str[80];
+    strcpy(orig_str, str);
+    
+    set_tag(str,100);
+    std::cout << str << std::endl;
+    
+    set_tag(orig_str,100, str_tag);
+    std::cout << orig_str << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Если сразу title передавать параметром функции (set_tag(title,100);), то получим ошибку:<br>
+<font color=red>error:</font> cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘char*’<br>
+Чтобы string преобразовать в сишную строку есть несколько способов:
+<ol>
+<li> <b>метод data()</b><br>
+сначала сделал так: char* str = title.data();<br>
+Получил: <font color=red>error:</font> invalid conversion from ‘const char*’ to ‘char*’<br>
+Преобразовывает в строковую константу.<br>
+Посмотрел в Решениях, оказывается надо было так:<br>
+<font color=green><b>strcpy(ctitle, title.data());</b></font>
+<li> <b>Метод c_str()</b><br>
+Также преобразовывает в строковую константу.<br>
+Думаю через strcpy было бы нормально.
+<li> Тогда преобразовал так: <font color=green>char* str = &title[0];</font><br>
+Но с помощью этого способа получил непонятные проблемы с памятью:<br>
+<font color=red size=4>free(): invalid pointer</font><br>
+Весь день изучал, но так и понял, почему.
+<li> Тогда использовал простой, но как оказалось единственный эффективный способ, считывание string посимвольно:
+<pre>
+for (int i = 0; title[i] != '\0'; i ++)но
+    {
+        str[i] = title[i];
+    }
+</pre>
+</ol>
+<p>
+
+2. <b>Копирование одной строки в другую</b><br>
+strncpy(str, modif_str, 17) или memmove(str, modif_str, 17); выводит после 17 символа несколько грязных символов. Почему?<br>
+string title состоит из 32 символов и 0 примерно после 20
+<p>
+Почему если strncpy(str, modif_str, 20); то "Ошибка сегментирования (стек памяти сброшен на диск"<br>
+а если strncpy(str, modif_str, 19); то<br>
+"free(): invalid pointer<br>
+Аварийный останов (стек памяти сброшен на диск)"<br>
+Проблемы скорее всего были вызваны, когда преобразовывал string в char[] <b>char* str = &title[0];</b><br>
+После того как преобразовал через цикл посимвольно, копировал строку в другую простейшим способом через strcpy:<br>
+strcpy(str, tmp_str);
+<pre>
+
+===========================================================================================================================
+
+
+</pre>
+<a name="file"><h3 align=center>Файловые потоки</h3>
+<b>1. Открытие файла на чтение в текстовом режиме в подкаталоге</b><br>
+Запишите команду для потока ifs, которая открывает файл с именем my_marks.dat, расположенный в подкаталоге study, только на чтение в текстовом режиме доступа.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;fstream>
+
+using std::ios;
+
+int main()
+{
+    std::ifstream ifs;
+    <b>ifs.open("study/my_marks.dat");</b>
+
+    ifs.close();
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>2. Открытие потока на дозапись в текстовом режиме в текущем каталоге</b><br>
+Запишите команду для потока ofs, которая открывает файл с именем my_table.txt, расположенный в текущем (рабочем) каталоге, только на дозапись в текстовом режиме доступа.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;fstream>
+
+using std::ios;
+
+int main()
+{
+    std::ofstream ofs;
+    <b>ofs.open("my_table.txt",  ios::app);</b>
+
+    ofs.close();
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>3. Открытие файла на чтение, чтение данных из файла</b>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;fstream>
+
+using std::ifstream;
+using std::ofstream;
+
+int main()
+{
+    ifstream fs("my_marks.dat");
+
+    if(!fs) {
+        std::cout << "Невозможно открыть файл";
+        return 0;
+    }
+
+    short marks[10] = {0};
+    int count = 0;
+    <b>while(count < 10 && fs >> marks[count])</b>
+        count++;
+
+    fs.close();
+
+    for(const int& x : marks)
+        std::cout << x << " ";
+
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1.Если в файле my_marks.dat присутствует строка "3; 3; 2; 3; 4; 3; 2; ", то будет прочитано только первое число из этого файла из-за символа ';'
+<p>
+в цикле while выполняется последовательное чтение данных, пока не будет прочитано 10 элементов, или операция чтения >> не вернет значение 0
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>4. Открытие файла на запись в текстовом режиме, запись данных в файл</b>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;fstream>
+
+using std::ifstream;
+using std::ofstream;
+
+int main()
+{
+    short sh = 10;
+    double d = -0.56;
+    char ch = 'a';
+    
+    ofstream ofs("my_data.dat");
+
+    if(!ofs) {
+        std::cout << "Невозможно открыть файл";
+        return 0;
+    }
+
+    ofs << sh << " " << d << " " << ch;
+
+    ofs.close();
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+=====================================================================================================================
+
+</pre>
+<a name="binar"><h3 align=center>Чтение/запись из/в файл в бинарном режиме</h3>
+<b>1. Чтение из файла в массив типа short</b><br>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;fstream>
+
+using std::ios;
+
+int main()
+{
+    short marks[10];
+
+    std::ifstream ifs("my_data.dat", ios::in | ios::binary);
+
+    ifs.read((char *) marks, sizeof(marks));
+
+    ifs.close();
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>2. Запись в файл в бинарном режиме count элементов мвссива</b>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;fstream>
+
+using std::ios;
+
+int main()
+{
+    double digits[10] = {0.5, 0.3, 0.6};
+    int count = 3;
+
+    std::ofstream ofs("digits.dat", ios::out | ios::binary);
+
+    ofs.write((char *)digits, <b>count * sizeof(double)</b>);
+
+    ofs.close();
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>3. Запись в файл структуры в бинарном режиме и чтение этого файла</b>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;fstream>
+
+<b>using std::ios;</b>
+
+struct car {
+    char model[50];
+    unsigned short max_speed;
+    double power;
+    unsigned int weight;
+};
+
+int main()
+{
+    car my_auto = {"BMW X5", 240, 215.6, 1743};
+    std::ofstream ofs("autos.db", std::ios::out | std::ios::binary);
+
+    //ofs.write((char *) my_auto, sizeof(my_auto)); //error: invalid cast from type ‘car’ to type ‘char*’
+    <b>ofs.write((char *) <font color=green>&</font>my_auto, sizeof(my_auto));</b>
+    ofs.close();
+    
+    //_________________Чтение_____________________:
+    car read_my_auto;
+ 
+    std::ifstream ifs("autos.db", ios::in | ios::binary); //error: ‘ios’ has not been declared Добавил using std::ios;
+
+ 
+    if(ifs.is_open()) {
+        ifs.read((char *) &read_my_auto, sizeof(read_my_auto));
+    }
+ 
+    std::cout << read_my_auto.model << "\n";
+    std::cout << read_my_auto.max_speed << " " << read_my_auto.power << " " << read_my_auto.weight << std::endl;
+     
+    ifs.close();
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Компилятор жаловался на строку: std::ifstream ifs("autos.db", ios::in | ios::binary);<br>
+<font color=red>error:</font> ‘ios’ has not been declared<br>
+Решил проблему добавлением строки using std::ios;<br>
+<font size=5>Можно было проще, как для блока записи сделать, перед ios::in и ios::binary приписать пространство имён: std::</font>
+<p>
+2. Компилятор жаловался на строку: ofs.write((char *) my_auto, sizeof(my_auto));<br>
+<font color=red>error:</font> invalid cast from type ‘car’ to type ‘char*’<br>
+Решил проблему добавлением знака & перед переменной my_auto:<br>
+ofs.write((char *) <font color=green>&</font>my_auto, sizeof(my_auto));<br>
+При записи или чтении, если переменная не является массивом или указателем, то нужно ставить перед ней знак аммперсанда.
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
 <pre>
 
 ==========================================================================================================================
@@ -1165,8 +2023,8 @@ void show_msg(const char* msg)
 <table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
 Моё:
 <pre>
-#include <iostream>
-#include <string.h>
+#include &lt;iostream>
+#include &lt;string.h>
 
 <font color=red>//bool check_password(char *password, char *chars = "$%!?@#") //warning: ISO C++ forbids converting a string constant to ‘char*’
 //bool check_password(char *password, char chars[] = "$%!?@#") //warning: ISO C++ forbids converting a string constant to ‘char*’
@@ -1185,6 +2043,2238 @@ int main()
 }
 </pre></td></tr></table>
 <pre>
+
+
+=====================================================================================================================
+
+
+</pre>
+<a name="lambda"><h3 align=center>Лямбда-функции</h3>
+<b>1. Массив из указателей на лямбда-функции</b><br>
+В функции main объявите массив с именем func_filter, который должен быть инициализирован следующими лямбда-выражениями (порядок важен):
+<pre>
+принимает один целочисленный параметр; возвращает 1, если переданное значение четно, и 0 - если нечетно;
+принимает один целочисленный параметр; возвращает 1, если переданное значение отрицательно, и 0 - если неотрицательно;
+принимает один целочисленный параметр; возвращает 1, если переданное значение положительно (строго больше нуля), и 0 - иначе.
+Прочитайте из входного потока целочисленное значение и выведите в консоль результат работы второй лямбда-функции массива
+ func_filter.
+</pre>
+Sample Input: 7<br>
+Sample Output: 0
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+int main(void)
+{
+    /*
+    <font color=red>auto (*func_filter[3]) (int) = {
+        [](int x) -> int {return (x % 2 == 0);},
+        [](int y) -> int {return (y < 0);},
+        [](int z) -> int {return (z > 0);}
+    };</font>
+    */
+    
+    int (*func_filter[3]) (int) = {
+        [](int x) -> int {return (x % 2 == 0);},
+        [](int y) -> int {return (y < 0);},
+        [](int z) -> int {return (z > 0);}
+    };
+    int num;
+    std::cin >> num;
+    
+    std::cout << func_filter[1](num) << std::endl;
+    
+    return 0;
+}
+</pre></td>
+<td vlign=top>
+Другое:
+<pre>
+#include &lt;iostream>
+
+int main(void)
+{
+    bool (*func_filter[])(int) {[](int num){return num % 2 == 0;},
+                                [](int num){return num < 0;},
+                                [](int num){return num > 0;}};
+
+    int a;
+
+    std::cin >> a;
+    
+    bool res = func_filter[1](a);
+
+    std::cout << res << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. auto (*func_filter[3]) (int) = {...}<br>
+error: ‘func_filter’ declared as array of ‘auto (*)(int)’<br>
+Такая ошибка, думаю, говорит о несовместимости типа массива и типов элементов массива.
+<p>
+2. int x = [](int x){return (x % 2 == 0);}; //error: invalid user-defined conversion from ‘main()::<lambda(int)>’ to ‘int’<br>
+Поменял тип x с int на auto
+<p>
+3. func_filter[0] = x; //error: invalid user-defined conversion from ‘main()::<lambda(int)>’ to ‘int (*)(int)’<br>
+Поменял объявление x c известным типом возврата:<br>
+auto x = [](int x)-> int {return (x % 2 == 0);};
+<p>
+Если в другом решении поменять тип массива с bool на int, то вернёт ошибку:<br>
+<font color=red>error:</font> invalid user-defined conversion from ‘main()::<lambda(int)>’ to ‘int (*)(int)’<br>
+<font size=5>Похоже все мои проблемы из-за того, что return возвращал не int а bool.</font>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>2. Лямбда-функция , как аргумент функции, указатель на функцию, как параметр функции</b><br>
+Допишите функцию remove_elem, которая должна удалять все элементы из массива ar длиной len, для которых функция filter возвращает истинное значение. При этом значение переменной len должно быть равно количеству оставшихся значений в массиве ar.
+<p>
+В функции main вызовите функцию remove_elem для массива marks длиной count, а третьим аргументом пропишите лямбда-функцию для удаления из массива всех значений меньше 3. Результирующий массив marks (оставшиеся элементы после удаления) выведите в консоль по порядку в одну строчку через пробел.<br>
+Sample Input: 5 4 3 2 -1 -100 6 7<br>
+Sample Output: 5 4 3 6 7
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+enum {max_length_ar = 20};
+<b>using filter_func = bool (*)(short);</b>
+
+void remove_elem(short* ar, int& len, <b>filter_func</b> filter)
+{
+    for (int i = 0; i < len; i++)
+    {
+        if (filter(ar[i]))
+        {
+            for (int j = i; j < (len-1); j++) {ar[j] = ar[j+1];}
+            i -=1;
+            len -=1;
+        }
+    }
+}
+
+int main(void)
+{
+    short marks[max_length_ar] = {0};
+    int count = 0;
+    while(count < max_length_ar && std::cin >> marks[count])
+        count++;
+
+    remove_elem(marks, count, <b>[](short x){return x<3;}</b>);
+    for (int i = 0; i < count; i++) {std::cout << marks[i] << " ";}
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>3. Лямбда как аргумент функции с двумя параметрами</b><br>
+Допишите функцию sum_elem, которая должна суммировать все значения элементов массива ar длиной len, для которых функция filter возвращает истинное значение. В функции main вызовите функцию sum_elem для массива marks длиной count, а третьим аргументом пропишите лямбда-функцию для суммирования всех значений  элементов массива marks кратных 3, которые следуют непосредственно за четным значением. Например, для чисел:<br>
+1, 2, 3, 4, 5, 5, 7, 8, 9<br>
+суммирование должно осуществляться для чисел:<br>
+3, 9<br>
+Вычисленную сумму выведите в консоль в виде целого числа.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+enum {max_length_ar = 20};
+using filter_func = bool (*)(int, int);
+
+int sum_elem(const int* ar, size_t len, filter_func filter)
+{
+    int res = 0;
+    for (int i = 0; i + 1 < len; i++)
+    {
+        if (filter(ar[i], ar[i+1])) res +=ar[i+1];       
+    }
+    return res;
+}
+
+int main(void)
+{
+    int marks[max_length_ar] = {0};
+    int count = 0;
+    while(count < max_length_ar && std::cin >> marks[count])
+        count++;
+
+    int res = sum_elem(marks, count, <b>[](int a, int b){return (a % 2 == 0 && b % 3 == 0);}</b>);
+    std::cout << res << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>4. Захват переменных в лямбда</b><br>
+Необходимо в функции main прочитать два целых числа из входного потока, записанных через пробел, в переменные w и h. Объявить лямбда-выражение, которое захватывает переменные w, h, складывает их и возвращает результат. Сама лямбда-функция не должна иметь никаких параметров. С лямбда-выражением должна быть связана переменная sum_ab. Вызовите лямбда-функцию sum_ab и выведите в консоль возвращенное значение.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+int main(void)
+{
+    int w, h;
+    std::cin >> w >> h;
+    
+    auto sum_ab = [<b>w, h</b>]() {return w+h;};
+    
+    //std::cout << <font color=red>sum_ab</font> << std::endl;
+    std::cout << <font color=green>sum_ab()</font> << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. int sum_ab = [w, h]() -> int {return w+h;}; //<font color=red>error:</font> cannot convert ‘main()::&lt;lambda()>’ to ‘int’ in initialization<br> 
+<font size=5>Лямбда может иметь заранее заданный тип только если у нее пустой список захвата [].</font><br>
+В этом случае нужно указывать тип auto
+<p>
+std::cout << <font color=red>sum_ab</font> << std::endl; //<font color=red>error:</font> no match for ‘operator<<’ (operand types are ‘std::ostream’ {aka ‘std::basic_ostream<char>’} and ‘main()::<lambda()>’)<br>
+<font size=5>sum_ab является функцией, поэтому вызывать лямбда по именам можно только со скобками: sum_ab()</font>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>5. Захват массива в лямбда, чтение строки из stdin</b><br>
+В программе ниже замените функцию get_line эквивалентным лямбда-выражением. Лямбда-выражение следует объявлять внутри функции main и связать с переменной gl. Лямбда-выражение должно захватывать массив str и не иметь параметров. Вызовите в функции main лямбда-функцию gl и выведите в консоль строку str.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+void get_line(char* buff, size_t max_buff)
+{
+    std::string line;
+    getline(std::cin, line);
+
+    int i = 0;
+    for(;i < line.length() && i < max_buff-1; ++i)
+        buff[i] = line[i];
+    buff[i] = '\0';
+}
+
+int main(void)
+{
+    char str[100];
+//  get_line(str, sizeof(str));
+    auto gl = [<b>&str</b>]()
+    {
+         std::string line;
+         getline(std::cin, line);
+         
+         int i = 0;
+         for(;i < line.length() && i < sizeof(str); ++i)
+         {
+             str[i] = line[i];
+         }
+         str[i] = '\0';  
+    };
+    
+    gl();
+    std::cout << str <<std::endl;
+
+    return 0;
+}
+</pre></td>
+<td valign=top>
+Другое:
+<pre>
+#include &lt;iostream>
+
+int main(void){
+    char str[100];
+    auto gl = [&str](){<b>fgets(str, sizeof(str), stdin);</b> };
+    gl();
+    std::cout << str << std::endl;
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+========================================================================================================================
+
+
+</pre>
+<a name="struct"><h3 align=center>Структуры</h3>
+<b>1. Объявление структуры, математические функции, сравнение вещественных чисел</b><br>
+Четырехугольник описан четырьмя точками на плоскости.<br>
+Необходимо написать программу, которая бы проверяла, что произвольная точка с координатами (x, y) находится в пределах заданного четырехугольника.
+<p>
+Один из алгоритмов проверки следующий. Точку (x, y) нужно (условно) соединить со всеми вершинами четырехугольника (см. рисунок) и если сумма площадей образованных треугольников будет равна площади исходного четырехугольника, то точка (x, y) принадлежит этой фигуре. Площадь самого четырехугольника можно найти как сумму двух треугольников, на которые легко разбивается любой четырехугольник.
+<p>
+Для вычисления площади треугольника с произвольными сторонами a, b, c можно воспользоваться формулой Герона:<br>
+S = квадратный корень из: p⋅(p−a)⋅(p−b)⋅(p−c)<br>
+​где p=(a+b+c)/2 - полупериметр треугольника.
+<p>
+В программе ниже уже реализовано представление и считывание координат из входного потока. Продолжите ее, добавив проверку принадлежности точки pt четырехугольнику figure. Если точка принадлежит фигуре, то в консоль выведите строку "yes", а иначе - строку "no".
+<p>
+P. S. Повторяющиеся вычисления выносите в функции. Текст программы должен хорошо читаться.<br>
+Sample Input:<br>
+5; 2 10; 15 20; 7 13; 1<br>
+11; 14<br>
+Sample Output: yes
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;math.h>
+
+enum {corners = 4};
+
+struct point {
+    int x, y;
+};
+
+double get_s(point pt0, point pt1, point pt2)
+{
+    double a, b, c, p, s;
+    a = sqrt(pow((pt0.x - pt1.x),2) + pow((pt0.y - pt1.y), 2));
+    //printf("a = %f\n", a);
+    b = sqrt((pt2.x - pt0.x)*(pt2.x - pt0.x) + (pt2.y - pt0.y)*(pt2.y - pt0.y));
+    //printf("b = %f\n", b);
+    c = sqrt(pow((pt2.x - pt1.x),2) + pow((pt2.y - pt1.y),2));
+    //printf("c = %f\n", c);
+    p = (a + b + c)/2;
+    //printf("p = %f\n", p);
+    s = sqrt(p * (p - a) * (p - b) * (p - c));
+    printf("s = %f\n", s);
+    return s;
+}
+
+int main()
+{
+    <font color=blue>point figure[corners];</font> //не пишем слово struct
+    point pt;
+
+    int count = 0;
+    while(count < corners && scanf("%d; %d", &figure[count].x, &figure[count].y) == 2)
+        count++;
+
+    if(count != corners) {
+        puts("Неверное количество или формат входных данных.");
+        return 1;
+    }
+
+    if(scanf("%d; %d", &pt.x, &pt.y) != 2) {
+        puts("Неверное количество или формат входных данных.");
+        return 2;        
+    }
+
+    // здесь продолжайте функцию main
+    double s0_1, s1_2, s2_3, s3_0, s0123, s012, s230, s_2;
+    s0_1 = get_s(figure[0], figure[1], pt);
+    //printf("s0_1=%f\n", s0_1);
+    s1_2 = get_s(figure[1], figure[2], pt);
+    s2_3 = get_s(figure[2], figure[3], pt);
+    s3_0 = get_s(figure[3], figure[0], pt);
+    s0123 = s0_1 + s1_2+s2_3+s3_0;
+    s012 = get_s(figure[0], figure[1], figure[2]);
+    s230 = get_s(figure[2], figure[3], figure[0]);
+    s_2 = s012 + s230;
+    std::cout << (abs(s0123 - s_2) < 0.00001 ? "yes" : "no");
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+<font size=5>В отличии от языка Си в С++ при объявлении переменной структуры перед именем переменной не надо писать ключевое слово struct, только идентификатор.</font>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>2. Метод внутри структуры, запись в структуру, вызов метода</b><br>
+Объявите в программе структуру с идентификатором (типом) volume с тремя целочисленными полями width, height, depth (ширина, высота, глубина). Объявите в структуре метод с именем get_volume, который возвращает объем (целое число), вычисленный по формуле:<br>
+V=width⋅height⋅depth
+<p>
+В функции main объявите переменную data типа volume и занесите в поля width, height, depth целые числа, прочитанные из входного потока (по порядку, числа следуют через пробел). С помощью метода get_volume вычислите объем и выведите его в консоль.<br>
+Sample Input: 6 10 3<br>
+Sample Output: 180
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+
+struct volume
+{
+    int width, height, depth;
+    <b>int get_volume()
+    {
+        return width*height*depth;
+    }</b>
+};
+
+int main(void)
+{
+    volume data;
+    int a, b, c;
+    std::cin >> a >> b >> c;
+    <b>data = {a, b, c};</b>
+    std::cout << <b>data.get_volume()</b> << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>3. Запись в массивы строк с пробелами и переводами строк (fgets, cin, getchar, getline), запись в массив структур, метод в структуре</b><br>
+Объявите в программе структуру с идентификатором (типом) book (книга) и следующими полями:
+<pre>
+title: название книги; строка, максимальной длины 200 символов;
+author: автор; строка, максимальной длины 100 символов;
+price: цена; целое число;
+npages: число страниц; целое число.
+</pre>
+Объявите в структуре book метод с именем price_per_page, который возвращает цену за одну страницу (вещественное число), вычисленную по формуле: price/npages
+<p>
+В функции main объявите массив lib с типом book длиной 10 элементов. Прочитайте из входного потока данные в массив lib (по порядку), представленные в формате:
+<pre>
+&lt;название книги>
+&lt;автор>
+&lt;цена> &lt;число страниц>
+</pre>
+Выведите в консоль в одну строчку через пробел цену за одну страницу прочитанных книг с точностью до сотых.<br>
+Sample Input:<br>
+Программирование на Си<br>
+Кен Томпсон<br>
+540 230<br>
+Программирование на С++<br>
+Бьерн Страуструп<br>
+753 548<br>
+Лекции по C/C++<br>
+Сергей Балакирев<br>
+100 500<br>
+Sample Output: 2.35 1.37 0.20
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;cstring>
+
+struct book
+{
+    char title[200];
+    char author[100];
+    int price;
+    int npages;
+    <b>double price_per_page()</b> //метод структуры
+    {
+        return (double)price/npages;
+    }
+};
+
+int main(void)
+{
+    <b>book lib[10];</b> //объявление переменной структуры по языку С++
+    int count = 0;
+    
+    for (; count < 10 && fgets(lib[count].title, 200, stdin); count++)
+    {
+        <font color=blue>char *ptr = strchr(lib[count].title, '\n');</font> //недостаток fgets, что нужно убирать переводы строки
+        if(ptr != NULL) *ptr = '\0';
+        printf("count=%d\n", count);
+        printf("Название книги=%s\n", lib[count].title);
+        
+        fgets(lib[count].author, 100, stdin);
+        ptr = strchr(lib[count].author, '\n');
+        if(ptr != NULL) *ptr = '\0';
+        printf("Автор книги=%s\n", lib[count].author);
+        
+        std::cin >> lib[count].price >> lib[count].npages; //можно через scanf
+        printf("Цена книги=%d Кол-во страниц=%d\n", lib[count].price, lib[count].npages);
+        
+        getchar(); //если не передвинуть указатель, fgets запишет один пробел как элемент массива
+        
+        
+    }
+    
+    for (int i = 0; i < count; i++)
+    {
+        printf("%.2f ", lib[i].price_per_page());
+    }
+    
+    puts("");
+
+    return 0;
+}
+</pre></td></tr></table>
+1. Как в цикл прописать условие окончания ввода, если вводим в несколько переменных.<br>
+Решил определять по первому полю, если он равен NULL, то ввод закончен.
+<p>
+2. for (; count < 10 && std::cin >> lib.title; count++) //<font color=red>error:</font> request for member ‘title’ in ‘lib’, which is of non-class type ‘book [10]’<br>
+Видимо неправильное обращение к полям структуры, поменял на for (; count < 10 && std::cin >> lib<b><font color=red>-></font></b>title; count++)<br>
+Вообще не верно, правильный был 1 вариант через точку, просто нужно было указать <font color=green>индекс элемента массива</font>, на это указывало и сообщение об ошибке. Смотреть <a href="c_struct.html#array_struct">Массив структур</a><br>
+<font size=4><b>Поскольку строка с пробелами, то cin для чтения строки в переменную не подходит, с getline, как ниже написал геморрой какой-то, в конце концов сделал через fgets. Единственный у него недостаток, что нужно удалять перевод строки.</b></font>
+<p>
+3. Почему-то сразу после выполнения ./a.out получил сообщение:<br>
+Исключение в операции с плавающей точкой (стек памяти сброшен на диск)<br>
+После того как поменял return price/npages; на return price; получил:<br>
+Ошибка сегментирования (стек памяти сброшен на диск)<br>
+Воспользовался ссылкой https://www.geeksforgeeks.org/how-to-find-segmentation-error-in-c-c-using-gdb/ для поиска причины этой ошибки<br>
+Указал на 0x00005555555553ee in book::price_per_page() ()<br>
+Скорее всего строка printf("%.2f ", lib[i].price_per_page()); вызывает ошибку.<br>
+Ничего не поменял, но ошибка больше не появлялась. Наверное случайно как-то глючные строки ввёл.
+<p>
+4. getline(std::cin, lib[count].title); //<font color=red>error:</font> no matching function for call to ‘getline(std::istream&, char [200])’<br>
+Записал using std::cin; Поменял  на getline(cin, lib[count].title); Ошибка не пропала.<br>
+когда вы используете функцию cin.getline(), ее параметрами будут либо постоянный символьный указатель, либо имя массива символов и количество получаемых символов.<br>
+<b><font size=4>Похоже синтаксис getline(cin, lib[count].title) работает только со string в параметре функции, а для char массивов правилен другой синтаксис:<br>
+cin.getline(arr, count)</font></b>
+<p>
+5. getline c массивами какой-то геморрой, заменю на fgets<br>
+Посмотрел в Решениях, обычно через getline записывают в переменные:
+<pre>
+int count = 0;
+    std::string title;
+    std::string author;
+    int price;
+    int npages;
+
+    while(count < 10 && std::getline(std::cin, title)){
+        std::getline(std::cin, author);
+        std::cin >> lib[count].price;
+        std::cin >> lib[count].npages;
+        getchar();
+        strcpy(lib[count].title, title.c_str());
+        strcpy(lib[count].author, author.c_str());
+        count++;
+    }
+</pre>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b><a name="1">4. Считывание чисел разделенных разделителем - переменной, fscanf, sprintf, метод структуры</b><br>
+В функции main объявите две переменные v1 и v2 типа vector4D. Прочитайте для них (сначала для v1, а затем, для v2) из входного потока stdin с помощью метода read_data вещественные значения, записанные через точку с запятой. Выведите в консоль в одну строчку через пробел значения длин векторов v1 и v2 (именно в таком порядке), вычисленных с помощью метода length. Вещественные числа должны быть выведены с точностью до тысячных.<br>
+Sample Input:<br>
+4.1; 2.3; 10.0; -3.0<br>
+-2.4; 3.6; 9.8; 7.4<br>
+Sample Output: 11.450 13.020
+<p>
+<table border=1 style="border-collapse:collapse;"><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+#include &lt;cmath>
+
+struct vector4D
+{
+    double x, y, z, t;
+    void read_data(FILE* stream, char sep=' ')
+    {
+        scanf("%lf%*c%lf%*c%lf%*c%lf", &x, &y, &z, &t);
+        printf("X=%f Y=%f Z=%f T=%f\n", x, y, z, t);
+    }
+    double length()
+    {
+        return sqrt(x*x + y*y + z*z + t*t);
+    }
+};
+
+int main(void)
+{
+    vector4D v1, v2;
+    
+    v1.read_data(stdin, ';');
+    v2.read_data(stdin, ';');
+    
+    //std::cout << v1.length() << " " << v2.length() << std::endl;
+    printf("%.3f %.3f\n", v1.length(), v2.length());
+    
+    return 0;
+}
+<pre></td></tr></table>
+<p>
+По грамотному считывать числа через переменную-разделитель так:
+<pre>
+void read_data(FILE* stream, char sep=' ') {
+        char format[25];
+        sprintf(format, "%%lf%c%%lf%c%%lf%c%%lf", sep, sep, sep);
+        fscanf(stream, format, &x, &y, &z, &t);
+    };
+</pre>
+С помощью sprintf(format, "%%lf%c%%lf%c%%lf%c%%lf", sep, sep, sep); формируем строку %lf;%lf;%lf;%lf<br>
+Сразу ее сформировать в fscanf не можем поскольку переменную-разделитель не вставишь в fscanf.
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.1.9. Считывание чисел типа unsigned char, </b><br>
+В структуре tag_time объявите метод со следующей сигнатурой:<br>
+char* get_time(char* str, size_t max_length);<br>
+Этот метод должен в переданную строку str записывать время в формате: hh:mm:ss<br>
+и возвращать ее (адрес этой строки). Например, для переменных hours=12, minutes=8, seconds=43 должны получать строку:<br>
+12:08:43<br>
+Обратите внимание на наличие незначащего нуля перед числами меньше 10. Также нужно контролировать возможный выход за пределы строки str (длина строки max_length).<br>
+В структуре tag_time объявите еще один статический метод с сигнатурой:<br>
+static tag_time sum_time(const tag_time& t1, const tag_time& t2);
+Этот метод должен формировать и возвращать новую структуру с суммой времен t1 и t2. Причем время нужно складывать так, чтобы минуты и секунды не выходили из пределов [0; 59].<br>
+В функции main объявите две переменные tm1 и tm2 структуры tag_time. Значения их полей (шесть целых неотрицательных чисел, записанных в одну строчку через пробел) прочитайте из входного потока. Выполните сложение времен tm1 и tm2 с помощью метода sum_time и сохраните результат в переменной time_res. Выведите в консоль время переменной time_res в виде строки, сформированной методом get_time.<br>
+Sample Input: 12 45 16 4 23 48<br>
+Sample Output: 17:09:04
+<p>
+<table border=1 style="border-collapse:collapse;"><tr><td valign=top>
+Моё:
+<pre>
+#include &lt;iostream>
+struct tag_time
+{
+    unsigned char hours;
+    unsigned char minutes;
+    unsigned char seconds;
+    <b>static tag_time sum_time(const tag_time& t1, const tag_time& t2)</b>
+    {
+        tag_time t3;
+        
+        int h1 = t1.hours;
+        int m1 = t1.minutes;
+        int s1 = t1.seconds;
+                
+        int summ_seconds = h1*3600 + m1*60 + s1 + t2.hours*3600 + t2.minutes*60 + t2.seconds;
+        t3.hours = summ_seconds / 3600;
+        //printf("t3.hours=%d\n", t3.hours);
+        t3.minutes = (summ_seconds - t3.hours*3600) / 60;
+        //printf("t3.minutes=%d\n", t3.minutes);
+        t3.seconds = summ_seconds - t3.hours*3600 - t3.minutes*60;
+        //printf("t3.seconds=%d\n", t3.seconds);
+        return t3;
+    }
+    
+    <b>char* get_time(char* str, size_t max_length)</b>
+    {
+        sprintf(str, "%02d:%02d:%02d", hours, minutes, seconds);
+        return str;
+    }
+};
+
+int main(void)
+{
+    tag_time tm1, tm2;
+    char str[8];
+        
+    scanf("%hhd %hhd %hhd %hhd %hhd %hhd", &tm1.hours, &tm1.minutes, &tm1.seconds, &tm2.hours, &tm2.minutes, &tm2.seconds);
+        
+    tag_time time_res;
+    <b>time_res = time_res.sum_time(tm1, tm2);</b>
+        
+    time_res.get_time(str, sizeof(str));
+    
+    puts(str);
+    
+    return 0;
+}
+<pre></td></tr></table>
+<p>
+1. tag_time time_res.sum_time(tm1, tm2); //<font color=red>error:</font> expected initializer before ‘.’ token<br>
+Тогда объявил отдельно:<br>
+tag_time time_res; 
+и<br>
+time_res = sum_time(tm1, tm2); //error: ‘sum_time’ was not declared in this scope<br>
+Тогда time_res = time_res.sum_time(tm1, tm2);<br>
+Можно было, чтобы понятнее объявить переменную с другим именем и к этому объекту применить метод sum_time, главное чтобы результат возвращался как по условию задачи в time_res.
+<p>
+2. str = time_res.get_time(str, 9); //error: incompatible types in assignment of ‘char*’ to ‘char [9]’<br>
+Поменял char str[9] = {0}; на char *str;
+<p>
+3. Несмотря на все попытки через std::cin записать без искажений unsigned char:<br>
+std::cin >> tm1.hours >> tm1.minutes >> tm1.seconds >> tm2.hours >> tm2.minutes >> tm2.seconds;<br>
+получал искажение, скажем вводил 12, а получал 49. <font size=4>Проблему решил через считывание в scanf</font><br>
+Для unsigned char в scanf нужно применять %hhd
+<p>
+4. Непонятно почему получал на сайте segmetation fault. Ошибка была из-за char *str; Когда поменял на char str[8]; ошибка исчезла, но почему у меня компилятор не жаловался. Зато жаловался, когда делал так:
+<pre>
+char str[8];
+str = time_res.get_time(str, sizeof(str));<br>
+<font color=red>error:</font> incompatible types in assignment of ‘char*’ to ‘char [9]’ (Типа, что указатель не массив).</pre>
+<pre>
+
+
+
+</pre>
+<a name="struct_mode"><h3 align=center>Режимы доступа. Сеттеры и геттеры</h3>
+Объявите в программе структуру с именем (типом) thing и следующими приватными полями:
+<pre>
+id: идентификатор; целое беззнаковое число;
+price: цена; вещественное число;
+weight: вес; вещественное число.
+</pre>
+Объявите в этой же структуре следующие публичные методы:
+<pre>
+unsigned get_id(): возвращает значение поля id;
+void get_data(double& price, double& weight): передает по ссылкам price и weight значения соответствующих полей;
+void set_data(unsigned id, double price, double weight): заносит в приватные поля id, price, weight переданные значения.
+</pre>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+struct thing 
+{
+    <b>private:</b>
+    unsigned id;
+    double price, weight;
+    
+    <b>public:</b>
+    unsigned get_id()
+    {
+        return id;   
+    }
+    
+    void get_data(double& price, double& weight)
+    {
+        price = <b>this->price</b>;
+        weight = this ->weight;
+    }
+    
+    void set_data(unsigned id, double price, double weight)
+    {
+        this ->id = id;
+        this ->price = price;
+        this ->weight = weight;
+    }
+};
+</pre></td></tr></table>
+<pre>
+price = <b>this->price</b>;
+weight = this ->weight;
+</pre>
+Здесь в блоке get_data переданные по ссылке price weight записываем значения одноименных полей и чтобы не путать их, явно указываем поле  через this.
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b> 10.2.7 Запись в приватные поля.</b>
+Объявите в программе структуру с именем (типом) point и следующими приватными полями:<br>
+x, y: целочисленные координаты точки.<br>
+Объявите в этой же структуре следующие публичные методы:<br>
+int get_x(): возвращает значение координаты x;<br>
+int get_y(): возвращает значение координаты y;<br>
+void get_coords(int& x, int& y): возвращает через ссылки значение координат x и y;<br>
+void set_coords(int x, int y): записывает в поля x, y переданные значения;<br>
+static point sum(point& p1, point& p2): выполняет суммирование координат p1 и p2 (отдельно для x и отдельно для y) и возвращает результат суммирования в виде новой структуры point.<br>
+В функции main объявите две переменные типа point. Прочитайте из входного потока координаты (четыре целых числа, записанных через пробел) в эти структуры: первые два числа - это координаты x, y первой точки, а вторые два числа - координаты x, y второй точки. Затем, с помощью функции sum выполните суммирование координат этих точек и выведите в консоль результат суммирования в виде двух чисел, записанных через пробел, в формате: &lt;координата x> &lt;координата y><br>
+Sample Input: 5 7 -3 10
+Sample Output: 2 17
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+
+struct point
+{
+ <b>private:</b>
+    int x, y;
+    
+ <b>public:</b>
+    int get_x() {return x;}
+    int get_y() {return y;}
+    
+    void get_coords(int& x, int& y)
+    {
+        x = this ->x;
+        y = this ->y;
+    }
+    
+    void set_coords(int x, int y)
+    {
+        this ->x = x;
+        this ->y = y;
+    }
+    
+    static point sum(point& p1, point& p2)
+    {
+        point p3;
+        p3.x = p1.x + p2.x;
+        p3.y = p1.y + p2.y;
+        return p3;
+    }
+};
+    
+int main(void)
+{
+    point pt1, pt2, pt3;
+    int x1, y1, x2, y2; //можно было 2 переменные объявить и по очереди их использовать для записи в поля
+    
+    //<font color=red>scanf("%d %d %d %d", &pt1.x, &pt1.y, &pt2.x, &pt2.y);</font> //поля приватные, напрямую нельзя
+    //scanf("%d %d %d %d", pt1.set_coords(&x, &y), pt2.set_coords(&x, &y);
+    scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+    
+    pt1.set_coords(x1, y1); //записываем в поля
+    pt2.set_coords(x2, y2);
+    //<font color=red>pt3 = sum(pt1, pt2);</font> //<font color=red>error:</font> ‘sum’ was not declared in this scope
+    pt3 = pt3.sum(pt1, pt2); //лучше так: <b><font color=green>point pt3 = point::sum(pt1, pt2);</font></b>
+    
+    //std::cout << pt3.x << " " << pt3.y << std::endl;
+    std::cout << <b>pt3.get_x()</b> << " " << <b>pt3.get_y()</b> << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Задумался: sum() - это метод, не функция, вроде как к какому-то объекту его надо применить, а к какому?<br>
+Пока так: pt3 = sum(pt1, pt2); Получил: <font color=red>error:</font> ‘sum’ was not declared in this scope<br>
+Поменял на: pt3 = pt3.sum(pt1, pt2);<br>
+Посмотрел в Решениях, можно так: <b>point pt3 = point::sum(pt1, pt2);</b>
+<p>
+2. scanf("%d %d %d %d", &pt1.x, &pt1.y, &pt2.x, &pt2.y); //<font color=red>error:</font> ‘int point::x’ is private within this context<br>
+Нужно использовать метод для установки координат.<br>
+scanf("%d %d %d %d", pt1.set_coords(&x, &y), pt2.set_coords(&x, &y); //<font color=red>error:</font> ‘x’ was not declared in this scope<br>
+Введу дополнительно 4 переменные типа int: int x1, y1, x2, y2
+<p>
+Снова нарушение приватности std::cout << pt3.x << " " << pt3.y << std::endl;<br>
+<font color=red>error:</font> ‘int point::x’ is private within this context<br>
+Решил доступ к полям через метод: pt3.get_x()
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.2.8 массив типа union</b><br>
+В структуре point добавьте следующие публичные методы:<br>
+void set_coords(int x, int y, int z) - перегруженный сеттер для записи координат в массив coords в поле v_int (переменная type должна быть изменена на значение data_int);<br>
+void set_coords(double x, double y, double z) - перегруженный сеттер для записи координат в массив coords в поле v_double (переменная type должна быть изменена на значение data_double);<br>
+data_type get_type() - метод возвращает значение переменной type;<br>
+int get_size() - метод возвращает значение константы max_coords;<br>
+bool get_coords(int& x, int& y, int& z) - перегруженный геттер для записи по ссылкам x, y, z значений из массива coords поля v_int; если при этом type не равен data_int, то запись не производится и возвращается false, иначе данные записываются (по ссылкам) и возвращается true;<br>
+bool get_coords(double& x, double& y, double& z) - перегруженный геттер для записи по ссылкам x, y, z значений из массива coords поля v_double; если при этом type не равен data_double, то запись не производится и возвращается false, иначе данные записываются (по ссылкам) и возвращается true.<br>
+В функции main объявите переменную pt и занесите в нее целочисленные координаты:<br>
+5, -8, 34<br>
+В зависимости от значения поля type (воспользуйтесь методом get_type) выведите в консоль либо целочисленные координаты в одну строчку через пробел, либо вещественные (так же в одну строчку через пробел с точностью до десятых).
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+
+enum data_type { data_none = 1, data_int, data_double };
+
+struct point {
+ <b>private:</b>
+    enum { max_coords = 3 };
+
+    <b>union</b> {
+        int v_int;
+        double v_double;
+    } <b>coords[max_coords];</b>  
+
+    //data_type type = data_none;
+    data_type type = data_int;
+    //data_type type = data_double;
+
+ <b>public:</b>
+    void set_coords(int x, int y, int z)
+    {
+        coords[0].v_int = x;
+        coords[1].v_int = y;
+        coords[2].v_int = z;
+    }
+    
+    void set_coords(double x, double y, double z)
+    {
+        coords[0].v_double = x;
+        coords[1].v_double = y;
+        coords[2].v_double = z;
+    }
+    
+    data_type get_type() {return type;}
+    
+    int get_size() {return max_coords;}
+    
+    bool get_coords(int& x, int& y, int& z)
+    {
+        if (type == data_int)
+        {
+            x = coords[0].v_int;
+            y = coords[1].v_int;
+            z = coords[2].v_int;
+            return true;
+        }
+        return false;
+    }
+    
+    bool get_coords(double& x, double& y, double& z)
+    {
+        if (type == data_double)
+        {
+            x = coords[0].v_double;
+            y = coords[1].v_double;
+            z = coords[2].v_double;
+            return true;
+        }
+        return false;
+    }
+};
+
+int main(void)
+{
+    int x, y, z;
+    point pt;
+    pt.set_coords(5, -8, 34);
+    pt.get_coords(x, y, z);
+    
+    if (pt.get_type() == data_int) printf("%d %d %d\n", x, y, z);
+    else if (pt.get_type() == data_double) printf("%.1f %.1f %.1f\n", (double)x, (double)y, (double)z);
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+<pre>union {
+        int v_int;
+        double v_double;
+    } coords[max_coords];
+</pre>
+Тут типа объявили переменную coords[] в необъявленной структуре. Наверное так можно, как допустим объявляем int x, y, z и объявили не переменную, а поле.
+<pre>
+
+======================================================================================================================
+
+</pre>
+<a name="konstr"><h3 align=center>Конструктор</h3>
+<b>10.3.5 Конструктор</b><br>
+Объявите в программе структуру с именем (типом) money так, чтобы ее объекты можно было создавать следующим образом:
+<pre>
+money my_money(100);
+money you_money(1000);
+</pre>
+При создании объектов указывается количество денег, которое должно сохраняться в приватном целочисленном (int) поле total_money каждого объекта.<br>
+Объявите в структуре money два публичных метода:
+<pre>
+int get_money(): возвращает количество денег (значение поля total_money);
+void set_money(int volume): задает количество денег (в поле total_money).
+</pre>
+В функции main создайте переменную rubs типа money с количеством денег 100 (задается при инициализации). Выведите в консоль количество денег, хранимое в объекте rubs в виде одного целого числа.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+
+struct money
+{
+ private:
+    int total_money;
+    
+ public:
+   int get_money()
+   {
+       return total_money;   
+   }
+       
+   void set_money(int volume)
+   {
+       total_money = volume;   
+   }
+   
+   //money() {total_money = 1000;}
+   
+   <b>money(int n=100) {total_money = n;}</b> //конструктор с параметром по умолчанию
+
+};
+
+int main(void)
+{
+    money rubs; //100 параметр по умолчанию
+    //money rubs(); <font color=red>error:</font> request for member ‘get_money’ in ‘rubs’, which is of non-class type ‘money()’
+    
+    std::cout << rubs.get_money() << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+<p>
+1.Если после первого вызова конструктора вызвать для того же объекта повторный конструктор, то получим ошибку: <font color=red>error:</font> redeclaration of ‘money rubs’<br>
+Если нужно изменить значение поля, то обычным способом присваивания полю объекта.
+<p>
+2. Почему если объявлен конструктор:<br>
+money() {total_money = 1000;}<br>
+Инициализируем объект через конструктор без параметров:<br>
+money rubs();<br>
+то в строке std::cout << rubs.get_money() << std::endl;<br>
+получаем ошибку: <font color=red>error:</font> request for member ‘get_money’ in ‘rubs’, which is of non-class type ‘money()’<br>
+<font color=brown size=5>money rubs(); так нельзя инициализировать объект. Нужно если без параметров, то объявляем так:
+<pre>
+money rubs
+</pre></font>
+3. После исправления возникает теперь ошибка: <font color=red>error:</font> call of overloaded ‘money()’ is ambiguous<br>
+Типа вызов перегруженного ‘money()’ неоднозначен.<br>
+Устранил ошибку, когда удалил параметр по умолчанию:<br>
+поменял money(int n=100) {total_money = n;} на money(int n) {total_money = n;}<br>
+Или оставить параметр по умолчанию, но удалить конструктор без параметров.
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.3.7 Получение внутри одной структуры приватных полей другой структуры, деструктор</b><br>
+Объявите в программе структуру с именем (типом) point3D так, чтобы ее объекты можно было создавать следующим образом:
+<pre>
+point3D pt_null;
+point3D pt_end(8, -5, 11);
+</pre>
+При создании объектов указывается целочисленные координаты точки в трехмерном пространстве, которые должны сохраняться в приватных целочисленных (int) переменных, например, x, y, z. Если никакие значения не передаются, то переменные x, y, z должны принимать нулевые значения.
+<p>
+Объявите в структуре point3D следующие публичные методы:<br>
+void get_coords(int& x, int& y, int& z): возвращает значения координат из приватных переменных x, y, z.
+<p>
+Объявите в программе еще одну структуру с именем (типом) line3D так, чтобы ее объекты можно было создавать, следующим образом:<br>
+line3D line(point3D(0, 1, 2), point3D(10, 43, -21));<br>
+При создании объектов line3D передаются объекты структур point3D, которые должны сохраняться в приватных переменных, например, start_pt, end_pt. А в момент удаления объекта в консоль следует выводить строку (в конце должен быть символ переноса на новую строку '\n'):<br>
+"Deleted line: (x0, y0, z0) (x1, y1, z1)"<br>
+где (x0, y0, z0) - координаты начала; (x1, y1, z1) - координаты конца линии. Например, при удалении объекта line должна формироваться строка:<br>
+"Deleted line: (0, 1, 2) (10, 43, -21)"
+<p>
+Объявите в структуре line3D следующие публичные методы:<br>
+double length(): возвращает длину линии; вычисляется по формуле
+<p>
+const point3D& get_coords_start(): возвращает константную ссылку на приватную переменную start_pt;
+const point3D& get_coords_end(): возвращает константную ссылку на приватную переменную end_pt.
+В функции main создайте объект line типа line3D с координатами:<br>
+start_pt = (-5, 100, 45), end_pt = (0, 32, -42)<br>
+P. S. Только создать объект, больше ничего делать не нужно.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;cmath>
+
+struct point3D
+{
+ private:
+    int x, y, z;
+ public:
+    point3D() {x = 0; y = 0; z = 0;}
+    point3D(int a, int b, int c) {x = a; y = b; z = c;}
+    
+    void get_coords(int& x, int& y, int& z)
+    {
+        x = this->x;
+        y = this->y;
+        z = this->z;
+    }
+};
+
+struct line3D
+{
+  private:
+    point3D start_pt, end_pt;
+  public:
+    line3D(point3D p1, point3D p2) //контейнер, не функция
+    {
+        start_pt = p1;
+        end_pt = p2;
+    }
+    
+    <b>~line3D()</b> //деструктор
+    {
+       int x1, y1, z1, x2, y2, z2;
+       <b>start_pt.get_coords(x1, y1, z1);</b> //получаем доступ к приватным полям другой структуры
+       end_pt.get_coords(x2, y2, z2);
+       std::cout << "Deleted line: (" << x1 << ", " << y1 << ", " << z1 << ") (" << x2 << ", " << y2 << ", " << z2 << ")\n"; 
+    }
+    
+    double length()
+    {
+        int x1, y1, z1, x2, y2, z2;
+        start_pt.get_coords(x1, y1, z1);
+        end_pt.get_coords(x2, y2, z2);
+        return sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) + (z1 - z2)*(z1 - z2));
+    }
+    
+    const point3D& get_coords_start() {return start_pt;}
+    const point3D& get_coords_end() {return end_pt;}
+};
+
+int main(void)
+{
+    line3D line(point3D(-5, 100, 45), point3D(0, 32, -42));
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.3.8 Получение внутри одной структуры приватных полей другой структуры</b><br>
+Объявите в программе структуру с именем (типом) dtime так, чтобы объекты можно было создавать следующим образом (достаточно прописать один конструктор):
+<pre>
+dtime tm_null;
+dtime tm_1(12);
+dtime tm_2(12, 45);
+dtime tm_3(12, 45, 8);
+</pre>
+При создании объектов указывается параметры типа unsigned char в порядке:<br>
+hours - часы; minutes - минуты; seconds - секунды.<br>
+Эти значения должны сохраняться в приватных переменных (тип unsigned char), например, с именами: hs, ms, sc. Если какие-либо значения не передаются, то они принимаются равными нулю.
+<p>
+Объявите в структуре dtime следующие публичные методы:
+<p>
+std::string get_time(); - возвращает объект-строку std::string с содержимым (строкой): hh:mm:ss
+<p>
+Например, для переменных hs=12, ms=8, sc=43 строка должна содержать: 12:08:43
+<p>
+Следующий метод:<br>
+void set_time(unsigned char hours, unsigned char minutes, unsigned char seconds); - задает время (записывает данные в переменные hs, ms, sc).
+<p>
+И, наконец, статический метод:<br>
+static dtime sum_time(const dtime& t1, const dtime& t2);<br>
+Формирует и возвращает новую структуру с суммой времен t1 и t2.
+<p>
+В функции main объявите две переменные tm1 и tm2 структуры dtime. Значения их полей (шесть целых неотрицательных чисел, записанных в одну строчку через пробел) прочитайте из входного потока (в порядке h1, m1, s1 - для первого времени и h2, m2, s2 - для второго времени). Выполните сложение времен tm1 и tm2 с помощью метода sum_time и сохраните результат в переменной time_res. Выведите в консоль время переменной time_res в виде строки, сформированной методом get_time.<br>
+Sample Input: 12 45 16 4 23 48<br>
+Sample Output: 17:09:04
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;string>
+
+struct dtime
+{
+  private:
+    unsigned char hours, minutes, seconds;
+  public:
+    dtime(unsigned char hs = 0, unsigned char mn = 0, unsigned char sc = 0)
+    {
+        hours = hs;
+        minutes = mn;
+        seconds = sc;
+    }
+    
+    void set_time(unsigned char hours, unsigned char minutes, unsigned char seconds)
+    {
+        this->hours = hours;
+        this->minutes = minutes;
+        this->seconds = seconds;
+    }
+    
+    std::string get_time()
+    {
+        char buf[9];
+        snprintf(buf, sizeof(buf), "%02d:%02d:%02d", hours, minutes, seconds);
+        std::string str = buf;
+        //std::cout << str << std::endl;
+
+        return str;  
+    }
+    
+    static dtime sum_time(const dtime& t1, const dtime& t2)
+    {
+        dtime t3;
+        t3.hours = t1.hours + t2.hours;
+        t3.minutes = t1.minutes + t2.minutes;
+        t3.seconds = t1.seconds + t2.seconds;
+        if (t3.seconds > 59)
+        {
+            t3.seconds -=60;
+            t3.minutes +=1;
+        }
+        if (t3.minutes > 59)
+        {
+            t3.minutes -=60;
+            t3.hours +=1;
+        }
+        if (t3.hours > 24)
+        {
+            t3.hours = 0;
+            //lazy
+        }
+        
+        return t3;
+    }
+};
+
+int main(void)
+{
+    unsigned char h1,m1, s1, h2, m2, s2;
+    scanf("%hhd %hhd %hhd %hhd %hhd %hhd", &h1, &m1, &s1, &h2, &m2, &s2);
+    dtime tm1(h1, m1, s1);
+    dtime tm2(h2, m2, s2);
+    dtime time_res = time_res.sum_time(tm1,tm2);
+    std::cout << time_res.get_time() << std::endl;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. В блоке функции sum_time имеем прямой доступ к приватным полям объектов, почему?<br>
+Потому что объекты имеют такой же тип как и класс, которому принадлежит функция. 
+<p>
+2. tm1(h1, m1, s1); //error: no match for call to ‘(dtime) (unsigned char&, unsigned char&, unsigned char&)’<br>
+До этого уже объявил tm1 и получается что второй раз инициализирую tm1.<br>
+Убрал объявление tm1.
+<p>
+3. Что такое статистическая функция? (static funk()) <a href="c++funk.html#static">Ключевое слово static</a>
+<pre>
+
+======================================================================================================================
+
+</pre>
+<a name="new"><h3 align=center>Команды new delete</h3>
+<b>10.4.1: <font color=brown size=5>static переменная</font>, <font size=5 color=blue>пустая строка как параметр функции по умолчанию</font>, new, разница между обращением к полям указателя и обычного объекта</b><br>
+Объявите в программе структуру с именем (типом) thing и следующими публичными полями:
+<pre>
+id: идентификатор (целое число, тип unsigned long);
+name: название (строка, массив символов длиной 50 элементов);
+price: цена (целое число, тип unsigned int);
+weight: вес (вещественное число, тип double).
+</pre>
+Объекты структуры thing допустимо создавать следующим образом:
+<pre>
+thing th_1;
+thing th_2("book");
+thing th_3("mouse", 1024);
+thing th_4("mouse", 1024, 0.2);
+</pre>
+Если какие-либо значения не переданы, соответствующие поля должны быть равны нулю (или пустая строка). Также при создании каждого нового объекта <font color=brown>идентификатор id должен автоматически увеличиваться на единицу и для первого созданного в программе объекта thing принимать значение 1</font>.
+<p>
+В функции main прочитайте из входного потока данные, представленные в формате:<br>
+&lt;название (одно слово)> &lt;цена (целое число)> &lt;вес (вещественное число)><br>
+Например:<br>
+Клавиатура 4300 0.34
+<p>
+Объявите указатель ptr_th с типом thing и создайте объект, используя оператор new. Выведите в консоль цену предмета. В конце удалите объект (освободите память), используя оператор delete.<br>
+Sample Input: Mouse 834 0.12<br>
+Sample Output: 834
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;cstring>
+
+struct thing
+{
+  private:  
+    <font color=brown>static unsigned long count;</font>
+  public:
+    <font color=brown>unsigned long id;</font>
+    char name[50];
+    unsigned int price;
+    double weight;
+    //thing(<b>const char ar[] = ""</b>, unsigned int n=0, double f=0) //через массив с параметром по умолчанию литерал правильно так
+    thing(<font color=blue>std::string ar=""</font>, unsigned int n=0, double f=0)
+    {
+        <font color=brown>count +=1;
+        id = count;</font>
+        //strncpy(name, ar, 50);
+        <font color=blue>strcpy(name, ar.data());</font>
+        printf("ar=%s\n", name);
+        price = n;
+        weight = f;
+        printf("count=%ld, id=%ld\n", count, id);
+    }
+};
+<font color=brown>unsigned long thing::count = 0;</font>
+
+int main(void)
+{
+    //unsigned long thing::count = 0; //если здесь, то error: qualified-id in declaration before ‘=’ token
+    
+    //char str[50] = "";
+    <font color=blue>std::string str;</font>
+    int price;
+    double weight;
+    thing *ptr_th;
+    thing th_1;
+    thing th_2("book");
+    std::cin >> str >> price >> weight;
+    
+    //scanf("%s %d %lf", str, &price, &weight);
+    //printf("%s %d %f\n", str, price, weight);
+    
+    <b>ptr_th = new thing(str, price, weight);</b>
+    
+    std::cout << <b>ptr_th->name</b> << " " << ptr_th->id << std::endl;
+    std::cout << <b>th_2.name</b> << th_2.id << std::endl; //разница между полями указателя и обычного объекта
+    
+    <b>delete ptr_th;</b>
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. <font color=brown size=5>Статическая переменная - счётчик</font><br>
+Если использовать стандартный способ через static inline, чтобы сразу инициализировать:<br>
+static inline unsigned long id = 0;<br>
+то получаю предупреждение warning: inline variables are only available with ‘-std=c++17’ or ‘-std=gnu++17’<br>
+Поэтому по-другому:
+Убрал в структуре inline и присваивание, в структуре просто: unsigned long id; А инициализация в main:<br>
+thing::id = 0; //<font color=red>error:</font> invalid use of non-static data member ‘thing::id’<br>
+Если:<br>
+unsigned long thing::count = 0;<br>
+тогда <font color=red>error:</font> qualified-id in declaration before ‘=’ token<br>
+Тогда в структуре объявил id статической: static unsigned long id;<br>
+а в main: thing::id = 0; Получил:
+<pre>
+/usr/bin/ld: /tmp/ccRSbX9Y.o: в функции «main»:
+example.cpp:(.text+0x24): неопределённая ссылка на «thing::id»
+...
++0x7f): неопределённая ссылка на «thing::id»
+collect2: error: ld returned 1 exit status
+</pre>
+Тогда инициализировал id за пределами main и структуры: thing::id = 0; Получил:<br>
+<font color=red>error:</font> ‘id’ in ‘struct thing’ does not name a type<br>
+Изменил на:<br>
+unsigned long thing::id = 0;<br>
+на первый взгляд кажется, что работает нормально. Но на самом деле для всех объектов id будет равен id последнего созданного объекта.<br>
+Тогда объявил новую статическую переменную count: static unsigned long count; и инициализировал её за пределами структуры: unsigned long thing::count = 0;<br>
+а id сделал обычной переменной объекта, принимающей в контейнере значение count. Вот теперь все верно. 
+<p>
+2. <font size=5 color=blue>Пустая строка как параметр функции по умолчанию</font><br>
+Сначала я пытался через параметр типа char массива, как соответствующее поле в структуре:<br>
+thing(char ar[]="", unsigned int n=0, double f=0) //warning: ISO C++ forbids converting a string constant to ‘char*’<br>
+Изменил на thing(char ar[]={}, unsigned int n=0, double f=0)<br>
+Тогда при создании объекта  thing th_2("book"); получил такое же сообщение:<br>
+warning: ISO C++ forbids converting a string constant to ‘char*’<br>
+Тогда сдела параметр типа string:<br>
+thing(<b>std::string ar=""</b>, unsigned int n=0, double f=0)<br>
+и преобразование из string в char[]: <b>strcpy(name, ar.data());</b><br>
+Теперь все нормально.<br>
+Посмотрел в Решениях, как с помощью массива было передать пустую строку:<br>
+нужно было просто добавить ключевое слово <b>const</b>:<br>
+thing(<b>const char ar[] = ""</b>, unsigned int n=0, double f=0)<br>
+или<br>
+thing(<b>const char *ar = ""</b>, unsigned int n=0, double f=0)
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.4.5 Применение метода к объекту - указателю, контейнер, new</b><br>
+Объявите в программе структуру с именем (типом) rectangle и следующими приватными полями:<br>
+x0, y0, x1, y1 - целочисленные (int) координаты верхнего левого угла (x0, y0) прямоугольника и координаты нижнего правого угла (x1, y1) прямоугольника.<br>
+Объекты структуры rectangle допустимо создавать следующим образом:<br>
+rectangle r_1;<br>
+rectangle r_2(1, 2, 10, 20);<br>
+Если координаты не указаны, то все они принимаются равными нулю.<br>
+Дополнительно в структуре rectangle объявите следующие публичные методы:<br>
+bool is_in_rect(int x, int y); // проверяет попадание точки (x, y) внутрь прямоугольника; true - если попадает (включая границы), false - если не попадает<br>
+void set_coords(int x0, int y0, int x1, int y1); // задает новые координаты прямоугольника<br>
+void get_coords(int& x0, int& y0, int& x1, int& y1); // возвращает текущие координаты прямоугольника<br>
+В функции main объявите указатель ptr_r с типом rectangle и с помощью оператора new создайте объект rectangle с координатами (-5, 4), (8, 32). Прочитайте из входного потока два целых числа (x, y), записанных через пробел, и путем вызова метода is_in_rect определите принадлежность точки с прочитанными координатами прямоугольнику, на который ссылается указатель ptr_r. Выведите в консоль строку "yes", если точка попадает (принадлежит), и "no" - в противном случае.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+
+struct rectangle
+{
+ private:
+    int x0, y0, x1, y1;
+ public:
+    //rectangle() {x0=0; y0=0; x1=0; y1=0;}
+    rectangle(int a=0, int b=0, int c=0, int d=0)
+    {
+        x0 = a;
+        y0 = b;
+        x1 = c;
+        y1 = d;
+    }
+    
+    bool is_in_rect(int x, int y)
+    {
+        if (x >= x0 && x <= x1 && y >= y0 && y <= y1) return true;
+        return false; 
+    }
+    
+    void set_coords(int x0, int y0, int x1, int y1)
+    {
+        this->x0 = x0;
+        this->y0 = y0;
+        this->x1 = x1;
+        this->y1 = y1;
+    }
+    
+    void get_coords(int& x0, int& y0, int& x1, int& y1)
+    {
+        x0 = this->x0;
+        y0 = this->y0;
+        x1 = this->x1;
+        y1 = this->y1;
+    }
+};
+
+int main()
+{
+    rectangle *ptr_r = new rectangle(-5, 4, 8, 32);
+    int x, y;
+    scanf("%d %d", &x, &y);
+    
+    <font color=red>rectangle *ptr_r1
+    int a, b, c, d;
+    <b>ptr_r1->get_coords(a, b, c, d);</b></font> //метод к указателю также применяется через черточку со стрелкой, ошибка сегментирования
+    printf("ptr_r1->x0=%d %d %d %d\n", a, b, c, d);
+    
+    if (<b>ptr_r->is_in_rect(x, y)</b>) std::cout << "yes" << std::endl; //можно так: std::cout<<(ptr_r->is_in_rect(x,y) ? "yes" : "no");
+    else std::cout << "no" << std::endl;
+    
+    delete ptr_r;
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+1. 
+rectangle() {x0=0; y0=0; x1=0; y1=0;}
+rectangle(int a=0, int b=0, int c=0, int d=0)
+</pre>
+На сайте получил:<br>
+error: call of overloaded ‘rectangle()’ is ambiguous<br>
+Закомментировал первый контейнер.
+<p>
+2. <font color=red>Почему если создам второй указатель типа rectangle:<br>
+rectangle *ptr_r1;<br>
+то получаю ошибку сегментирования на<br>
+ptr_r1->get_coords(a, b, c, d);</font>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.4.7 Создание массива через new</b><br>
+Объявите в функции main указатель с именем ptr_ar типа short и инициализируйте его массивом, созданным с помощью оператора new и состоящий из 15 элементов типа short. Затем, во все элементы занесите значение -1. После этого в пятый по счету элемент (счет начинается с единицы) запишите число 100.<br>
+P. S. Освобождать память из под массива не нужно. В консоль ничего выводить не нужно.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+
+int main(void)
+{
+    short *ptr_ar = <b>new short[15]</b>; //создали указатель на массив типа short через new
+    for(int i = 0; i < 15; i++)
+    {
+        ptr_ar[i] = -1;    
+    }
+    ptr_ar[4] = 100;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.4.9 вложенные структуры, конструктор, new</b><br>
+Модифицируйте приведенный текст программы реализации односвязного списка (взято из занятия) так, чтобы в его элементах можно было хранить данные по книгам в виде следующей структуры:
+<pre>
+typedef struct {
+	char author[50];	// автор
+	char title[100];	// заголовок
+	short year;		// год издания
+} BOOK;
+</pre>
+В функции main() создайте объект этого односвязного списка с именем lib, используя команду:<br>
+OneLinkedList lib;<br>
+и добавьте последовательно в него следующие книги:
+<pre>
+Пушкин А.С.; Пиковая дама; 2007
+Тургенев И.С.; Муму; 2011
+Толстой А.Н.; Аэлита; 1995
+Балакирев С.М.; Моя жизнь, мои достижения; 2045
+</pre>
+То есть, в 1-м элементе списка должна храниться первая запись (книга), во 2-м - вторая запись и т.д.
+<p>
+Названия классов и методов не менять. Также неизменными оставлять сигнатуру методов (возвращаемый тип и набор параметров), кроме параметра data.<br>
+P. S. На экран выводить ничего не нужно, только реализовать односвязный список и заполнить его указанным содержимым.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+<pre>
+#include &lt;iostream>
+#include &lt;cstring>
+
+typedef struct
+{
+    <font color=green>char author[50];</font>	// автор
+    <font color=green>char title[100];</font>	// заголовок
+    short year;	// год издания
+} BOOK;
+
+struct Node
+{
+  public:
+  
+    <b>BOOK data;</b> //вложенная структура
+    Node* next;
+    
+    //Node(BOOK data.author, BOOK data.title, BOOK data.year)
+    <b>Node(const char str1[], const char str2[] , short n)</b> //контейнер
+    {
+	strncpy(this->data.author, str1, 50);
+	strncpy(this->data.title, str2, 100);
+	this->data.year = n;
+        this->next = NULL;
+    }
+};
+
+struct OneLinkedList
+{
+  public:
+	Node* head, * tail;
+	
+
+  public:
+	OneLinkedList() {
+		this->head = this->tail = NULL;
+	}
+	
+	~OneLinkedList() {
+		while (head != NULL) pop_front();
+	}
+
+	void pop_front() {
+		if (head == NULL) return;
+		if (head == tail) {
+			delete tail;
+			head = tail = NULL;
+			return;
+		}
+
+		Node* node = head;
+		head = node->next;
+		delete node;
+	}
+
+	void push_back(const char str1[], const char str2[] , short n)
+	{
+	    Node* node = new Node(str1, str2, n);
+	    if (head == NULL) head = node;
+	    if (tail != NULL) tail->next = node;
+	    tail = node;
+	}
+
+	void push_front(const char str1[], const char str2[] , short n)
+	//void push_front(BOOK data)
+	{
+	    Node* node = new Node(str1, str2, n);
+	    node->next = head;
+	    head = node;
+	    if (tail == NULL) tail = node;
+	}
+
+	void pop_back() {
+		if (tail == NULL) return;
+		if (head == tail) {
+			delete tail;
+			head = tail = NULL;
+			return;
+		}
+
+		Node* node = head;
+		for (; node->next != tail; node = node->next);
+
+		node->next = NULL;
+		delete tail;
+		tail = node;
+	}
+
+	Node* getAt(int k) {
+		if (k < 0) return NULL;
+
+		Node* node = head;
+		int n = 0;
+		while (node && n != k && node->next) {
+			node = node->next;
+			n++;
+		}
+
+		return (n == k) ? node : NULL;
+	}
+
+	void insert(int k, const char str1[], const char str2[] , short n)
+	{
+	    Node* left = getAt(k);
+	    if (left == NULL) return;
+            
+	    Node* right = left->next;
+	    Node* node = new Node(str1, str2, n);
+
+	    left->next = node;
+	    node->next = right;
+	    if (right == NULL) tail = node;
+	}
+
+	void erase(int k) {
+		if (k < 0) return;
+		if (k == 0) {
+			pop_front();
+			return;
+		}
+
+		Node* left = getAt(k - 1);
+		Node* node = left->next;
+		if (node == NULL) return;
+
+		Node* right = node->next;
+		left->next = right;
+		if (node == tail) tail = left;
+		delete node;
+	}
+};
+
+int main(void)
+{
+    using namespace std;
+    OneLinkedList lib;
+
+    lib.push_front("Пушкин А.С.", "Пиковая дама", 2007);
+    lib.insert(0, "Тургенев И.С.", "Муму", 2011);
+    lib.insert(1, "Толстой А.Н.", "Аэлита", 1995);
+    lib.push_back("Балакирев С.М.", "Моя жизнь, мои достижения", 2045);
+    
+    for (Node* node = lib.head; node != NULL; node = node->next)
+    {
+        std::cout << node->data.author << std::endl;
+    }
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. char author[]; //<font color=red>error:</font> flexible array member ‘Node::author’ not at end of ‘struct Node’<br>
+В структуре может быть только один элемент гибкого массива, и он всегда должен быть последним элементом структуры.<br>
+Чтобы сделать то, что вы, по-видимому, хотите (массивы с одинаковым количеством элементов данных и меток), вы могли бы рассмотреть что-то вроде:
+<pre>
+struct my_pair { 
+    double data;
+    int label;
+};
+
+typedef struct { 
+   size_t N;
+   struct my_pair data_label[];
+};
+</pre>
+Учитывая определение структуры и указатель на начало структуры, необходимо, чтобы компилятор C мог получить доступ к любому элементу структуры без необходимости обращаться к чему-либо еще. Поскольку местоположение каждого элемента в структуре определяется количеством и типами предшествующих ему элементов, для доступа к любому элементу необходимо знать количество и типы всех предшествующих элементов. В конкретном случае, когда последний элемент является массивом, это не представляет особой сложности, поскольку для доступа к элементу в массиве требуется знать, с чего он начинается (что требует знания количества и типа предыдущих элементов, а не количества элементов в самом массиве), и индекса элемента (который используется в массиве). компилятор может предположить, что оно меньше количества элементов, для которых существует пространство, без необходимости что-либо знать о размере массива). <b>Однако, если элемент гибкого массива появляется где-либо еще, кроме как в конце структуры, расположение любых элементов, следующих за ним, будет зависеть от количества элементов в массиве - чего компилятор не узнает</b>.
+<p>
+У вас не может быть гибкого элемента массива (double data[]) посередине. Учитывайте жестко заданный размер массива или double *data<br>
+<font color=green>Указал размер массивов, проблема ушла.</font>
+<p>
+2. lib.push_front("Пушкин А.С.", "Пиковая дама", 2007); //warning: ISO C++ forbids converting a string constant to ‘char*’<br>
+Изменил на void push_front(<b>const</b> char author[], const char title[], short year)
+<p>
+3. Node* node = new Node(author, title, year); //error: invalid conversion from ‘const char*’ to ‘char*’<br>
+Изменил на Node(const char author[], const char title[], short year)
+<p>
+4.Если void push_back(<b>BOOK data</b>)<br>
+то error: no matching function for call to ‘OneLinkedList::push_front(const char [20], const char [24], int)’ для вызова:<br>
+lib.push_front("Пушкин А.С.", "Пиковая дама", 2007);<br>
+Не решил. Заменил BOOK data на void push_back(const char str1[], const char str2[] , short n)<br>
+В Решениях другие делали так:<br>
+Объявляли методы с одним параметром BOOK data, а в main:
+<pre>
+<b>BOOK ar[]</b> = {"Пушкин А.С.", "Пиковая дама", 2007,
+                 "Тургенев И.С.", "Муму", 2011,
+                 "Толстой А.Н.", "Аэлита", 1995,
+                 "Балакирев С.М.", "Моя жизнь, мои достижения", 2045};
+    
+    OneLinkedList lib;
+
+    for (int i = 0; i < 4; i++)
+        lib.push_back(ar[i]);
+</pre>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+ <b>Указатель на массив и сразу присвоение элементам массива нули, освобождение памяти под массивом</b><br>
+ Объявите указатель с именем vc на массив типа complex длиной 7 элементов. Инициализируйте значения полей re и im этих элементов нулями. В конце программы не забудьте освободить память из под этого массива.
+ <p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+
+struct complex {
+    double re, im;
+};
+
+int main(void)
+{
+    complex *vc = new complex[7] {};
+    
+    
+    for(int i=0; i < 7; i++)
+    {
+        printf("%f %f\n", vc[i].re, vc[i].im);
+    }
+    <font color=red>delete vc;</font> //так освободил память только под первый элемент массива
+    <font color=green>delete [] vc;</font> //так нужно освобождать под массивом
+    puts("------------");
+    complex *pc = new complex[7]();
+    for(int i=0; i < 7; i++)
+    {
+        printf("%f %f\n", pc[i].re, pc[i].im);
+    }
+    delete pc;
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+Вывод:
+<pre>
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+------------
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+0.000000 0.000000
+</pre>
+Никакой разницы нет.
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.5.7 Инициализация массива структур через new</b><br>
+Объявите в структуре box два конструктора для возможности создания объектов следующими командами:
+<pre>
+box b1;
+box b2(5, 3, 10);
+box *p_b2 = new box();
+box *p_b3 = new box(88, 32, 12);
+</pre>
+Если при создании объекта аргументы не передаются, то должен срабатывать конструктор без параметров и выводить в консоль строку:<br>
+"Empty box"<br>
+Если же передается три аргумента, то должен срабатывать конструктор с тремя параметрами, значения которых сохраняются в полях a, b, c и в консоль выводится строка:<br>
+"Box: <значение a>, <значение b>, <значение c>"<br>
+Например, при a = 6, b = 1, c = 8, должна формироваться строка:<br>
+"Box: 6, 1, 8"<br>
+В конце и начале строк не должно быть пробелов и выполняться перевод на следующую строку.
+<p>
+В функции main объявите указатель с именем ar_box типа box и с помощью оператора new сформируйте массив длиной 5 из элементов типа box со следующей начальной инициализацией полей a, b, c:
+<pre>
+1, 2, 3
+6, 2, 1
+0, 0, 0
+11, 13, 19
+23, 5, 7
+</pre>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+
+struct box {
+    unsigned short a, b, c;
+    
+    box()
+    {
+        std::cout << "Empty box" << std::endl;
+    }
+    
+    box(unsigned short a, unsigned short b, unsigned short c)
+    {
+        this->a = a;
+        this->b = b;
+        this->c = c;
+        printf("Box: %d, %d, %d\n", a, b, c);
+    }
+};
+
+int main(void)
+{
+    //box *ar_box = new box[5] {1, 2, 3, 6, 2, 1, 0, 0, 0, 11, 13, 19, 23, 5, 7}; //<font color=red>error:</font> too many initializers for ‘box [5]’
+    box *ar_box = new box[5] {{1, 2, 3}, {6, 2, 1}, {0, 0, 0}, {11, 13, 19}, {23, 5, 7}};
+    
+    for(int i = 0; i < 5; i++)
+    {
+        printf("%d %d %d\n", ar_box[i].a, ar_box[i].b, ar_box[i].c);
+    }
+
+    delete [] ar_box;
+
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.5.8 </b><br>
+В функции main объявите указатель с именем ar_long типа long и инициализируйте его динамическим массивом (создается с помощью оператора new) длиной 1000 элементов типа long. Все элементы этого массива следует инициализировать нулями. В пятый по счету элемент (счет начинается с единицы) занесите значение -7.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+
+int main(void)
+{
+    long *ar_long = new long[1000] {}; //можно так: long* ar_long { new long [1000]()};
+    ar_long[4] = -7;
+    delete [] ar_long;
+}
+</pre></td></tr></table>
+<pre>
+
+========================================================================================================================
+
+</pre>
+<a name="smart"><h3 align=center>Умные указатели</h3>
+В функции main объявите smart-указатель типа unique_ptr с именем p_int, который работает с данными типа int. Выделите область памяти для типа int и присвойте ее адрес указателю p_int. Занесите прочитанное из входного потока значение переменной x в выделенную область памяти с помощью указателя p_int. Выведите в консоль значение, на которое ссылается указатель p_int.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+int main(void)
+{
+    int x;
+    std::cin >> x;
+
+    <b>std::unique_ptr&lt;int> p_int;
+    p_int = std::make_unique<int>();</b>
+    *p_int = x;
+    printf("%d\n", *p_int);
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+В функции main объявите smart-указатель unique_ptr с именем p_th, который должен работать с типом данных thing. Создайте объект thing и его адрес присвойте указателю p_th. Через указатель p_th занесите в объект структуры следующие данные:<br>
+1 (в uid); 10 (width); 43 (height); 108 (depth)
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+struct thing {
+    unsigned long uid;
+    unsigned width, height, depth;
+};
+
+int main(void)
+{
+    <b>std::unique_ptr&lt;thing> p_th;
+    p_th = std::make_unique&lt;thing>();</b>
+    p_th->uid = 1;
+    p_th->width = 10;
+    p_th->height = 43;
+    p_th->depth = 108;
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.6.8 Выделение памяти под объект, умные указатели на структуры, методы указателя</b><br>
+В структуре object объявите следующие публичные методы:
+<pre>
+object(short d) - конструктор для инициализации поля data = d и указателя next = nullptr;
+object* get_next() - геттер, возвращающий значение указателя next;
+short get_data() - геттер, возвращающий значение поля data;
+void set_next(object* ptr) - сеттер, записывающий в указатель next значение адреса указателя ptr;
+void set_data(short d) - сеттер, записывающий в поле data значение d.
+</pre>
+В функции main объявите два smart-указателя unique_ptr с именами top и ptr (объявление можно сделать в одну строчку). Затем, сформируйте два объекта типа object (с помощью функции make_unique) так, чтобы указатель ptr ссылался на первый объект, а указатель top - на второй. Свяжите через внутренний указатель next эти объекты по цепочке:<br>
+top -> ptr<br>
+То есть, второй объект (top) должен ссылаться на первый (ptr) с помощью внутреннего указателя next. Указатель next первого объекта (ptr) должен принимать значение nullptr.<br>
+В первый объект (ptr) в поле data занесите значение 1, а во второй (top) - значение 2.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+struct object {
+private:
+    short data;
+    object* next;
+
+public:
+    object(short d) //лучше <b>object(short d=0)</b>, чтобы можно было выделять память под объект без аргументов
+    {
+        data = d;
+        next = nullptr;
+    }
+    
+    object* get_next() {return next;}
+    
+    short get_data() {return data;}
+    
+    void set_next(object* ptr) {next = ptr;}
+    
+    void set_data(short d) {data = d;}
+};
+
+int main(void)
+{
+    std::unique_ptr&lt;object> top, ptr;
+    
+    ptr = std::make_unique&lt;object>(0);
+    //ptr {std::make_unique&lt;object>()}; //<font color=red>error:</font> expected ‘;’ before ‘{’ token
+    <b>top = std::make_unique&lt;object>(0);</b>
+        
+    //top.set_next(ptr); //<font color=red>error:</font> ‘class std::unique_ptr&lt;object>’ has no member named ‘set_next’
+    top->set_next(ptr.get()); //<font color=red>error:</font> cannot convert ‘std::unique_ptr&lt;object>’ to ‘object*’
+    
+    <b>ptr->set_next(nullptr)</b>; //методы указателя также пишутся через черточку со стрелкой.
+    
+    ptr->set_data(1);
+    
+    top->set_data(2);
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1.
+<pre>
+In file included from /usr/include/c++/9/memory:80,
+                 from example.cpp:20:
+/usr/include/c++/9/bits/unique_ptr.h: In instantiation of ‘typename std::_MakeUniq<_Tp>::__single_object
+ std::make_unique(_Args&& ...) [with _Tp = object; _Args = {}; typename std::_MakeUniq<_Tp>::__single_object =
+  std::unique_ptr&lt;object>]’:
+example.cpp:47:36:   required from here
+/usr/include/c++/9/bits/unique_ptr.h:857:30: error: no matching function for call to ‘object::object()’
+  857 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }
+</pre>
+Как я понял в функции make_unique&lt;object>() аргументы должна соответствовать параметрам конструктора. Так как у меня объявлен конструктор object(short d), то конструктора по умолчанию object() нет и соответственно make_unique&lt;object>() не работает.<br>
+Проблему решил с инициализацией объекта нулём: ptr = std::make_unique&lt;object>(0);<br>
+В Решениях обычно объявляли конструктор object(short d=0) и тогда make_unique&lt;object>() работать будет.
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.6.9 Умный указатель как параметр функции</b><br>
+Скопируйте из предыдущего подвига структуру object со всеми объявленными публичными методами:
+<pre>
+object(short d) - конструктор для инициализации поля data = d и указателя next = nullptr;
+object* get_next() - геттер, возвращающий значение указателя next;
+short get_data() - геттер, возвращающий значение поля data;
+void set_next(object* ptr) - сеттер, записывающий в указатель next значение адреса указателя ptr;
+void set_data(short d) - сеттер, записывающий в поле data значение d.
+</pre>
+Допишите реализацию функции push, которая бы добавляла новый объект структуры object на вершину стека, формируя следующую цепочку.
+<p>
+Указатель top после добавления нового объекта должен ссылаться на самый верхний объект (добавленный). Значение поля data нового объекта должно быть равно переданному значению через параметр data функции push. Самый последний (нижний) объект стека должен иметь значение указателя next равным nullptr.<br>
+В функции main выведите в одну строчку через пробел значения поля data объектов стека по порядку, начиная с самого верхнего.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+struct object {
+private:
+    short data;
+    object* next;
+
+public:
+    object(short d=0, object* next=nullptr) {data = d; this->next = next;}
+    object* get_next() {return next;}
+    short get_data() {return data;}
+    void set_next(object* ptr) {next = ptr;}
+    void set_data(short d) {data = d;}
+};
+
+using st_unique_ptr = std::unique_ptr&lt;object>;
+
+void push(st_unique_ptr& top, short data)
+{
+    //printf("adres top=%p\n", top.get());
+    st_unique_ptr ptr = std::make_unique&lt;object>(data, <b>top.get()</b>);
+    printf("data=%d, adres back=%p, adres current=%p\n", ptr->get_data(), ptr->get_next(), ptr.get());
+    ptr.swap(top); //поменялся адресами
+    ptr.release(); //сделал ptr обычным указателем, без этой строчки программа не работает, почему, не понял.
+    //printf("1adres top=%p\n", top.get());
+}
+
+int main(void)
+{
+    st_unique_ptr top;
+
+    for(int i = 1; i <= 7; ++i)
+        push(top, i);
+    
+    object *ptr = top.get();
+    for (int i = 7; i >=1; i--)
+    {
+        std::cout << ptr->get_data() << " ";
+        ptr = ptr->get_next();
+        //printf("1data=%d, adres=%p\n", ptr->get_data(), ptr->get_next());
+    }
+
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1. Ошибка сегментирования (стек памяти сброшен на диск)<br>
+Почему-то в st_unique_ptr ptr_current = std::make_unique<object>(data, top.get()); создается не уникальный объект, а переходит на 1 объект назад:
+<pre>
+dmitriy@945G-M3:~/C++$ g++ example.cpp
+dmitriy@945G-M3:~/C++$ ./a.out
+data=1, adres back=(nil), adres current=0x56314ea4ceb0
+data=2, adres back=0x56314ea4ceb0, adres current=0x56314ea4d2e0
+data=3, adres back=0x56314ea4d2e0, adres current=0x56314ea4ceb0
+data=4, adres back=0x56314ea4ceb0, adres current=0x56314ea4d2e0
+data=5, adres back=0x56314ea4d2e0, adres current=0x56314ea4ceb0
+data=6, adres back=0x56314ea4ceb0, adres current=0x56314ea4d2e0
+data=7, adres back=0x56314ea4d2e0, adres current=0x56314ea4ceb0
+Ошибка сегментирования (стек памяти сброшен на диск)
+</pre>
+Проблему решил добавлением в push: ptr.release();<br>
+Этот метод делает умный указатель обычным, но почему проблема решилась, я не понял.
+<pre>
+dmitriy@945G-M3:~/C++$ g++ example.cpp
+dmitriy@945G-M3:~/C++$ ./a.out
+data=1, adres back=(nil), adres current=0x55ffbbe00eb0
+data=2, adres back=0x55ffbbe00eb0, adres current=0x55ffbbe012e0
+data=3, adres back=0x55ffbbe012e0, adres current=0x55ffbbe01300
+data=4, adres back=0x55ffbbe01300, adres current=0x55ffbbe01320
+data=5, adres back=0x55ffbbe01320, adres current=0x55ffbbe01340
+data=6, adres back=0x55ffbbe01340, adres current=0x55ffbbe01360
+data=7, adres back=0x55ffbbe01360, adres current=0x55ffbbe01380
+7 6 5 4 3 2 1 dmitriy@945G-M3:~/C++$
+</pre>
+2. <font size=5>Умный указатель как параметр функции не передается. Приходится или брать от него обычный указатель: uniq_ptr.get()<br>
+или преобазовывать в обычный указатель: uniq_ptr.release()</font>
+<pre>
+
+</pre>
+<a name="shared"><h3 align=center>Указатели shared_ptr</h3>
+<b>10.7.7 shared_ptr, приведение от shared_ptr к char *, вывод значений ячеек памяти (байтов)</b><br>
+Объявите указатель shared_ptr с именем p_val для типа данных short. Выделите область памяти для хранения данных типа short и присвойте адрес этой области указателю p_val. Занесите в эту область значение переменной x. Выведите в консоль значения байт выделенной области памяти (на которую ссылается p_val) в одну строчку через пробел в виде беззнаковых десятичных чисел.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+int main(void)
+{
+    int x;
+    std::cin >> x;
+
+    std::shared_ptr&lt;short> p_val;
+    p_val = std::make_shared&lt;short>();
+    *p_val = x;
+    
+    //unsigned char *ptr = p_val.get(); //error: cannot convert ‘std::__shared_ptr&lt;short int,
+    
+    //unsigned char *ptr = p_val; //error: cannot convert ‘std::shared_ptr&lt;short int>’ to ‘unsigned char*’ in initialization
+    
+    //unsigned char *ptr = (unsigned char *)p_val;//error: invalid cast from type  ‘std::shared_ptr&lt;short int>’ to ‘unsigned char*
+    
+    <b>unsigned char *ptr = (unsigned char *)p_val.get();</b>
+    
+    std::cout << *ptr << " " << *(ptr+1) << std::endl; //какая-то ерунда, так не работает
+    
+    std::cout << (int)*ptr << ' ' << (int)*(ptr + 1) << std::endl; //а вот так работает
+    
+    printf("%d %d\n", *ptr, *(ptr+1));
+    
+    printf("%d %d\n", ptr[0], ptr[1]);
+    
+    //printf("%d %d\n", *ptr[0], *ptr[1]); //error: invalid type argument of unary ‘*’ (have ‘unsigned char’)
+    
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+В unsigned char *ptr = (unsigned char *)p_val.get();<br>
+p_val.get() - беру обычный указатель типа short<br>
+(unsigned char *) - преобразую указатель типа short в тип unsigned char
+<pre>
+
+------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.7.8 shared_ptr</b><br>
+Продолжите программу в стандарте C++20. В функции sum_ar добавьте реализацию по вычислению суммы элементов переданного массива ar длиной len элементов. Функция sum_ar должна возвращать вычисленное значение суммы.
+В функции main прочитайте из входного потока целые числа (не более max_size_ar, т.е. их может быть и больше, но читать только первые max_size_ar значений), записанные в одну строчку через пробел, в массив ar. Вызовите для массива ar функцию ar_sum и вычислите сумму прочитанных из входного потока значений. Полученное значение суммы выведите в консоль в виде одного целого числа.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+enum {max_size_ar = 10};
+
+using shared_ari_ptr = std::shared_ptr<int[]>;
+
+int sum_ar(const shared_ari_ptr& ar, size_t len)
+{
+    int sum = 0;
+    //for (int x : ar) //error: no matching function for call to ‘begin(const std::shared_ptr<int []>&)
+    for (int i = 0; i < len; i++)
+    {
+        sum +=ar[i];
+    }
+    return sum;
+}
+
+int main(void)
+{
+    shared_ari_ptr ar {new int[max_size_ar] {0}};
+    unsigned count = 0;
+
+    for (; count < max_size_ar && std::cin >> ar[count]; count++) {}
+    
+    printf("%d\n", sum_ar(ar, count)); //так тоже можно
+    
+    std::cout << sum_ar(ar, count) << std::endl;
+
+    return 0;
+}
+</pre></td></tr></table>
+<p>
+1.  scanf("%d", ar[count]) //warning: format ‘%d’ expects argument of type ‘int*’, but argument 2 has type ‘std::__shared_ptr_access&lt;int []<br>
+Заменил на std::cin
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>10.7.9 shared_ptr на структуру</b><br>
+Нужно продолжить программу, которая реализует логику работы односвязного списка следующей структуры.
+<p>
+Каждый объект списка представляется структурой object, в которой имеется поле data с данными и поле next - указатель на следующий объект списка. Указатель next последнего объекта односвязного списка должен принимать значение nullptr.
+<p>
+Допишите реализации следующих функций:<br>
+
+push_back - для добавления нового объекта в конец односвязного списка с записью в его поле data значения параметра data;
+<p>
+pop_front - для удаления первого объекта из односвязного списка;
+<p>
+show - для отображения поля data объектов односвязного списка по порядку (от head до tail) в одну строчку через пробел.
+<p>
+В функции main объявите два smart-указателя head и tail типа shared_obj_ptr с начальными значениями nullptr (пустой список). Эти указатели следует передавать в функции push_back и pop_front. В свою очередь функции push_back и pop_front должны корректно менять значения указателей head и tail так, чтобы head всегда указывал на первый элемент односвязного списка, а tail - на последний. Если в списке один элемент, то head и tail ссылаются на один и тот же объект. Если в списке отсутствуют элементы, то head и tail должны быть равны nullptr.
+<p>
+В функции main добавьте в список с помощью функции push_back четыре элемента со значениями поля data 1, 2, 3, 4 (по порядку, от head до tail). Отобразите созданный односвязный список с помощью функции show().
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+#include &lt;iostream>
+#include &lt;memory>
+
+struct object {
+    int data;
+    std::shared_ptr<object> next;
+    
+    object(int data=0, std::shared_ptr<object> next_obj=nullptr)
+    {
+        this->data = data;
+        next = next_obj;
+    } 
+};
+
+using shared_obj_ptr = std::shared_ptr<object>;
+
+void push_back(shared_obj_ptr& head, shared_obj_ptr& tail, int data)
+{
+    // добавление в конец нового объекта односвязного списка
+    shared_obj_ptr ptr_tail = std::make_shared<object>(data);
+    
+    if (head == NULL)
+    {
+        head = ptr_tail;
+        tail = ptr_tail;
+    }
+    tail->next = ptr_tail;
+    ptr_tail->data = data;
+    tail = ptr_tail;
+}
+
+void pop_front(shared_obj_ptr& head, shared_obj_ptr& tail)
+{
+    // удаление первого объекта из односвязного списка
+    if (head == NULL) return;
+    head = head->next;
+}
+
+void show(const shared_obj_ptr& head)
+{
+    // отображение поля data объектов односвязного списка по порядку (от head до tail) в одну строчку через пробел
+    object *ptr = (object *)head.get();
+    while(ptr !=nullptr)
+    {
+        std::cout << ptr->data << " ";
+        ptr = ptr->next.get();
+    }
+    std::cout << std::endl;
+}
+
+int main(void)
+{
+    shared_obj_ptr head = nullptr;
+    shared_obj_ptr tail = nullptr;
+
+    push_back(head, tail, 1);
+    push_back(head, tail, 2);
+    push_back(head, tail, 3);
+    push_back(head, tail, 4);
+    show(head);
+    
+    pop_front(head, tail);
+    show(head);
+    push_back(head, tail, 10);
+    show(head);
+    
+    return 0;
+}
+</pre></td></tr></table>
+<pre>
+
+
+
+
+
+
+
+
+
+
 
 
 </pre>
