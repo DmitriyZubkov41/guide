@@ -2,7 +2,7 @@
 <style>
 .menu {
        height: 100%;
-       width: 80px;
+       width: 130px;
        position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
        background-color: Gray;  
       }
@@ -14,54 +14,310 @@
   display: block;
           }     
 .content {
-           margin-left: 90px; /* То же, что и ширина боковой панели */
+           margin-left: 140px; /* То же, что и ширина боковой панели */
            padding: 0px 0px 0px 0px;
          }
 </style>
 </head><body>
 <title>Примеры</title>
 <div class="menu">
-
-<a href="#while">Циклы</a><br>
-<a href="#dict">Словари</a><br>
-<a href="#graf">Задачи на графы</a><br>
+<a href="#print">Функция print()</a>
+<a href="#input">input()</a>
+<a href="#while">Циклы</a>
+<a href="#number">Числа</a>
+<a href="#set">Множество</a>
+<a href="#string">Строки</a>
+<a href="#list">Список</a>
+<a href="#dict">Словари</a>
+<a href="#graf">Задачи на графы</a>
 <a href="#fun">Функции:</a>
+<a href="#recurs_fun">Рекурсивные функции</a>
 <a href="#lambda">&nbsp;&nbsp; lambda-функции</a>
-<a href="#file">Файлы</a><br>
+<a href="#file">Файлы</a>
 <a href="#modul">Модули:</a>
-<a href="#os">&nbsp;&nbsp; os</a>
 <a href="#stdin">&nbsp;&nbsp; stdin</a>
 <a href="#obiekt">Объекты</a>
 <a href="#oop">ООП</a>
 <a href="#iterator">Итерироние классов</a>
 <a href="#gener">Функции-итераторы</a>
 <a href="#text">Работа с текстом</a>
+<a href="#regularn">Регулярные выражения</a>
 <a href="#table">Работа с таблицами</a>
 <a href="#xml">Работа с XML</a>
+<a href="#parsing">Парсинг файлов</a>
+<a href="#try">try / except</a>
+<a href="#plot">Построение графиков</a>
+<a href="#api">API</a>
 </div>
 
 <div class="content">
-<a name="while"><h3 align=center>Циклы:</h3>
-Напишите программу, которая считывает с консоли числа (по одному в строке) до тех пор, пока сумма 
-введённых чисел не будет равна 0 и сразу после этого выводит сумму квадратов всех считанных чисел.
-<br>Гарантируется, что в какой-то момент сумма введённых чисел окажется равной 0, после этого считывание продолжать не нужно.
+<a name="print"><h3 align=center>Функция print()</h3>
+<b>Вывод числа в определенном формате, дробное число в научном формате (экспоненциальном)</b>
+Требуется написать программу, осуществляющую преобразование из одних единиц измерения длины в другие.<br>
+Формат ввода:<br>
+Одна строка с фразой следующего вида: &lt;number> &lt;unit_from> in &lt;unit_to><br>
+например, если пришла фраза "15.5 mile in km", то требуется перевести 15.5 миль в километры.<br>
+Формат вывода: <b>Дробное число в научном формате (экспоненциальном), с точностью ровно два знака после запятой</b>.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
 <pre>
-s = 0
-y = 0
-while True:
-    x = int(input())
-    s += x
-    y += x*x
-    if s == 0:
+"""
+Программа для перевода с одной системы измерения длины в другую
+"""
+
+dict = {'mile':1609, "yard":0.9144, "foot":0.3048, "inch":0.0254, "km":1000, "cm":0.01, "mm":0.001, "m":1}
+res = 0.0
+
+str = input()
+
+lst = str.split()  # ['15.5', 'mile', 'in', 'km']
+# print(lst)
+
+<font color=red>for key in dict.keys():
+    if key == lst[1]:</font>  # зачем перебирать словарь, можно сразу было брать значение по ключу
+        res= float(lst[0]) * dict[key]  # получили длину в метрах
+        # print("res=",res)
         break
-print(y)</pre>
+# теперь надо перевести длину в метрах в длину в lst[3]
+if lst[3] != 'm':
+    for key in dict.keys():
+        if lst[3] == key:
+            res /=dict[key]
+            break
+
+print("без форматирования=", res)
+print("формула 10.3={:10.3f}".format(res))
+print("формула 20.3={:20.3f}".format(res))
+print("res через e с двумя знаками после запятой={:.2e}".format(res))
+# без format
+<b>print("res через e с двумя знаками после запятой без format=%.2e"%(res))
+print("res с двумя знаками после запятой без format=%.2f"%(res))
+print("res с двумя знаками после запятой и всего 10 знаков, без format=%10.2f"%res)</b>
+
+Вывод:
+15.5 mile in km
+без форматирования= 24.9395
+формула 10.3=    24.939
+формула 20.3=              24.939
+res через e с двумя знаками после запятой=2.49e+01
+res через e с двумя знаками после запятой без format=2.49e+01
+res с двумя знаками после запятой без format=24.94
+res с двумя знаками после запятой и всего 10 знаков, без format=     24.94
+</pre></td></tr>
+<tr><td valign=top>
+Другое:
+<pre>
+d = {
+    "mile": 1609,
+    "yard": 0.9144,
+    "foot": 0.3048,
+    "inch": 0.0254,
+    "km": 1000,
+    "m": 1,
+    "cm": 0.01,
+    "mm": 0.001
+}
+num, from_, _, to = input().split(' ')
+num = float(num)
+print("{0:.2e}".format(num * d[from_] / d[to]))
+</pre></td></tr></table>
+<p>
+1. 2.49e+01 - это 2.49 * 10 в 1 степени = 24,9
+<p>
+2. print('{:3.2e}'.format(ans) -  3 - это общее число знаков в числе, 2 - число знаков после  запятой.
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Формирование строки 3 способами</b><br>
+Напишите программу, которая считывает два имени и выводит стихотворение, в котором вместо A и B используются принятые имена.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+name1 = input()
+name2 = input()
+
+# <b>Сишный способ (через спецификаторы)</b>
+str_format = '''%s and %s sat in the tree.
+%s had fallen, %s was stolen.
+What's remaining in the tree?''' % (name1, name2, name1, name2)
+print(str_format)
+
+print("--------------------")
+
+# <b>Способ через format, меньше всего из 3 вариантов нравится</b>
+str_format = '''{0} and {1} sat in the tree.
+{0} had fallen, {1} was stolen.
+What's remaining in the tree?'''.format(name1, name2)
+print(str_format)
+
+print("--------------------")
+
+# <b>Способ через f</b> более всех нравится
+print(f'''{name1} and {name2} sat in the tree.
+{name1} had fallen, {name2} was stolen.
+What's remaining in the tree?''')
+</pre></td></tr></table>
+<pre>
+--------------------------------------------------------------------------------------------------------------------------
+</pre>
+<b>Рисование</b><br>
+Напишите программу, которая выводит число в стиле LCD калькулятора. На вход программе подаётся последовательность цифр, которую нужно вывести на экран в специальном стиле. Размер всех цифр 4 символа в ширину и 7 символов в высоту. Между цифрами в выводе должен быть один пустой столбец. Перед первой цифрой не должно быть пробелов. Выведенные цифры должны быть обведены рамочкой, в углах которой находится символ x ("икс"), горизонтальная линия создаётся из символа - ("дефис"), а вертикальная из символа вертикальной черты: |.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+stroka_numbers = input()
+
+print("x" + (5 * len(stroka_numbers) - 1) * "-" + "x")
+
+d = {'0': (' -- ', '|  |', '|  |', '    ', '|  |', '|  |', ' -- '),
+     '1': ('    ', '   |', '   |', '    ', '   |', '   |', '    '),
+     '2': (' -- ', '   |', '   |', ' -- ', '|   ', '|   ', ' -- '),
+     '3': (' -- ', '   |', '   |', ' -- ', '   |', '   |', ' -- '),
+     '4': ('    ', '|  |', '|  |', ' -- ', '   |', '   |', '    '),
+     '5': (' -- ', '|   ', '|   ', ' -- ', '   |', '   |', ' -- '),
+     '6': (' -- ', '|   ', '|   ', ' -- ', '|  |', '|  |', ' -- '),
+     '7': (' -- ', '   |', '   |', '    ', '   |', '   |', '    '),
+     '8': (' -- ', '|  |', '|  |', ' -- ', '|  |', '|  |', ' -- '),
+     '9': (' -- ', '|  |', '|  |', ' -- ', '   |', '   |', ' -- ')
+     }
+
+
+# на цифры надо 7 строк
+for i in [0, 1, 2, 3, 4, 5, 6]:
+    # выводим строку с индексом i
+    print("|", end='')  # первый элемент строки
+    for j in range(len(stroka_numbers)): # индекс цифры в списке
+        print(d[stroka_numbers[j]][i], end='')
+        <font color=red>if j == (len(stroka_numbers) - 1):</font>  # лишнее, достаточно было по завершении цикла выполнить print("|")
+            <font color=red>print("|")
+        else:
+            print(" ", end='')</font>
+print("x" + (5 * len(stroka_numbers) - 1) * "-" + "x")
+</pre></td></tr></table>
+<p>
+У меня решение основано на словаре, ключами являются цифры, а значения - кортеж из строк цифры. Этот словарь, я скопировал из сайта, но если самому делать, то дело это долгое. В этом случае можно скопировать строку всех цифр в список:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+<b>ss = """
+x--------------------------------------------------x
+| --        --   --        --   --   --   --   --  |
+||  |    |    |    | |  | |    |       | |  | |  | |
+||  |    |    |    | |  | |    |       | |  | |  | |
+|           --   --   --   --   --        --   --  |
+||  |    | |       |    |    | |  |    | |  |    | |
+||  |    | |       |    |    | |  |    | |  |    | |
+| --        --   --        --   --        --   --  |
+x--------------------------------------------------x
+""".split('\n')</b>
+ds = input()
+for y in range(1,10):
+    s = ss[y][0]  # здесь похоже, чтобы не учитывать добавленные строки на предыдущих итерациях, создаем новый объект
+    <font color=green><b>for d in ds:</b></font>  # оказывается символы из строки можно вытаскивать в цикле без индекса.
+        x = 5 * int(d)
+        s += ss[y][1 + x: 6 + x]  # похоже срезаем по формуле y-строку символа d и добавляем её в строку s
+    print(s[0:-1] + ss[y][0])  # выводим готовую y-строку и '|'. s[0:-1] - похоже тут последний символ (пробел) убираем
+</pre></td></tr></table>
+<p>
+ss - список:
+<b><pre>
+['',
+'x--------------------------------------------------x',
+'| --        --   --        --   --   --   --   --  |',
+'||  |    |    |    | |  | |    |       | |  | |  | |',
+'||  |    |    |    | |  | |    |       | |  | |  | |', 
+'|           --   --   --   --   --        --   --  |',
+'||  |    | |       |    |    | |  |    | |  |    | |', 
+'||  |    | |       |    |    | |  |    | |  |    | |', 
+'| --        --   --        --   --        --   --  |',
+'x--------------------------------------------------x', 
+'']
+</pre></b>
+Если бы расщепляли input() без аргумента (split()), то элементами списка были бы все последовательности между пробелами, а не все отдельные строки в случае split('\n').
+<pre>
+
+===========================================================================================================================
+
+</pre>
+<a name="unicode"><h3 align=center>Unicode</h3>
+кодируются символы из интервала 1F600—1F64F таблицы символов Юникода. Используется кодировка UTF-8. Напишите программу, которая шифрует текст шифром Цезаря.<br>
+Формат ввода:<br>
+На первой строке указывается используемый сдвиг шифрования: целое число. Положительное число соответствует сдвигу вправо. На второй строке указывается непустая фраза для шифрования.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+sdvig = int(input()) % 80
+str_shifr = input().strip()
+
+print('Result: "', end="")
+for simvol in str_shifr:
+    int_simvol = <b>ord(simvol)</b>  # получаем десятичное значение кода символа
+    # print(int_simvol)
+    if (int_simvol + sdvig) > 128591:
+        modif_simvol = 128511 + (int_simvol + sdvig - 128591)
+    elif (int_simvol + sdvig) < 128512:
+        modif_simvol = 128592 + (int_simvol + sdvig - 128512)
+    else:
+        modif_simvol = int_simvol + sdvig
+    print(<b>chr(modif_simvol)</b>, end="")  # переводим назад в символ
+print('"')
+</pre></td></tr>
+<tr><td>
+Не моё:
+<pre>
+upset, string = int(input()), input()
+print('Result: "', *[chr(128512 + (ord(i) - 128512 + upset) % 80) for i in string], '"', end = '', sep = '')
+</pre></td></tr></table>
+<pre>
+
+==========================================================================================================================
+
+</pre>
+<a name="input"><h3 align=center>input() - ввод с stdin</h3>
+<b>Ввод строк до определённого условия, функция iter()</b><br>
+Напишите программу, имитирующую обработчик команд от пользователя.<br>
+Программа должна выводить оповещение о своём состоянии в следующем формате:<br>
+Когда пользователь вводит команду, содержимое которой обозначим как <command>, программа должна вывести фразу<br>
+Processing "&lt;command>" command...
+Например, пользователь ввёл Come to me, в таком случае должна быть выведена строка:<br>
+Processing "Come to me" command...<br>
+Считывание команд должно продолжаться до ввода команды End, при этом программа должна вывести сообщение:<br>
+Good bye!<br>
+и завершиться
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+lst1 = []
+while True:
+    lst1.append(input())
+    if lst1[-1] == 'End':
+        print("Good bye!")
+        break
+    print(f"Processing \"{lst1[-1]}\" command...")
+</pre></td>
+<td valign=center>
+<pre>
+command = input()
+while command != 'End':
+    print(f'Processing "{command}" command...')
+    command = input()
+print('Good bye!')
+
+Другое решение:
+for c in <b>iter(input,'End')</b>:
+    print('Processing "{}" command...'.format(c))
+print('Good bye!')
+</pre></td></tr></table>
 <pre>
 
 
------------------------------------------------------------------------------------------------------------------
+============================================================================================================================
 
 
 </pre>
+<a name="while"><h3 align=center>Циклы:</h3>
 Напишите программу, которая выводит часть последовательности 1 2 2 3 3 3 4 4 4 4 5 5 5 5 5 ... (число повторяется столько 
 раз, чему равно). На вход программе передаётся неотрицательное целое число n — столько элементов последовательности должна 
 отобразить программа. На выходе ожидается последовательность чисел, записанных через пробел в одну строку.
@@ -82,7 +338,7 @@ for a in m:
         break
 print()
 </pre>
-</td><td>
+</td><td valign=top>
 Не моё:
 <pre>
 n = int(input())
@@ -181,6 +437,7 @@ else:
  матрицы.<br>
 В случае одной строки/столбца элемент сам себе является соседом по соответствующему направлению.
 <table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
 table = []
 while True:
     table.append([x for x in input().split()])
@@ -208,7 +465,8 @@ for str in range(len(table)): # по строкам
         int(table[str][stolb + delta_stolb]) + int(table[str][stolb - delta_stolb]), end=' ')
     print()
 </pre>
-</td><td>
+</td></tr>
+<tr><td>
 Другое решение:
 <pre>
 a = [[int(i) for i in input().split()]]
@@ -241,9 +499,10 @@ for i in range(n):
 -----------------------------------------------------------------------------------------------------------------
 
 </pre>
+<b>Квадратная матрица, заполняемая по спирали.</b><br>
 Выведите таблицу размером n×n, заполненную числами от 1 до n 2 по спирали, выходящей из левого верхнего угла и закрученной по 
 часовой стрелке:
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
 n = int(input())
 krug = 1
@@ -283,7 +542,7 @@ for stroka in range(n):
 </pre>
 Вызвало затруднение, определение двухмерного массива, table[] или table[[]]  неправильно. Правильно получилось, когда 
 использовал генератор для формирования таблицы.
-</td><td>
+</td><td valign=top>
 Другое решение:
 <pre>
 n=int(input())
@@ -320,6 +579,7 @@ for k in range(1, n*n+1):
 0), и движение на восток увеличивает первую координату, а на север — вторую.
 <p>
 Программе подаётся на вход число команд n, которые нужно выполнить черепашке, после чего n строк с самими командами. Вывести нужно два числа в одну строку: первую и вторую координату конечной точки черепашки. Все координаты целочисленные.
+<p>
 <table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
 <pre>
 x = 0
@@ -350,12 +610,244 @@ print(dict['восток'] - dict['запад'], dict['север'] - dict['юг
 </td></tr></table>
 <pre>
 
+--------------------------------------------------------------------------------------------------------------------------
 
------------------------------------------------------------------------------------------------------------------
+</pre>
+<b>Пропуск итерации в цикле</b><br>
+В римской системе счисления для обозначения чисел используются следующие символы (справа записаны числа, которым они соответствуют в десятичной системе счисления):
+<pre>
+I = 1
+V = 5
+X = 10
+L = 50
+C = 100
+D = 500
+M = 1000
+</pre>
+Будем использовать вариант, в котором числа 4, 9, 40, 90, 400 и 900 записываются как вычитание из большего числа меньшего: IV, IX, XL, XC, CD и CM, соответственно.<br>
+Напишите программу, которая переводит число из римской в десятичную систему счисления.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+r_dict = {'I' : 1, 'V' : 5, 'X' : 10, 'L' : 50, 'C' : 100, 'D' : 500, 'M' : 1000}
+r_number = input() + '/'  # MCMLXXXIV
+#r_number = input()
+number = 0
+i = 0
+# for i in range(len(r_number)-1):
+while i < len(r_number):
+   print(i)
+   if r_number[i] == '/':
+       break
+   if r_number[i+1] == '/' or r_dict[r_number[i]] >= r_dict[r_number[i+1]]:
+        number += r_dict[r_number[i]]
+   elif r_dict[r_number[i]] < r_dict[r_number[i+1]]:
+       number += (r_dict[r_number[i+1]] - r_dict[r_number[i]])
+       i += 1
+   i +=1
+   print(number)
+print(number)
+</pre></td></tr>
+<tr><td>
+<pre>
+a = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+text = input()
+sum = 0
+for i in <b>range(len(text)-1):</b> # пропускаем последний элемент, чтобы потом его вручную прибавить
+    if a[text[i]] < a[text[i + 1]]:
+        sum -= a[text[i]]
+    else:
+        sum += a[text[i]]
+<b>sum += a[text[len(text)-1]]</b>  # не надо придумывать костыль с последним элементом
+print(sum)
+</pre></td></tr>
+<tr><td valign=top>
+Другое:
+<pre>
+a, d, temp, s = {'I': 1, 'V' : 5, 'X' : 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000},0, 0, input()[::-1]
+for i in s:
+    d += a[i] if temp <= a[i] else -a[i]
+    temp = a[i]
+print(d)
+</pre>
+<font color=green>input()[::-1]</font> переворачивает строку<br>
+Идём с обратной стороны строки, если предыдущий символ больше текущего, то вычитаем из результата текущий, иначе прибавляем</td></tr></table>
+<p>
+1. как в for i in range(len(n)): следующую итерацию пропустить<br>
+В for i in range(len(n)): никак не пропустишь i, поэтому лучше использовать другой цикл while, где счетчик вручную увеличивают.
+<p>
+2. Ошибка «TypeError: 'type' object is not subscriptable» в Python возникает, когда пытаются получить доступ к элементу объекта, используя индекс, а объект не поддерживает такую операцию.
+<pre>
+
+======================================================================================================================
+
+</pre>
+<a name="number"><h3 align=center>Числа</h3>
+<b>Сокращенная запись операций с числами</b><br>
+Напишите функцию, которая для заданного натурального числа n генерирует последовательность чисел, описанную в гипотезе Коллатца:<br>
+Если n четное, то делим его пополам, если нечётное, то умножаем на 3 и прибавляем 1. С итогом вычисления снова проделываем эту операцию до тех пор, пока в результате не будет получено число 1.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+n = int(input())
+
+print(n, end=' ')
+while n != 1:
+    if n % 2 == 0:
+         n //= 2
+    else:
+        <b>n = n * 3 + 1</b>
+        # n (*= 3) +1 SyntaxError: invalid syntax
+        # n *= 3 + 1 # 68
+        #(n *= 3) + 1  SyntaxError: invalid syntax
+    print(n, end=' ')
+</pre></td></tr></table>
+<p>
+Здесь интересно, что если n *= 3 + 1 и n=17, то результат будет 68, а не 52. И как не пробовал сокращенно записать, не получилось.
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Напишите программу, которая принимает на вход список чисел и число, после чего выводит все позиции, на которых это число встречается в переданном списке. Позиции в списке нумеруются с нуля. Если число x не найдено в списке, нужно вывести строку "None" (без кавычек, с большой буквы).
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+lst_int = input().split()
+number = int(input())
+a = None
+
+for i in range(len(lst_int)):
+    if number == int(lst_int[i]):
+        print(i, end=' ')
+        a = 1
+if (a == None):
+    print(a)
+
+#[print(i, end=' ') for i in range(len(lst_int)) if number == int(lst_int[i])]
+</pre></td></tr>
+<tr><td valign=top>
+<pre>
+s = input().split(' ')
+sub = input() 
+print(*([i for i, x in enumerate(s) if x == sub] or ['None']), sep=' ')
+</pre>
+Если получим пустой список, то он с точки зрения логики считается как False, а список со строкой "None" будет не пустой всегда, т.е. истина! Эта строка и выведется, т.к. впереди списка - звездочка. А если список не пустой (он считается "Тру"), то выведутся его элементы, поскольку второй список - со строкой "Нан" не будет при этом рассматриваться. Вот так это работает.</td></tr>
+<tr><td>
+<pre>
+a = input().split()
+n = input()
+
+if not n in a:
+    print("None")
+else:
+    for i in range(len(a)):
+        if a[i] == n:
+            print(i)
+</pre>
+Без создания переменной a, как у меня. И сравниваюся строки, нет лишнего перевода в числа.</td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>в stdin вводим последовательность чисел, получаем из нее список чисел, функция map()</b><br>
+Последовательность n>0 целых чисел называется jolly jumper в случае, если значения абсолютных разностей последовательных элементов принимают все возможные значения между 1 и n−1.<br>
+Например, последовательность 1 -3 -4 -1 1 является jolly jumper последовательностью.<br>
+Будем считать, что последовательность из одного числа является jolly jumper.<br>
+Напишите программу, которая проверяет, является ли введённая последовательность jolly jumper.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+<b>lst_int = list(map(int, input().split()))</b>
+new_lst = []
+n = len(lst_int)
+
+for i in range(1, n):
+    new_lst.append(abs(lst_int[i] - lst_int[i-1]))
+new_lst.sort()
+print("сортированный список=", new_lst)
+print([i for i in range(1, n)])
+if new_lst == [i for i in range(1, n)]:
+    print("Jolly")
+else:
+    print("Not jolly")
+</pre></td>
+<td valign=top>
+Другое:
+<pre>
+x=list(map(int,input().split()))
+y=list(map(lambda i, j: abs(i - j), x[0:-1], x[1:]))
+print(['Not jolly','Jolly'][set(range(1,len(x)))==set(y)])
+
+Другое, похожее на мое, только упакованное:
+a = [int(i) for i in input().split()]
+print('Jolly' if sorted([abs(a[i]-a[i+1]) for i in range(len(a)-1)]) ==
+                        [i for i in range(1,len(a))] else 'Not jolly')
+</pre></td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Записать в 2 переменные через input последовательность из 2 чисел</b><br>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+n1, n2 = [int(x) for x in input().split()]
+# или: n1, n2 = map(int, input().split())
+
+for i in range(n1, n2+1):
+    if i % 3 == 0 and i % 5 != 0:
+        print("Fizz")
+    elif i % 5 == 0 and i % 3 != 0:
+        print("Buzz")
+    elif i % 5 == 0 and i % 3 == 0:
+        print("FizzBuzz")
+    else:
+        print(i)
+</pre></td>
+<td valign=top>
+Другое:
+<pre>
+start, end = map(int, input().split())
+for i in range(start, end + 1):
+    print('Fizz' * (i % 3 == 0) + 'Buzz' * (i % 5 == 0) or i)
+</pre></td></tr></table>
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Сокращенная запись арифметических операций</b><br>
+Перевод чисел из римской системы в арабскую
+<p>
+<table border=1 style="border-collapse:collapse;"><tr><td>
+<pre>
+number = int(input())
+
+dict1 = {1000: 'M',900: 'CM',500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I'}
+str1 = ''
+
+for key in dict1:
+    if number / key >= 1:
+        str1 += (number // key) * dict1[key]
+        number %= key
+
+
+print(str1)
+</pre></td></tr></table>
+<p>
+1. UnboundLocalError: local variable 'str1' referenced before assignment<br>
+Перетащил str1 из глобальной области внутрь функции и делаю возврат str1
+<pre>
+
+
+========================================================================================================================
 
 
 </pre>
-<h3 align=center>Множество</h3>
+<a name="set"><h3 align=center>Множество</h3>
 <b>Преобразование списка в строку и назад в список с целью сделать список из отдельных слов<br>
 <font color=blue>Множество из списка.</font></b><br>
 <font color=brown>Методы цепочкой</font>
@@ -427,12 +919,403 @@ for i in set(str):
     print(i, str.count(i)</pre>
 <pre>
 
+-------------------------------------------------------------------------------------------------------------------------
 
------------------------------------------------------------------------------------------------------------------
+</pre>
+Напишите программу, которая принимает на вход список целых чисел и выводит на экран значения, которые повторяются в нём более одного раза.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+list_int = input().split()
+set_int = set()
+
+for n in list_int:
+    if list_int.count(n) > 1:
+        set_int.add(n)        
+for n in set_int:
+    print(n, end=' ')
+</pre></td>
+<td valign=top>
+<pre>
+a = input().split()
+b = set(a)
+print(*[i for i in b if a.count(i) > 1])
+</pre></td></tr></table>
+<pre>
+
+======================================================================================================================
+
+</pre>
+<a name="string"><h3 align=center>Строки</h3>
+<b>Преобразование строки, копирование в пустую строку, библиотека itertools, регулярные выражения</b><br>
+Кодирование длин серий — это базовый алгоритм сжатия данных.<br>
+На вход алгоритму подаётся строка, содержащая символы латинского алфавита. Эта строка разбивается на группы одинаковых символов, идущих подряд ("серии"). Каждая серия характеризуется повторяющимся символом и количеством повторений. Именно эта информация и записывается в код: сначала пишется длина серии повторяющихся символов, затем сам символ. У серий длиной в один символ количество повторений будем опускать.<br>
+Например, рассмотрим строку: aaabccccCCaB<br>
+Разобъём её на серии<br>
+aaa b cccc CC a B<br>
+После чего закодируем серии и получим итоговую строку, которую и будем считать результатом работы алгоритма:<br>
+3ab4c2CaB
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Мое:
+<pre>
+str1 = input()
+count = 1
+str2 =''
+
+if len(str1) == 1:
+    print(str1)
+else:
+    for i in range(1, len(str1)):
+        if str1[i] != str1[i-1]:
+            if count == 1:
+                <b>str2 +=str1[i-1]</b>
+                if i == len(str1) - 1:
+                    str2 +=str1[i]
+            else:
+                <b>str2 += str(count)+str1[i-1]</b>
+            count = 1
+        else:
+            if i == len(str1) - 1:
+                str2 += str(count+1)+str1[i-1]
+            count +=1
+    print(str2)
+</pre></td>
+<td valign=top>
+Похожее на моё:
+<pre>
+s = input()+ ' '
+first_index = -1
+for i in range(len(s)-1):
+    if (s[i] != s[i+1]):
+        # count, first_index = i - first_index, i
+        # Эта строчка эквивалентна:
+        count = i - first_index
+        first_index = i
+
+        print(str(count)*<b>(count > 1)</b> + s[i], end = '')
+        # Можно так:
+        print(str(count) + s[i] if count > 1 else s[i], end='')
+</pre>
+1. В самой нижней строчке (count > 1) - это условие, если не истинно, тогда str(count) не будет выводиться
+<p>
+2. Добавляемый пробел никак не влияет на вывод, как бы его не существует.</td></tr></table>
+<p>
+1. Как в список в качестве одно элемента передать число со строкой<br>
+Не работает tmp_str = chr + str(count) Получаю:<br>
+TypeError: 'str' object is not callable<br>
+Проблему решил когда имя строки поменял с str на str1<br>
+<font size=7 color=brown>Больше не называть строковый объект по имени str</font>
+<p>
+<table border=1 style="border-collapse:collapse;"><tr><td valign=top>
+<b>Через модуль библиотеки itertools</b>
+<pre>
+from itertools import groupby
+
+for i, j in groupby(input()):
+    c = len(list(j))
+    print(str(c)*(c > 1), i, sep='', end='')
+print(i)  # 3ab4c2CaBB
+print(j) # &lt;itertools._grouper object at 0x7...>
+</pre></td>
+<td valign=top>
+<b>Через регулярку:</b>
+<pre>
+import re
+
+#получаем серии в виде списка кортежей
+# для: aaabccccCCaB
+# [('aaa', 'a'), ('b', 'b'), ('cccc', 'c'), ('CC', 'C'), ('a', 'a'), ('B', 'B')]
+series = <b>re.findall(r'(([a-zA-Z])\2*)', input())</b>
+# Другой вариант: re.findall(r'((\w)\2*)', input())
+#формируем строку, удаляя длины, равные 1
+print(''.join([re.sub(r'\b1\b', '',str(len(crt[0])))+crt[1] for crt in series]))
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Подсчёт уникальных слов в строке, метод Counter модуля collections</b><br>
+Когда Антон прочитал «Войну и мир», ему стало интересно, сколько слов и в каком количестве используется в этой книге. 
+Помогите Антону написать упрощённую версию такой программы, которая сможет подсчитать слова, разделённые пробелом и вывести получившуюся статистику. Программа должна выводить для каждого уникального слова число его повторений (без учёта регистра).
+p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+'''
+Способы чтения и файлов и stdin:
+import fileinput
+
+for line in fileinput.input():
+    print(line)
+
+import sys
+
+for line in sys.stdin:
+    print(line)
+'''
+<font color=red>lst_str = input().lower().split()</font>
+print(lst_str)
+set_str = set(lst_str)
+print(set_str)
+for word in set_str:
+    print(word, lst_str.count(word))
+</pre></td>
+<td valign=top>
+<pre>
+s=input().lower().split()
+[print(i, s.count(i)) for i in set(s)]
+</pre>
+Говорят, что <b>так делать не стоит</b>. Сложность этого решения O(n^2), то есть нужно пройтись по списку n раз для каждого элемента. причем O=Θ, то есть в самом лучшем и худшем варианте всегда будет сложность O(n^2). Для очень больших n расчет будет очень долгим.<br>
+Если же воспользуетесь <b>встроенной функцией Counter from collections</b>, то сложность будет всего O(n).</td>
+<td valign=top>
+<pre>
+<b>from collections import Counter</b>
+
+text = input().lower().split()
+
+d = Counter(text)
+
+for i in d:
+    print(i, ' ', d[i])
+
+</pre>
+# d = Counter(text)  для 'a aa abC aa ac abc bcd a' вернёт словарь Counter({'a': 2, 'aa': 2, 'abc': 2, 'ac': 1, 'bcd': 1})
+<p>
+По умолчанию в цикле берут ключ словаря
+</td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<pre>
+
+
+=========================================================================================================================
 
 
 </pre>
+<a name="list"><h3 align=center>Список</h3>
+Шифр Цезаря заключается в замене каждого символа входной строки на символ, находящийся на несколько позиций левее или правее его в алфавите.<br>
+Для всех символов сдвиг один и тот же. Сдвиг циклический, т.е. если к последнему символу алфавита применить единичный сдвиг, то он заменится на первый символ, и наоборот.<br>
+Напишите программу, которая шифрует текст шифром Цезаря.<br>
+Используемый алфавит − пробел и малые символы латинского алфавита: ' abcdefghijklmnopqrstuvwxyz'
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+sdvig = int(input())
+alfavit = ' abcdefghijklmnopqrstuvwxyz'
+str_shifr = input().strip()
+
+sdvig = sdvig % len(alfavit)
+print(sdvig)
+print('Result: "', end="")
+for simvol in str_shifr:
+    index = alfavit.find(simvol)
+    if (index + sdvig) >= len(alfavit):
+        other_simvol = alfavit[index+sdvig-len(alfavit)]
+    else:
+        other_simvol = alfavit[index+sdvig]
+    
+    print(other_simvol, end="")
+print('"')
+</pre></td>
+<td valign=top>
+<pre>
+shift = int(input())
+s_in = input().strip()
+s_out = ''
+abc = ' abcdefghijklmnopqrstuvwxyz'
+for i in s_in:
+    s_out += abc[(abc.find(i) + shift)%27]
+print(f'Result: "{s_out}"')
+</pre></td></tr></table>
+<p>
+1. Можно было весь код заменить после 2 строки на:
+<pre>
+res = [abc[(abc.index(c) + n) % len(abc)] for c in inp]
+print('Result: "' + ''.join(res) + '"')
+</pre>
+2. Специально для таких задач в языке Питон созданы методы строки: maketrans и translate . Первый - создаёт словарь соответствия алфавит - шифр, второй - кодирует данную строку согласно этому словарю. Вместо вызова функции maketrans можно подставить и свой словарь. https://www.tutorialspoint.com/python3/string_translate.htm
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Сортировка множества, генератор списка</b><br>
+На вход программе подаётся строка, содержащая слова, разделённые пробелом. Программа должна вывести статистику длин слов в полученной строке, от меньшей длины слова к большей
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+lst_statist = <b>[len(word) for word in input().split()]</b>  # генерируем из строки слов список из слов
+lst_set_length = list(set(lst_statist))  # преобразуем в множество и сразу в список, в 3 примере sorted сразу к множеству
+# print(lst_set_length)
+for number in sorted(lst_set_length):
+    print(f'{number}: {lst_statist.count(number)}')
+</pre></td></tr>
+<tr><td valign=top>
+<pre>
+lib = {}
+for item in input().split():
+    lib[len(item)] = lib.<font color=red>get(len(item), 0)</font> + 1
+    
+for key, value in sorted(lib.items()):
+    print(key, ": ", value, sep='')
+</pre></td></tr>
+<tr><td>
+<pre>
+s = input()
+lst = list(map(len, s.split()))
+for i in <font color=red>sorted(set(lst))</font>:  # непонятно, функция sorted применена к множеству, получается необязательно преобразовывать в список
+    print('{}: {}'.format(i, lst.count(i)))
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Функция join() преобразует список в строку.</b><br>
+В какой-то момент вам надоело использовать имена файлов с пробелами и вы решили написать программу, которая переименовывает все файлы, содержащие пробелы в имени, заменив группы пробелов на символ подчёркивания "_".
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+lst_str = list(input().strip())
+new_lst =[]
+
+for i in range(len(lst_str)):
+    if lst_str[i] == ' ' and new_lst[-1] != '_':
+        new_lst.append('_')
+        continue
+    if lst_str[i] == ' ' and new_lst[-1] == '_':
+        continue
+    new_lst.append(lst_str[i])
+
+print(''.join(new_lst))
+</pre></td></tr></table>
+<p>
+Часа два думал над тем как в Решениях одной строкой сделали:
+<pre>
+print('_'.join(input().split()))
+</pre>
+<font size=4>input().split() получает список элементов без разницы сколько пробелов между этими элементами в введённой строке.</font>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Замена элемента-символа на число, создание копии списка, считывание ввода из нескольких строк одинаковой длины в прямоугольную матрицу</b><br>
+Напишите программу, вычисляющую следующее состояние поля для Game of life.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+import copy
+
+n, m = map(int, input().split())
+lst1 = []
+
+for _ in range(n):
+      lst1.append(input())
+
+lst2 = []
+lst3 = []
+
+# в lst1 записываем единицы нолики вместо . и X в lst1
+for row in range(n):
+    for col in range(m):
+        if lst1[row][col] == '.':
+            lst2.append(0)
+        else:
+            lst2.append(1)
+lst2 = [[lst2[i*m + j] for j in range(m)] for i in range(n)]
+'''
+# Этот код можно было реализовать одной строкой:
+# <font color=green size=4><b>a = [[int(c == 'X') for c in input()] for _ in range(n)]</b></font>
+
+lst3 = copy.deepcopy(lst2)
+
+
+for row in range(n):
+    for col in range(m):
+        
+        '''<font color=gray>
+        Не подходит для случая n = 1 (1 список внутри списка)
+        if row == n - 1:
+            row = -1
+        if col == m - 1:
+            col = -1
+        summa = lst2[row-1][col-1] + lst2[row-1][col] + lst2[row-1][col+1] + lst2[row][col-1] + lst2[row][col+1] + 
+                lst2[row+1][col-1] + lst2[row+1][col] + lst2[row+1][col+1]</font>
+        '''
+
+        summa1 = lst2[(row - 1) % n][(col - 1) % m]
+        summa2 = lst2[(row - 1) % n][(col) % m]
+        summa3 = lst2[(row - 1) % n][(col + 1) % m]
+        summa4 = lst2[(row) % n][(col - 1) % m]
+        summa5 = lst2[(row) % n][(col + 1) % m]
+        summa6 = lst2[(row + 1) % n][(col - 1) % m]
+        summa7 = lst2[(row + 1) % n][(col) % m]
+        summa8 = lst2[(row + 1) % n][(col + 1) % m]
+        summa = summa1 + summa2 + summa3 + summa4 + summa5 + summa6 + summa7 + summa8
+        #print("row=", row, "col=", col, "summa=", summa)
+        if summa < 2 or summa > 3:
+            lst3[row][col] = 0
+        if summa == 3:
+            lst3[row][col] = 1
+            
+for row in range(n):
+    for col in range(m):
+        if lst3[row][col] == 0:
+            lst3[row][col] = '.'
+        else:
+            lst3[row][col] = 'X'
+        print(lst3[row][col], end='')
+        if col == m - 1: print()
+</pre></td></tr></table>
+<p>
+1. TypeError: 'str' object does not support item assignment<br>
+Как элемент списка типа строка заменить на число<br>
+Никак. Просто создаем новый список lst3 и в нём присваиваем значения из списка lst2
+<p>
 <h3 align=center><a name="dict">Словарь</h3>
+<b></b>
+Напишите программу, которая определяет, бьёт ли одна карта другую. Если встречаются две карты одной масти, то побеждает та, у которой выше значение; Если карты разных мастей, то карта, имеющая козырную масть, побеждает; Если карты разных мастей и нет козырных, то никто не побеждает. Программа должна вывести слово First, если первая карта бьёт вторую, Second, если вторая карта бьёт первую, Error, если ни одна из карт не может побить другую.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+force_card = {'6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+<font color=red>card1, card2 = [str(i) for i in input().split()]</font>  # проще так: first, second = input().split()
+# print(card1)
+# print(card2)
+print(card1[:-1])
+print(type(card1[:-1])) 
+
+kozir = input()
+
+if card1[-1] == card2[-1]:  # так как количество знаков в строке может быть 2 или 3 (разное), то берем по индексу -1
+    if force_card[card1[:-1]] > force_card[card2[:-1]]: 
+        print("First")
+    else:
+        print("Second")
+else:
+    if card1[-1] != kozir and card2[-1] != kozir:
+        print("Error")
+    elif card1[-1] == kozir:
+        print("First")
+    elif card2[-1] == kozir:
+        print("Second")
+</pre></td></tr></table>
+<p>
+1. force_card = {'6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}<br>
+Ключи берем в кавычки потому что интепретатор сайта выдает ошибку при ранге карты =10 на строке if force_card[card1[:-1]] > force_card[card2[:-1]]:
+<p>
+2. force_card[card1[:-1]] - это из синтаксиса взятия подстроки из строки. str[:-1] берем все символы из строки кроме последнего.
+<pre>
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
 Напишите программу, которая умеет шифровать и расшифровывать шифр подстановки. Программа принимает на вход две строки 
 одинаковой длины, на первой строке записаны символы исходного алфавита, на второй строке — символы конечного алфавита, после 
 чего идёт строка, которую нужно зашифровать переданным ключом, и ещё одна строка, которую нужно расшифровать.
@@ -585,6 +1468,74 @@ for _ in range(int(input())):
     print(d[x])
 </pre>         
 </td></tr></table>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Игра: минное поле, считывание многострочной строки в словарь, считывание двух чисел через пробел</b><br>
+Поле для игры сапёр представляет собой сетку размером n×m. В ячейке сетки может находиться или отсутствовать мина.<br>
+Напишите программу, которая выводит "решённое" поле, т.е. для каждой ячейки, не являющейся миной, указывается число мин, находящихся в соседних ячейках (учитывая диагональные направления).
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+n, m = map(int, input().split())
+board = {}
+
+for row_index in range(n):
+    row_str = input()
+    for column_index in range(m):
+        board[(row_index, column_index)] = row_str[column_index]
+        # print(board[(row_index, column_index)], end='')
+
+for row_index in range(n):
+    for column_index in range(m):
+        if board[(row_index, column_index)] == '.':
+            count = 0
+            if (row_index > 0 and column_index > 0 and board[(row_index-1, column_index-1)] == '*'):
+                count +=1
+            if (row_index > 0 and board[(row_index-1, column_index)] == '*'):
+                count +=1
+            if (row_index > 0 and column_index < (m-1) and board[(row_index-1, column_index+1)] == '*'):
+                count +=1
+            if (column_index > 0 and board[(row_index, column_index-1)] == '*'):
+                count +=1
+            if (column_index < (m-1) and board[(row_index, column_index+1)] == '*'):
+                count +=1
+            if (row_index < (n-1) and column_index > 0 and board[(row_index+1, column_index-1)] == '*'):
+                count +=1
+            if (row_index < (n-1) and board[(row_index+1, column_index)] == '*'):
+                count +=1
+            if (row_index < (n-1) and column_index < (m-1) and board[(row_index+1, column_index+1)] == '*'):
+                count +=1
+            board[(row_index, column_index)] = count
+        print(board[(row_index, column_index)], end='')
+        if column_index == (m-1):
+            print()
+</pre>         
+</td></tr></table>
+<p>
+1. Можно было записать строку минного поля в список списков:
+<pre>
+mines = []
+for i in range(n):
+    mines += [input()]
+</pre>
+и элементы этого списка имеют два индекса: mines[i][j], где i - это номер внутреннего списка в общем списке, а j - это номер символа во внутреннем списке.
+<p>
+2. Можно было подсчет мин сделать без 8 условий:
+<pre>
+for i in range(1, n + 1):
+    for j in range(1, m + 1):
+        print('*' if a[i][j] == '*'
+              else sum(a[x][y] == '*' for x in (i - 1, i, i + 1) for y in (j - 1, j, j + 1)), end='')
+</pre>
+<pre>
+
+---------------------------------------------------------------------------------------------------------------------
+
+</pre>
 <pre>
 
 
@@ -1024,7 +1975,8 @@ for parent in d.keys():
 for key, val in sorted(d.items()): 
     print(key, ':', len(set(val.split())))
 </pre>
-</td><td valign=top>
+</td></tr>
+<tr><td>
 <b>Другое:</b>
 <pre>
 import json
@@ -1120,6 +2072,38 @@ some_parent = 'ED' и результат True, хотя на самом деле
 
 </pre>
 <h3 align=center><a name="fun">Функции</h3>
+<b>Функция ничего не возвращает и должна изменить поданный список, через генератор списка  или функцию pop</b>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def modify_list(l):
+    """
+       Функция принимает на вход список целых чисел, удаляет из него все нечётные значения,
+        а чётные нацело делит на два. Функция не должна ничего возвращать, требуется 
+        только изменение переданного списка
+    """
+    '''
+    # 1 способ через генератор списка
+    # l = [n // 2 for n in l if n % 2 == 0] такая запись почему-то вызывала ошибку на сайте.
+    <b>l[:] = [n // 2 for n in l if n % 2 == 0]</b>
+    '''
+
+    # 2 способ с помощью pop
+    for i in <b>range(len(l)-1, -1, -1)</b>:  # чтобы не было проблем с индексацией после удаления, обход с конца списка начинаем
+       if l[i] % 2 != 0:
+           <b>l.pop(i)</b>
+       else:
+           l[i] = l[i] // 2
+
+l = [1, 2, 3, 4, 5, 6, 10]
+modify_list(l)
+print(l)
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
 Напишите функцию f(x), которая возвращает значение следующей функции, определённой на всей числовой прямой:
 <p>
 <img src="./images/python_base4.png">
@@ -1201,6 +2185,545 @@ def closest_mod_5(x):
     return x
 </pre>
 </td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Кэширование функции, декоратор, lru_cache</b><br>
+Имеется реализованная функция f(x), принимающая на вход целое число x, которая вычисляет некоторое целочисленое значение и возвращает его в качестве результата работы. Функция вычисляется достаточно долго, ничего не выводит на экран, не пишет в файлы и зависит только от переданного аргумента x.<br>
+Напишите программу, которая вычисляет значение этой функции для n чисел. Для ускорения вычисления <b>необходимо сохранять уже вычисленные значения функции при известных аргументах</b>.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+Простой способ:
+<pre>
+dict = {}
+n = int(input())
+for _ in range(n):
+    x = int(input())
+    if x not in dict.keys():
+        dict[x] = f(x)
+    print(dict[x])
+</pre>
+</td>
+<td valign=top>
+С помощью lru_cache
+<pre>
+import functools
+
+@functools.lru_cache(None)
+def m(x):
+	return f(x)
+
+n = int(input())
+for _ in range(n):
+	x = int(input())
+	print(m(x))
+</pre></td>
+<td valign=top>
+<pre>
+from functools import lru_cache
+
+n = int(input())
+f = lru_cache(maxsize=n)(f)
+
+for x in range(n):
+    print(f(int(input())))
+</pre>
+Создавать свой дополнительный декоратор не обязательно. Можно применить функцию:<br>
+lru_cache(maxsize=n)(&lt;аргумент_функция>)<br>
+получая новую функцию с памятью максимум на n значений.</td></tr></table>
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Головомка Ханойская башня
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#!/usr/bin/env python3
+
+"""THE TOWER OF HANOI, by Al Sweigart al@inventwithpython.com
+Головоломка с перемещением дисков."""
+
+import copy
+import sys
+
+TOTAL_DISKS = 5 # Чем больше дисков, тем сложнее головоломка.
+
+
+# Изначально все диски находятся на стержне A:
+<b>SOLVED_TOWER = list(range(TOTAL_DISKS, 0, -1))</b>  # создаём список при TOTAL_DISKS = 5: [5, 4, 3, 2, 1]
+
+
+def displayDisk(width):
+    """Выводит диск заданной ширины. Ширина 0 означает отсутствие диска."""
+    emptySpace = " " * (TOTAL_DISKS - width)
+    if width == 0:
+        # Вывести сегмент стержня без диска:
+        print(f"{emptySpace}||{emptySpace}", end="")
+    else:
+        # Вывести диск:
+        disk = "@" * width
+        numLabel = str(width).rjust(2, "_")  # преобразует width в строку и выравнивает по правому краю, width=3, тогда вывод: _3
+        print(f"{emptySpace}{disk}{numLabel}{disk}{emptySpace}", end="")
+
+
+def displayTowers(towers):
+    """Выводит три башни с дисками."""
+
+    # Вывести три башни:
+    for level in range(TOTAL_DISKS, -1, -1):
+        for tower in (towers["A"], towers["B"], towers["C"]):
+            if level >= len(tower):
+                displayDisk(0) # Вывести пустой стержень без диска.
+            else:
+                displayDisk(tower[level]) # Вывести диск.
+        print()
+
+    # Вывести обозначения башен A, B и C:
+    emptySpace = " " * (TOTAL_DISKS)
+    print("{0} A{0}{0} B{0}{0} C\n".format(emptySpace))
+
+
+def getPlayerMove(towers):
+    """Запрашивает ход у пользователя. Возвращает (fromTower, toTower)."""
+    while True: # Пока пользователь не введет допустимый ход.
+        print('Enter the letters of "from" and "to" towers, or QUIT.')
+        print("(e.g., AB to moves a disk from tower A to tower B.)")
+        print()
+        response = input("> ").upper().strip()
+        if response == "QUIT":
+            print("Thanks for playing!")
+            sys.exit()
+
+        # Убедиться в том, что пользователь ввел допустимые обозначения башен:
+        if response not in ("AB", "AC", "BA", "BC", "CA", "CB"):
+            print("Enter one of AB, AC, BA, BC, CA, or CB.")
+            continue # Снова запросить ход.
+        # Более содержательные имена переменных:
+        <font color=green><b>fromTower, toTower = response[0], response[1]</b></font>  # <b>эквивалентно fromTower = response[0]</b> и <b>toTower = response[1]</b>
+        if len(towers[fromTower]) == 0:
+            # Башня fromTower не может быть пустой:
+            print("You selected a tower with no disks.")
+            continue # Снова запросить ход.
+        elif len(towers[toTower]) == 0:
+            # На пустую башню можно переместить любой диск:
+            <font color=green>return fromTower, toTower</font>  # возвращает сразу два значения
+        elif towers[toTower][-1] < towers[fromTower][-1]:
+            print("Can't put larger disks on top of smaller ones.")
+            continue # Снова запросить ход.
+        else:
+            # Допустимый ход, вернуть выбранные башни:
+            return fromTower, toTower
+
+
+def main():
+    """Проводит одну игру Ханойская башня."""
+    print(
+    """THE TOWER OF HANOI, by Al Sweigart al@inventwithpython.com
+    Move the tower of disks, one disk at a time, to another tower. Larger
+    disks cannot rest on top of a smaller disk.
+    More info at https://en.wikipedia.org/wiki/Tower_of_Hanoi
+    """
+    )
+    """Словарь towers содержит ключи "A", "B" и "C", и значения - списки, 
+    представляющие стопку дисков. Список содержит целые числа, представляющие
+    диски разных размеров, а начало списка представляет низ башни. Для игры
+    с 5 дисками список [5, 4, 3, 2, 1] представляет заполненную башню. Пустой
+    список list [] представляет башню без дисков. В списке [1, 3] больший диск
+    находится на меньшем диске, такая конфигурация недопустима. Список [3, 1]
+    допустим, так как меньшие диски могут размещаться на больших."""
+   
+    <b>towers = {"A": copy.copy(SOLVED_TOWER), "B": [], "C": []}</b>  # словарь
+
+    while True: # Один ход для каждой итерации цикла.
+        # Вывести башни и диски:
+        displayTowers(towers)
+
+        # Запросить ход у пользователя:
+        <font color=green>fromTower, toTower = getPlayerMove(towers)</font>  # так через функцию получаем два значения, <font color=red>переменные не объявляются</font>
+
+        # Переместить верхний диск с fromTower на toTower:
+        disk = towers[fromTower].pop()
+        towers[toTower].append(disk)
+    
+        # Проверить, решена ли головоломка:
+        if SOLVED_TOWER in (towers["B"], towers["C"]):
+            displayTowers(towers) # Вывести башни в последний раз.
+            print("You have solved the puzzle! Well done!")
+            sys.exit()
+
+
+
+# Если программа была запущена (а не импортирована), начать игру:
+if __name__ == "__main__":
+    main()
+</pre></td></tr></table>
+<p>
+В книге описание функций расположено ниже функции main(), но при запуске программы получал ошибку, что функция не определена. Только после того как переместил их выше, программа заработала.
+</pre>
+</td></tr></table>
+<pre>
+
+--------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Игра 4 в ряд из книги Python. Чистый код для продолжаюших стр. 301</b>
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+#!/usr/bin/env python3
+
+"""Игра на выстраивание четырех фишек в ряд."""
+import sys
+
+# Константы, используемые для вывода игрового поля:
+EMPTY_SPACE = "." # Точки проще подсчитать, чем пробелы.
+PLAYER_X = "X"
+PLAYER_O = "O"
+
+# Примечание: если BOARD_WIDTH изменится, обновите BOARD_TEMPLATE и COLUMN_LABELS.
+BOARD_WIDTH = 7
+BOARD_HEIGHT = 6
+COLUMN_LABELS = ("1", "2", "3", "4", "5", "6", "7")
+assert len(COLUMN_LABELS) == BOARD_WIDTH
+
+# Шаблонная строка для вывода игрового поля:
+BOARD_TEMPLATE = """
+1234567
++-------+
+|{}{}{}{}{}{}{}|
+|{}{}{}{}{}{}{}|
+|{}{}{}{}{}{}{}|
+|{}{}{}{}{}{}{}|
+|{}{}{}{}{}{}{}|
+|{}{}{}{}{}{}{}|
++-------+"""
+def main():
+    """Проводит одну игру Четыре в ряд."""  <font color=gray># Чтобы увидеть документацию (doc-строку) import и help(name_file.main)</font>
+    print("""Два игрока по очереди опускают фишки в один из семи столбцов,
+         стараясь выстроить четыре фишки по вертикали, горизонтали или диагонали.""")
+    
+    # Подготовка новой игры:
+    gameBoard = getNewBoard()  <font color=gray># словарь, содержащий игровое поле, ключи = кортежи (columnIndex, rowIndex), значения = точке</font>
+    playerTurn = PLAYER_X
+    while True: # Обрабатывает ход игрока.
+        # Вывод игрового поля и получение хода игрока:
+        displayBoard(gameBoard)
+        playerMove = getPlayerMove(playerTurn, gameBoard)  <font color=gray># кортеж из номера столбца и номера строки</font>
+        gameBoard[playerMove] = playerTurn  <font color=gray># в словаре gameBoard значение с точки меняем на playerTurn</font>
+
+        # Проверка победы или ничьей:
+        if isWinner(playerTurn, gameBoard):
+            displayBoard(gameBoard) # В последний раз вывести поле.
+            print("Player {} has won!".format(playerTurn))
+            sys.exit()
+        elif isFull(gameBoard):  <font color=gray># все клетки заполнены</font>
+            displayBoard(gameBoard) # В последний раз вывести поле.
+            print("There is a tie!")
+            sys.exit()  <font color=gray># можно break</font>
+
+        # Ход передается другому игроку:
+        if playerTurn == PLAYER_X:
+            playerTurn = PLAYER_O
+        elif playerTurn == PLAYER_O:
+            playerTurn = PLAYER_X
+
+def getNewBoard():
+    """Возвращает словарь, представляющий игровое поле.
+    Ключи - кортежи (columnIndex, rowIndex) с двумя целыми числами,
+    а значения - одна из строк "X", "O" or "." (пробел)."""
+    board = {}
+    for rowIndex in range(BOARD_HEIGHT):
+        for columnIndex in range(BOARD_WIDTH):
+            board[(columnIndex, rowIndex)] = EMPTY_SPACE
+    return board
+
+def displayBoard(board):
+    """Выводит на экран игровое поле и фишки."""
+
+    # Подготовить список, передаваемый строковому методу format() для
+    # шаблона игрового поля. Список содержит все фишки игрового поля
+    # и пустые ячейки, перечисляемые слева направо, сверху вниз:
+    tileChars = []
+    for rowIndex in range(BOARD_HEIGHT):
+        for columnIndex in range(BOARD_WIDTH):
+            tileChars.append(board[(columnIndex, rowIndex)])  # в список добавляем значения словаря board
+
+    # Выводит игровое поле:
+    <b>print(BOARD_TEMPLATE.format(<font color=red>*</font>tileChars)</b>
+
+def getPlayerMove(playerTile, board):
+    """Предлагает игроку выбрать столбец для размещения фишки.
+    Возвращает кортеж (столбец, строка) итогового положения фишки."""
+    while True: # Пока игрок не введет допустимый ход.
+        print(f"Player {playerTile}, enter 1 to {BOARD_WIDTH} or QUIT:")
+        
+        response = input("> ").upper().strip()
+        if response == "QUIT":
+            print("Thanks for playing!")
+            sys.exit()
+
+        if response not in COLUMN_LABELS:
+            print(f"Enter a number from 1 to {BOARD_WIDTH}.")
+            continue # Снова запросить ход.
+
+        columnIndex = int(response) - 1
+
+        # -1, потому что индексы начинаются с 0.
+        # Если столбец заполнен, снова запросить ход:
+        if board[(columnIndex, 0)] != EMPTY_SPACE:
+            print("That column is full, select another one.")
+            continue # Снова запросить ход.
+
+        # Начать снизу, найти первую пустую ячейку.
+        for rowIndex in range(BOARD_HEIGHT - 1, -1, -1):  # in [6, 5, 4, 3, 2, 1, 0]
+            if board[(columnIndex, rowIndex)] == EMPTY_SPACE:
+                return (columnIndex, rowIndex)
+
+def isFull(board):
+    """Возвращает True, если в `board` не осталось пустых ячеек, иначе возвращается False."""
+    for rowIndex in range(BOARD_HEIGHT):
+        for columnIndex in range(BOARD_WIDTH):
+            if board[(columnIndex, rowIndex)] == EMPTY_SPACE:
+                return False # Пустая ячейка найдена, вернуть False.
+    return True # Все ячейки заполнены.
+
+def isWinner(playerTile, board):
+    """Возвращает True, если `playerTile` образует ряд из четырех фишек
+    в `board`, в противном случае возвращается False."""
+
+    # Проверить всю доску в поисках четырех фишек в ряд:
+    for columnIndex in range(BOARD_WIDTH - 3):
+        for rowIndex in range(BOARD_HEIGHT):
+            # Проверить четверку направо:
+            tile1 = board[(columnIndex, rowIndex)]
+            tile2 = board[(columnIndex + 1, rowIndex)]
+            tile3 = board[(columnIndex + 2, rowIndex)]
+            tile4 = board[(columnIndex + 3, rowIndex)]
+            if tile1 == tile2 == tile3 == tile4 == playerTile:
+                return True
+
+    for columnIndex in range(BOARD_WIDTH):
+        for rowIndex in range(BOARD_HEIGHT - 3):
+            # Проверить четверку вниз:
+            tile1 = board[(columnIndex, rowIndex)]
+            tile2 = board[(columnIndex, rowIndex + 1)]
+            tile3 = board[(columnIndex, rowIndex + 2)]
+            tile4 = board[(columnIndex, rowIndex + 3)]
+            if tile1 == tile2 == tile3 == tile4 == playerTile:
+                return True
+
+    for columnIndex in range(BOARD_WIDTH - 3):
+        for rowIndex in range(BOARD_HEIGHT - 3):
+            # Проверить четверку по диагонали направо вниз:
+            tile1 = board[(columnIndex, rowIndex)]
+            tile2 = board[(columnIndex + 1, rowIndex + 1)]
+            tile3 = board[(columnIndex + 2, rowIndex + 2)]
+            tile4 = board[(columnIndex + 3, rowIndex + 3)]
+            if tile1 == tile2 == tile3 == tile4 == playerTile:
+                return True
+
+            # Проверить четверку по диагонали налево вниз:
+            tile1 = board[(columnIndex + 3, rowIndex)]
+            tile2 = board[(columnIndex + 2, rowIndex + 1)]
+            tile3 = board[(columnIndex + 1, rowIndex + 2)]
+            tile4 = board[(columnIndex, rowIndex + 3)]
+            if tile1 == tile2 == tile3 == tile4 == playerTile:
+                return True
+    return False
+
+# Если программа была запущена (а не импортирована), начать игру:
+if __name__ == "__main__":
+    main()
+</pre></td></tr></table>
+<p>
+<b>print(BOARD_TEMPLATE.format(*tileChars)</b><br>
+Шаблонная строка содержит фигурные скобки {} , которые метод format() заменит содержимым игрового поля (списка tileChars). <font color=red>Непонятно, что значит звездочка внутри круглых скобок</font>.<br>
+<i>В подразделе «Использование * при создании вариадических функций» (с. 201) показано, как использовать этот синтаксис для обработки значений в списке как отдельных аргументов функции; код print(*['cat', 'dog', 'rat']) эквивалентен print('cat', 'dog', 'rat') . Звездочка необходима, потому что метод format() ожидает получить один аргумент для каждой пары фигурных скобок, а не один аргумент-список.</i>
+<pre>
+
+
+=========================================================================================================================
+
+</pre>
+<a name="recurs_fun"><h3 align=center>Рекурсивные функции</h3>
+<b>Вставка списка в список в виде элементов</b><br>
+Кривая Коха -- это простой геометрический фрактал.<br>
+Строится этот фрактал следующим образом: берётся отрезок, разделяется на три равных части. Вместо средней части вставляется два таких же отрезка, поставленные под углом 60 градусов друг к другу. Этот процесс повторяется на каждой итерации: каждый отрезок заменяется четырьмя.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def get_turn(n):
+    listTurn = []
+    if n != 1:
+        listTurnPrev = get_turn(n-1)
+        listTurn.extend(listTurnPrev)
+        listTurn.append('turn 60')
+        listTurn.extend(listTurnPrev)
+        listTurn.append('turn -120')
+        listTurn.extend(listTurnPrev)
+        listTurn.append('turn 60')
+        listTurn.extend(listTurnPrev)
+        return listTurn
+    else:
+        listTurn1 = ['turn 60', 'turn -120', 'turn 60']
+        return  listTurn1
+
+l = get_turn(int(input()))
+for element in l:
+    print(element)
+</pre></td>
+<td valign=top>
+<pre>
+def koch(n):
+    if n > 0:
+        koch(n - 1)
+        print('turn 60')
+        koch(n - 1)
+        print('turn -120')
+        koch(n - 1)
+        print('turn 60')
+        koch(n - 1)
+
+koch(int(input()))
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Список, независимый от оригинального списка</b><br>
+Ханойская башня -- одна из широко известных головоломок, условие которой состоит в следующем:<br>
+Имеется три стержня (пронумеруем их числами 1, 2 и 3). На первом стержне находится n колец с радиусами от 1 до n. Кольца отсортированы по радиусу, и наибольшее кольцо лежит ниже всех. Вам требуется найти и записать алгоритм переноса всех n колец с первого стержня на третий по следующим правилам:<br>
+за один ход можно переносить только одно кольцо;<br>
+нельзя класть большее кольцо на меньшее.<br>
+Программа должна вывести на экран кратчайшую последовательность действий, необходимую для того, чтобы перенести все кольца с первого стержня на третий.<br>
+Формат ввода:<br>
+Строка, содержащая положительное целое число n.<br>
+Формат вывода:<br>
+Порядок действий для решения головоломки. Каждое действие записывается на отдельной строке. Действие записывается в формате "номер стержня, с которого снимаем кольцо" - "номер стержня, на который надеваем кольцо".
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+import copy
+
+n = int(input())
+towers_winner = {1: [], 2: [], 3: [i for i in range(n, 0, -1)]}
+#towers_winner = {'A': [], 'B': [], 'C': [i for i in range(n, 0, -1)]} в выводе башни должны обозначаться числами
+LST_TOWERS = [1, 2, 3]
+#LST_TOWERS = ['A', 'B', 'C']
+best_path = []
+
+def check_step(towers, lst_towers, from_tower, to_tower):
+    """
+    Задача, проверить, что можно ходить так
+    """
+    check_towers = copy.deepcopy(towers)
+    if len(towers[to_tower]) != 0 and towers[from_tower][-1] > towers[to_tower][-1]:
+        #print(f"Диск на {from_tower} больше диска на {to_tower}, поэтому ход запрещен")        
+        return 0
+    else:
+        disk = check_towers[from_tower].pop()
+        check_towers[to_tower].append(disk)
+        if check_towers in lst_towers :
+            #print(f"Уже была такая позиция, поэтому ход с {from_tower} к {to_tower} запрещен")
+            return 0
+    #print("Проверку прошел, ход разрешён")    
+    return 1
+
+def do_next_step(towers, path, lst_towers):
+    '''
+    Задача функции: сделать ход и записать его в path
+    tower - текущение положение дисков
+    path - список ходов
+    lst_tower - список положений дисков после каждого хода
+    '''
+    
+    global best_path
+    #print("_________Думаем над ходом________________")
+    for from_tower in LST_TOWERS:
+        if len(towers[from_tower]) == 0:
+            continue
+        lst_to_towers = LST_TOWERS.copy()
+        #lst_to_towers.pop(from_tower-1)
+        lst_to_towers.remove(from_tower)
+        for to_tower in lst_to_towers:
+            #print(f"from_tower={from_tower} для to_tower от {lst_to_towers[0]} до {lst_to_towers[-1]}, to_tower={to_tower}")
+            #print(f"Положение: path={path}")
+            #print(f"Положение: towers={towers}")
+            #print(f"Положение: lst_towers={lst_towers}")
+            copy_towers = copy.deepcopy(towers)
+            copy_path = copy.deepcopy(path)
+            copy_lst_towers = copy.deepcopy(lst_towers)
+            if check_step(copy_towers, copy_lst_towers, from_tower, to_tower) != 0:
+                #print(f"Ход разрешили, ходим от {from_tower} башни в {to_tower}")
+                disk = copy_towers[from_tower].pop()
+                copy_towers[to_tower].append(disk)
+                copy_path.append([from_tower, to_tower])
+                copy_lst_towers.append(copy.deepcopy(copy_towers))
+                #print("Список ходов: path=", copy_path)
+                #print("Текущее положение дисков: towers=", copy_towers)
+                if len(best_path) != 0 and len(copy_path) >= len(best_path):
+                    return
+                if copy_towers != towers_winner:
+                    do_next_step(copy_towers, copy_path, copy_lst_towers)
+                else:
+                    #print("Достигли цели")           
+                    if len(copy_path) < len(best_path) or len(best_path) == 0:
+                        best_path = copy.deepcopy(copy_path)
+                        print("Лучший маршрут ходов: best_path=", best_path)
+                    return
+
+do_next_step({1: [i for i in range(n, 0, -1)], 2: [], 3: []}, [], [{1: [i for i in range(n, 0, -1)], 2: [], 3: []}])
+#do_next_step({'A': [i for i in range(n, 0, -1)], 'B': [], 'C': []}, [], [{'A': [i for i in range(n, 0, -1)], 'B': [], 'C': []}])
+for i in best_path:
+    print(i[0], "-", i[1]) 
+</pre></td></tr></table>
+<ol>
+<li> Как определить, что если походим так (from_tower and to_tower), то это будет повторение положения дисков (элемент в path_tower был такой).<br>
+Создаем для этого отдельную функцию check_step(from_tower, to_tower)
+<p>
+<li> <b>Как создать независимую копию словаря (списка) так чтобы изменения в копии не влияли на оригинал?</b><br>
+Теоретически для этого рекомендуют или использовать метод copy() или через приведение типа - dict(obj)<br>
+Но у меня почему-то оригинал в обоих способах меняется.<br>
+<i> Также обратите внимание, что функция dict.copy() является неглубокой, если в ней есть вложенный список/etc, изменения будут применены к обоим. IIRC. Deepcopy позволит избежать этого.</i><br>
+Проблему решил так: check_towers = copy.deepcopy(towers)<br>
+предварительно: import copy
+<p>
+<li> При возврате к предыдущему шагу переменные сохраняют значение с последней итерации цикла<br>
+Создал копии оригинала и их отправляю в рекурсивной функции
+<p>
+<li> Сделал обозначения башен в виде букв: A B C, но когда нужно удалить элемент списка: lst_to_towers[from_tower].pop()<br>
+то получаю ошибку:<br>
+<font color=red>TypeError: list indices must be integers or slices, not str</font><br>
+В этом случае использовать более универсальный метод removed, но поскольку по заданию все равно нужен вывод башен в виде чисел, оставил обозначение в виде чисел и метод pop.
+</ol>
+<p>
+Решение давало результат только до n=4, при n = 5 даже не находило вариант. Потому сайт не принял решение. Грамотное решение:
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+n = int(input())
+path = []
+
+def move_tower(n,from_tower, to_tower, sredn_tower):
+    if n >= 1:
+        move_tower(n-1,from_tower, sredn_tower, to_tower)
+        move_disk(from_tower,to_tower)
+        move_tower(n-1,sredn_tower,to_tower,from_tower)
+
+def move_disk(from_tower,to_tower):
+    path.append([from_tower, to_tower])
+
+move_tower(n, 1, 3, 2)
+for i in path:
+    print(i[0], "-", i[1])
+</pre></td></tr></table>
+<p>
+Получал результат сразу.
 <pre>
 
 
@@ -1342,6 +2865,7 @@ print(maks_word, spisok_max[maks_word])
 Вам необходимо установить библиотеку simple-crypt, и с помощью метода simplecrypt.decrypt узнать, какой из паролей служит 
 ключом для расшифровки файла с интересной информацией. Ответом для данной задачи служит расшифрованная интересная информация 
 Алисы.
+<p>
 <table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
 Моё:
 <pre>
@@ -1790,7 +3314,8 @@ for number in stdin:
     else:
         print('Boring')
 </pre>
-</td><td valign=top>
+</td></tr>
+<tr><td>
 Другое:
 <pre>
 import requests
@@ -2534,10 +4059,11 @@ for line in sys.stdin:
 <pre>
 
 
--------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
 
 
 </pre>
+<a name="regularn"><h3 align=center>Регулярные выражения</h3>
 Вам дана последовательность строк.<br>
 Выведите строки, содержащие две буквы "z﻿", между которыми ровно три символа.
 <table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
@@ -2841,6 +4367,48 @@ print(*links, sep='\n')
 </td></tr></table>
 <pre>
 
+-------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Модуль re, функция findal для поиска по паттерну в строке, join - преобразование списка в строку</b><br>
+В этой задаче мы реализуем алгоритм дешифровки строк, закодированных с помощью одного из самых простых  вариантов кодирования длин серий.<br>
+На вход алгоритму подаётся строка, содержащая цифры и символы латинского алфавита. Эта строка разбивается на так называемые "серии", которые кодируются парой число-символ или просто символ (в таком случае число считается равным единице). Результат должен содержать эти серии в том же порядке, что они и встречаются в исходной строке, при этом каждая серия раскрывается в последовательность символов соответствующей длины.<br>
+Например, рассмотрим строку:<br>
+3ab4c2CaB<br>
+Разобъём её на серии:<br>
+3a b 4c 2C a B<br>
+После чего преобразуем серии и получим исходную закодированную строку:<br>
+aaabccccCCaB
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<pre>
+import re
+
+shifr_str = input()
+
+pattern = <b>r'\d*[A-Za-z]{1}</b>'  # d* - любое количество цифр, [A-Za-z]{1} - любой символ из класса (множества A-Za-z) в коли-ве 1
+lst = <b>re.findall(pattern, shifr_str)</b>
+# print(lst)
+
+for simvols in lst:
+    letter = re.findall(r'[A-Za-z]{1}', simvols)
+    if re.findall(r'\d*', simvols)[0] != '':
+        print(''.join(letter) * int(re.findall(r'\d*', simvols)[0]), end='')
+    else:
+        print(''.join(letter) * 1, end='')
+</pre></td></tr>
+<tr><td valign=top>
+<pre>
+n = ''
+for i in input():  # 3ab4c2CaB
+    if i.isdigit():
+        n += i
+        continue
+    print(i * int(n or 1), end = '')
+    n = ''
+</pre></td></tr></table>
+<pre>
+
 
 
 =======================================================================================================================
@@ -2989,6 +4557,696 @@ value</i>
 <p>
 2. Корневой узел разбирается в функции. Создает целостность кода.
 </td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>etree.ElementTree</b><br>
+В OpenStreetMap XML встречаются теги node, которые соответствуют некоторым точкам на карте. Ноды могут не только обозначать какой-то точечный объект, но и входить в состав way (некоторой линии, возможно замкнутой) и не иметь собственных тегов. Для доступного по ссылке https://stepik.org/media/attachments/lesson/245678/map1.osm фрагмента карты посчитайте, сколько node имеет хотя бы один вложенный тэг tag, а сколько - не имеют. В качестве ответа введите два числа, разделённых пробелом.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import xml.etree.ElementTree as ET
+
+tree = ET.parse('map1 .osm')
+root = tree.getroot()
+
+not_tag = 0
+yes_tag = 0
+for i in root.findall('node'):  # находит все теги node
+    tag = i.find('tag')  # внутри node находит тег tag, если не находит, то возвращает None
+    if tag != None:
+        yes_tag +=1
+    else:
+        not_tag +=1
+
+print(yes_tag, not_tag)
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Чтение url-адреса, urllib.request, xml.etree.ElementTree, поиск атрибутов</b><br>
+Вася решил открыть АЗС (заправку). Чтобы оценить уровень конкуренции он хочет изучить количество заправок в интересующем его районе. Вася скачал интересующий его кусок карты OSM https://stepik.org/media/attachments/lesson/245681/map2.osm и хочет посчитать, сколько на нём отмечено точечных объектов (node), являющихся заправкой. В качестве ответа вам необходимо вывести одно число - количество АЗС.<br>
+Заправки аходятся внутри тега tag и имеют атрибуты k=amenity и v=fuel
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import urllib.request
+import xml.etree.ElementTree as ET
+
+url = "https://stepik.org/media/attachments/lesson/245681/map2.osm"
+
+with urllib.request.urlopen(url) as response:
+    xml_data = response.read()
+
+#print(type(xml_data))  # &lt;class 'bytes'>
+root = ET.fromstring(xml_data)
+
+#print(root)  # &lt;Element 'osm' at 0x7f3189bd4ae0>
+
+count = 0
+for node in root.findall('node'):
+    tag = node.find('tag') 
+    if tag != None:
+        if <b>tag.get('k') == 'amenity' and tag.get('v') == 'fuel':</b>
+            count += 1
+
+print(count)
+</pre></td>
+<td valign=top>
+<pre>
+import xml.etree.ElementTree as ET
+
+root = ET.parse('map2.osm').getroot()
+nodes = <b>root.findall("./node/tag[@k='amenity'][@v='fuel']")</b>
+print(len(nodes))
+</pre>
+root.findall("./node/tag[@k='amenity'][@v='fuel']") возвращает список объектов tag
+</td></tr></table>
+<p>
+Атрибуты ищем через метод get
+<pre>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Создание xml-файла с внутренними тегами</b><br>
+Задача через питоновский скрипт создать html страницу с выводом таблицы умножения.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+from xml.etree import ElementTree
+
+root = ElementTree.Element("html")
+
+body_teg = ElementTree.SubElement(root, "body")
+
+table_teg = ElementTree.SubElement(body_teg, "table")
+for strk in range(1, 11):
+    tr_teg = ElementTree.SubElement(table_teg, "tr")
+    for stlb in range(1, 11):
+        td_teg = ElementTree.SubElement(tr_teg, "td")
+        td_teg.text = str(strk * stlb)
+
+tree = ElementTree.ElementTree(root)
+tree.write("test.html")  # записываем дерево в файл
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Добавление атрибутов</b><br>
+Предыдущее задание, но числа в виде ссылок:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+from xml.etree import ElementTree
+
+root = ElementTree.Element("html")
+
+body_teg = ElementTree.SubElement(root, "body")
+
+table_teg = ElementTree.SubElement(body_teg, "table")
+for strk in range(1, 11):
+    tr_teg = ElementTree.SubElement(table_teg, "tr")
+    for stlb in range(1, 11):
+        td_teg = ElementTree.SubElement(tr_teg, "td")
+        a_teg = ElementTree.SubElement(td_teg, "a")
+        a_teg.set('href','http://' + str(strk * stlb) + '.ru')
+        a_teg.text = str(strk * stlb)
+
+tree = ElementTree.ElementTree(root)
+tree.write("test.html")
+</pre></td></tr></table>
+<pre>
+
+===========================================================================================================================
+
+</pre>
+<a name="parsing"><h3 align=center>Парсинг файлов (Selenium, Beautiful Soup, pandas, xlrd)</h3>
+<b>Написание веб-скрапера с использованием BeautifulSoup и requests:</b><br>
+– Выберите веб-сайт с данными, которые вы хотели бы собрать.<br>
+– Напишите веб-скрапер с использованием библиотеки BeautifulSoup для извлечения данных.<br>
+– Сохраните извлеченные данные в удобном формате (например, CSV).<br>
+Решение: Для этой задачи давайте рассмотрим пример веб-скрапинга данных о книгах с веб-сайта Books to Scrape(http://books.toscrape.com/).<br>
+Пример кода для веб-скрапинга данных о книгах и сохранения их в формате CSV:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+# URL веб-сайта для скрапинга
+url = 'http://books.toscrape.com/'
+# Отправка GET-запроса
+response = requests.get(url)
+# Проверка успешности запроса
+if response.status_code == 200:
+    # Использование BeautifulSoup для парсинга HTML-страницы
+    soup = BeautifulSoup(response.text, 'html.parser')
+    # Нахождение блоков с информацией о книгах
+    book_blocks = soup.find_all('article', class_='product_pod')
+    # Списки для хранения данных
+    titles = []
+    prices = []
+    ratings = []
+    # Итерация по блокам и извлечение данных
+    for book_block in book_blocks:
+        title = book_block.h3.a['title']
+        price = book_block.select('div p.price_color')[0].text
+        rating = book_block.select('p[class^="star-rating"]')[0]['class'][1]
+        titles.append(title)
+        prices.append(price)
+        ratings.append(rating)
+    # Создание Pandas DataFrame
+    df = pd.DataFrame({
+    'Title': titles,
+    'Price': prices,
+    'Rating': ratings,
+    })
+   # Сохранение данных в CSV-файл
+   df.to_csv('books_data.csv', index=False)
+   print("Данные успешно скрапированы и сохранены в 'books_data.csv'.")
+else:
+    print(f"Ошибка {response.status_code}: Невозможно получить данные с веб-сайта.")
+<pre></td></tr></table>
+<p>
+Этот код пройдет по страницам веб-сайта с книгами, извлечет информацию о названии, цене и рейтинге книг, создаст Pandas
+DataFrame и сохранит данные в CSV-файл "books_data.csv". Пожалуйста, учтите, что использование веб-скрапинга должно
+соответствовать политике использования веб-сайта.
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>xlrd, pandas, statistics</b><br>
+Вася планирует карьеру и переезд. Для это составил таблицу, в которой для каждого региона записал зарплаты для разных интересные ему профессий. Таблица доступна по ссылке https://stepik.org/media/attachments/lesson/245267/salaries.xlsx. Выведите название региона с самой высокой медианной зарплатой (медианой называется элемент, стоящий в середине массива после его упорядочивания) и, через пробел, название профессии с самой высокой средней зарплатой по всем регионам.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import xlrd3
+
+d = {}
+d1 = {}
+wb = xlrd3.open_workbook('salaries.xlsx')  # возвращает &lt;xlrd3.xlsx.BetterBook object at 0x7f878694bfd0>
+<font color=red>sheet_names = wb.sheet_names()</font>  # ['Лист1'], возвращает список листов файла, не нужен
+sh = wb.sheet_by_name(sheet_names[0])      # Sheet  0:&lt;Лист1>
+
+for stroka_sh in range(1, sh.nrows):
+    #print(sh.row_values(stroka_sh))
+    d[sh.row_values(stroka_sh)[0]] = sorted(sh.row_values(stroka_sh)[1:])
+    #print(sh.row_values(stroka_sh)[0], d[sh.row_values(stroka_sh)[0]])
+
+max_salary = 0
+region =''
+for key, val in d.items():
+    if d[key][3] > max_salary:
+        max_salary = d[key][3]
+        region = key
+
+print(region, max_salary)
+
+for stolb_sh in range(1, sh.ncols):
+    #print(sh.col_values(stolb_sh))
+    d1[sh.col_values(stolb_sh)[0]] = sum(sh.col_values(stolb_sh)[1:]) / len(sh.col_values(stolb_sh)[1:])
+#print(d1)
+
+profy_salary = 0
+profy = ''
+for i in d1:
+    if d1[i] > profy_salary:
+       profy_salary = d1[i] 
+       profy = i
+
+print(profy, profy_salary)
+print(region, profy)
+</pre></td></tr>
+<tr><td>
+Через библиотеку statistics:
+<pre>
+import xlrd
+
+from statistics import median, mean
+
+wb = xlrd.open_workbook('salaries.xlsx')
+sh = wb.sheet_by_index(0)
+d = {sh.cell_value(row,0): median(sh.row_values(row)[1:]) for row in range(1,9)}
+e = {sh.cell_value(0,col): mean(sh.col_values(col)[1:]) for col in range(1,8)}
+print(max(d, key=lambda k: d[k]), max(e, key=lambda k: e[k]))
+</pre></td></tr>
+<tr><td>
+Через модуль pandas
+<pre>
+import pandas as pd
+
+
+data = pd.read_excel('salaries.xlsx', index_col=0)
+print(data.median(axis=1).idxmax(), data.mean(axis=0).idxmax())
+<pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>xlrd, pandas, сортировка словаря сначала по убыванию значения, а потом если значения равны, то в алфавитном порядке по ключу</b><br>
+Васю назначили завхозом в туристической группе и он подошёл к подготовке ответственно, составив справочник продуктов с указанием калорийности на 100 грамм, а также содержание белков, жиров и углеводов на 100 грамм продукта. Ему не удалось найти всю информацию, поэтому некоторые ячейки остались незаполненными (можно считать их значение равным нулю). Также он использовал какой-то странный офисный пакет и разделял целую и дробную часть чисел запятой. Таблица доступна по ссылке https://stepik.org/media/attachments/lesson/245290/trekking1.xlsx<br>
+Вася хочет минимизировать вес продуктов и для этого брать самые калорийные продукты. Помогите ему и упорядочите продукты по убыванию калорийности. В случае, если продукты имеют одинаковую калорийность - упорядочите их по названию. В качестве ответа необходимо сдать названия продуктов, по одному в строке.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+XLRD:
+<pre>
+import xlrd3
+
+wb = xlrd3.open_workbook('trekking1.xlsx')
+sheet_names = wb.sheet_names()
+sh = wb.sheet_by_name(sheet_names[0]) 
+
+d = {}
+for stroka_sh in range(1, sh.nrows):
+    #print(sh.row_values(stroka_sh))
+    d[sh.row_values(stroka_sh)[0]] = sh.row_values(stroka_sh)[1]
+
+sort_obj = <b>sorted(d, key=lambda k: (-d[k], k))</b>  # возвращает список ключей словаря d
+for i in sort_obj:
+    print(i)
+</pre></td></tr></table>
+<p>
+sorted(d, key=lambda k: (-d[k], k)): (-1 * d[k]) разворачиваем список по убыванию калорийности, и при совпадении оставляем правильный порядок сортировки по алфавиту.
+<p>
+Можно использовать еще itemgetter.
+<p>
+Решение на pandas:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import pandas as pd
+
+tabpd = pd.read_excel("trekking1.xlsx")
+
+tabpd_sorted = tabpd.<b>sort_values(by=['ККал на 100', 'Unnamed: 0']</b>, ascending=[False, True]) # сортируем по двум столбцам
+
+#print(tabpd_sorted['Unnamed: 0'])  # выводит вместе с индексом строк, не то что мне нужно
+
+#print(tabpd_sorted[['Unnamed: 0']].values)  # выводит как список списков, также не то что мне нужно
+
+for i in tabpd_sorted['Unnamed: 0']:  # вот так правильно.
+    print(i)
+</pre></td></tr></table>
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+Откатил на более старую версию xlrd, поэтому теперь: import xlrd<br>
+<b>xldr, pandas, объединение датафреймов (merge()</b><br>
+Васю назначили завхозом в туристической группе и он подошёл к подготовке ответственно, составив справочник продуктов с указанием калорийности на 100 грамм, а также содержание белков, жиров и углеводов на 100 грамм продукта. Ему не удалось найти всю информацию, поэтому некоторые ячейки остались незаполненными (можно считать их значение равным нулю). Также он использовал какой-то странный офисный пакет и разделял целую и дробную часть чисел запятой. Таблица доступна по ссылке https://stepik.org/media/attachments/lesson/245290/trekking2.xlsx<br>
+Вася составил раскладку по продуктам на один день (она на листе "Раскладка") с указанием названия продукта и его количества в граммах. Посчитайте 4 числа: суммарную калорийность и граммы белков, жиров и углеводов. Числа округлите до целых вниз и введите через пробел.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+XLRD:
+<pre>
+import xlrd
+
+wb = xlrd.open_workbook('trekking2.xlsx')
+sheet_names = wb.sheet_names()
+sh0 = wb.sheet_by_name(sheet_names[0]) 
+spravka = {sh0.row_values(i)[0] : sh0.row_values(i)[1:] for i in range(1, sh0.nrows)}
+
+sh1 = wb.sheet_by_name(sheet_names[1])
+summarn_kal = 0
+belok = 0
+uglevod = 0
+fat = 0
+
+for i in range(1, sh1.nrows):
+    food = sh1.row_values(i)[0]
+    massa = sh1.row_values(i)[1]
+    summarn_kal += massa * spravka[food][0] / 100
+    if spravka[food][1] == '':
+        spravka[food][1] = 0
+    if spravka[food][2] == '':
+        spravka[food][2] = 0
+    if spravka[food][3] == '':
+        spravka[food][3] = 0
+    belok += massa * spravka[food][1] / 100
+    uglevod += massa * spravka[food][3] / 100
+    fat += massa * spravka[food][2] / 100
+
+print(int(summarn_kal), int(belok), int(fat), int(uglevod))
+</pre></td></tr>
+<tr><td>
+Не моё:
+<pre>
+import xlrd, requests
+res = requests.get('https://stepik.org/media/attachments/lesson/245290/trekking2.xlsx')
+wb = xlrd.open_workbook(file_contents=res.content)
+sh_spr = wb.sheet_by_name(wb.sheet_names()[0])
+sh_ras = wb.sheet_by_name(wb.sheet_names()[1])
+res = [0,0,0,0]
+for i in range(1, sh_ras.nrows):
+    n, p = sh_ras.row_values(i)
+    for j in range(1, sh_spr.nrows):
+        if n == sh_spr.row_values(j)[0]:
+            s = [x*p/100 if x else 0 for x in sh_spr.row_values(j,1)]   
+            res = [x+y for x,y in zip(res, s)]
+print(*map(int, res))
+</pre></td></tr>
+<tr><td>
+pandas
+<pre>
+import pandas as pd
+
+sh1 = pd.read_excel("trekking2.xlsx", sheet_name=0).fillna(0)
+sh2 = pd.read_excel("trekking2.xlsx", sheet_name=1).fillna(0)
+
+#df1 = pd.merge(sh1, sh2,  left_on='Unnamed: 0', right_on='Продукт') 
+
+df1 = sh1.rename(columns={"Unnamed: 0": "Продукт"})
+
+#df1 = pd.merge(df1, sh2, on='Продукт')
+df2 = df1.merge(sh2, on='Продукт')
+
+df2.iloc[:, 1:5] = df2.iloc[:, 1:5].mul(df2['Вес в граммах']/100, axis=0)
+print(df2)
+print(*[int(x) for x in df2.iloc[:,1:5].sum()])
+</pre></td></tr></table>
+<pre>
+
+-----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>xlrd pandas</b><br>
+Васю назначили завхозом в туристической группе и он подошёл к подготовке ответственно, составив справочник продуктов с указанием калорийности на 100 грамм, а также содержание белков, жиров и углеводов на 100 грамм продукта. Ему не удалось найти всю информацию, поэтому некоторые ячейки остались незаполненными (можно считать их значение равным нулю). Также он использовал какой-то странный офисный пакет и разделял целую и дробную часть чисел запятой. Таблица доступна по ссылке https://stepik.org/media/attachments/lesson/245290/trekking3.xlsx<br>
+Вася составил <b>раскладку по продуктам на весь поход</b> (она на листе "Раскладка") с указанием номера дня, названия продукта и его количества в граммах. Для каждого дня посчитайте 4 числа: суммарную калорийность и граммы белков, жиров и углеводов. Числа округлите до целых вниз и введите через пробел. Информация о каждом дне должна выводиться в отдельной строке.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+XLRD:
+<pre>
+import xlrd
+
+wb = xlrd.open_workbook('trekking3.xlsx')
+sh0 = wb.sheet_by_name(wb.sheet_names()[0]) 
+sh1 = wb.sheet_by_name(wb.sheet_names()[1])
+
+summarn_kal = 0
+belok = 0
+uglevod = 0
+fat = 0
+
+spravka = {sh0.row_values(i)[0] : sh0.row_values(i)[1:] for i in range(1, sh0.nrows)}
+
+d = {}
+d1 = {}
+for i in range(1, sh1.nrows):
+    line = sh1.row_values(i)
+    day = int(line[0])
+    if day not in d:  # если в словаре нет такого ключа
+        d[day] = [line[1:]]
+    else:  # если такой ключ уже есть
+        d[day].append(line[1:])  # добавляем значение в конец списка
+    
+print(d)
+print("kal bel fat uglev")
+for day in d.keys():
+    kalor = 0
+    belok = 0
+    uglevod = 0
+    fat = 0
+    for i in range(len(d[day])):
+        food = d[day][i][0]
+        massa = d[day][i][1] / 100
+        kalor += massa * spravka[food][0]
+        if spravka[food][1] == '': spravka[food][1] = 0
+        belok += massa * spravka[food][1]
+        if spravka[food][3] == '': spravka[food][3] = 0
+        uglevod += massa * spravka[food][3]
+        if spravka[food][2] == '': spravka[food][2] = 0
+        fat += massa * spravka[food][2]
+    print(int(kalor), int(belok), int(fat), int(uglevod))
+</pre></td></tr>
+<tr><td>
+Не моё:
+<pre>
+import urllib.request
+import xlrd
+proxy_support = urllib.request.<font color=red>ProxyHandler({'http' : 'http://192.168.50.107:3130',
+                                             'https': 'http://192.168.50.107:3130'})
+opener = urllib.request.build_opener(proxy_support)
+urllib.request.install_opener(opener)</font>
+bt = urllib.request.urlopen("https://stepik.org/media/attachments/lesson/245290/trekking3.xlsx").read()
+
+wb = xlrd.open_workbook(file_contents=bt)
+sh = wb.sheet_by_name("Справочник")
+m_inf = {sh.row_values(i)[0]: list(map(lambda x: float(x if x!='' else 0),sh.row_values(i)[1:5])) for i in range(1,sh.nrows)}
+
+sh = wb.sheet_by_name("Раскладка")
+
+ans = {}
+for i in range(1, sh.nrows):
+    day = int(sh.row_values(i)[0])
+    if sh.row_values(i)[0] in ans:
+        ans[day][0] += m_inf[sh.row_values(i)[1]][0] * sh.row_values(i)[2] / 100
+        ans[day][1] += m_inf[sh.row_values(i)[1]][1] * sh.row_values(i)[2] / 100
+        ans[day][2] += m_inf[sh.row_values(i)[1]][2] * sh.row_values(i)[2] / 100
+        ans[day][3] += m_inf[sh.row_values(i)[1]][3] * sh.row_values(i)[2] / 100
+    else:
+        ans[day]  = [m_inf[sh.row_values(i)[1]][0] * sh.row_values(i)[2] / 100,
+                                     m_inf[sh.row_values(i)[1]][1] * sh.row_values(i)[2] / 100,
+                                     m_inf[sh.row_values(i)[1]][2] * sh.row_values(i)[2] / 100,
+                                     m_inf[sh.row_values(i)[1]][3] * sh.row_values(i)[2] / 100]
+
+for x in [(x[0],list(map(int,x[1]))) for x in ans.items()]:
+    print(*x[1])
+</pre></td></tr>
+<tr><td>
+pandas:
+<pre>
+import pandas as pd
+
+url = 'https://stepik.org/media/attachments/lesson/245290/trekking3.xlsx'
+sheet_1 = pd.read_excel(url, sheet_name=0, index_col=0).fillna(0)
+sheet_2 = pd.read_excel(url,	sheet_name=1, index_col=[0])  # параметр index_col=[0] назначает нулевой столбец 'День' индексным
+for day in sheet_2.index.unique():  # атрибут index выдает индекс меток, а функция unique() сокращает его до уникальных 
+  ration = pd.concat([sheet_2.loc[day].groupby('Продукт').sum(), sheet_1], axis=1, join='inner')
+  
+  print(*ration.apply(lambda x: x.iloc[1:] * x.iloc[0] / 100, axis=1).sum(axis=0).astype('int'))
+</pre></td></tr>
+<tr><td>
+Пример умножения столбцов без всяких mul
+<pre>
+import pandas as pd
+
+kall = pd.read_excel('trekking3.xlsx', sheet_name=0)
+menu = pd.read_excel('trekking3.xlsx', sheet_name=1)
+
+kall.rename(columns={'Unnamed: 0': 'Продукт'}, inplace=True)
+ration = pd.merge(menu, kall, on='Продукт')
+ration['total kal'] = ration['Вес в граммах'] / 100 * ration['ККал на 100']
+ration['total bel'] = ration['Вес в граммах'] / 100 * ration['Б на 100']
+ration['total j'] = ration['Вес в граммах'] / 100 * ration['Ж на 100']
+ration['total ug'] = ration['Вес в граммах'] / 100 * ration['У на 100']
+result = ration.groupby('День').agg('sum')
+res = result.iloc[:, 5:12].values.tolist()
+for i in res:
+    print(*[int(j) for j in i], sep=' ')
+</pre></td></tr></table>
+<pre>
+
+------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>pandas, чтение всех файлов с каталога, добавление датафрейма в виде строки к датафрейму через concat, запись в файл</b><br>
+Главный бухгалтер компании "Рога и копыта" случайно удалил ведомость с начисленной зарплатой. К счастью, у него сохранились расчётные листки всех сотрудников. Помогите по этим расчётным листкам восстановить зарплатную ведомость. Архив с расчётными листками доступен по ссылке https://stepik.org/media/attachments/lesson/245299/rogaikopyta.zip (вы можете скачать и распаковать его вручную или самостоятельно научиться делать это с помощью скрипта на Питоне).<br>
+Ведомость должна содержать 1000 строк, в каждой строке должно быть указано ФИО сотрудника и, через пробел, его зарплата. Сотрудники должны быть упорядочены по алфавиту.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import os
+import pandas as pd
+ 
+vedomost = pd.DataFrame({'ФИО': [], 'Начисление': []})
+
+for file in <b>os.listdir</b>("./rogaikopyta/"): # метод чтения файлов из каталога
+    #print(file)
+    if not file.startswith("~") and file.endswith(".xlsx"): # чтобы не возникало ошибки из-за временного файла ~tmp.xlsx
+        df = pd.read_excel('./rogaikopyta/'+file)
+        new_row = pd.DataFrame({'ФИО' : [df.at[0, 'Unnamed: 1']], 'Начисление' : [int(df.at[0, 'Unnamed: 3'])]})
+        vedomost = pd.concat([vedomost, new_row], ignore_index=True)
+
+v = vedomost.sort_values(by="ФИО")
+
+#v.to_excel('1vedomost.xlsx', index=False)
+v.to_csv('v1.txt', index=None, sep=' ')
+</pre></td></tr></table>
+<p>
+new_row - создаём датафрейм из нужных данных файла
+<p>
+vedomost = pd.concat([vedomost, new_row], ignore_index=True) - присоединяем new_row к итоговому датафрейму vedomost</td></tr>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+Не мои решения:<br>
+pandas
+<pre>
+import pandas as pd
+import zipfile
+import requests
+import io
+
+
+sheet = pd.Series()
+url = 'https://stepik.org/media/attachments/lesson/245299/rogaikopyta.zip'
+r = requests.get(url)
+
+with r, zipfile.ZipFile(io.BytesIO(r.content)) as archive:
+	for member in archive.infolist():
+		slip = pd.read_excel(io.BytesIO(archive.read(member)))
+		sheet.loc[slip.iloc[0, 1]] = int(slip.iloc[0, 3])
+
+with open('salaries.txt', 'w') as salaries:
+	salaries.write('\n'.join(sheet.sort_index().reset_index(). \
+		apply(lambda x: f'{x.iloc[0]} {x.iloc[1]}', axis=1)))
+</pre></td></tr>
+<tr><td>
+XLRD
+<pre>
+import xlrd, xlwt, requests, zipfile, io
+res = requests.get(' https://stepik.org/media/attachments/lesson/245299/rogaikopyta.zip')
+zfile = zipfile.ZipFile(io.BytesIO(res.content), 'r')
+ww = xlwt.Workbook() 
+ws = ww.add_sheet('zp')
+l = []
+for x in zfile.infolist():
+    wb = xlrd.open_workbook(file_contents=zfile.read(x))
+    sh = wb.sheet_by_name(wb.sheet_names()[0])
+    l += [(sh.row_values(1)[1], sh.row_values(1)[3])]
+for i, s in enumerate(sorted(l)):
+    ws.write(i, 0, s[0])
+    ws.write(i, 1, s[1])
+ww.save('zp.xlsx')
+</pre></td></tr></table>
+<pre>
+
+
+=========================================================================================================================
+
+</pre>
+<a name="plot"><h3 align=center>Построение графиков</h3>
+<b>Модуль matplotlib.pyplot</b><br>
+Если вам нужно нарисовать всего один график для ваших данных, то самым простым решением может оказаться вывод результатов вашей программы с разделением отдельных значений в строке с помощью табуляции (символа \t), их копирование в Excel или его аналог и построение графика.<br>
+Однако, в случае если вам нужно строить очень много графиков, то такой способ не годится и нужно научиться строить их непосредственно с помощью Python. Одной из самых популярных библиотек для построения графиков является matplotlib, возможности которой во многом даже превосходят возможности редакторов электронных таблиц.<br>
+Большинство нужных нам функций находятся в matplotlib.pyplot<br>
+Посмотрим на простой пример, который сохраняет в файл sin.png график функции sin(x) на отрезке от 0 до 10:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import matplotlib.pyplot as plt # подключаем библиотеку с коротким названием, чтобы не писать каждый раз много букв
+import math
+
+fig = plt.figure() # создаем график
+
+plt.axis([0, 10, -1.5, 1.5]) # на оси x будет изображаться участок от 0 до 10, а на оси y от -1.5 до 1.5
+
+plt.xlabel('x') # подпись оси x
+plt.ylabel('sin(x)') # подпись оси y
+
+xs = [] # здесь будут параметры функции (x координаты изображаемых точек)
+sin_vals = [] # здесь будут значения функции (y координаты изображаемых точек)
+
+x = 0.0
+while x < 10.0: # заполняем списки
+    sin_vals.append(math.sin(x))
+    xs.append(x)
+    x += 0.01
+
+plt.plot(xs, sin_vals) # создаем график: первый аргумент - список x-координат, второй - соответствующие y-координаты
+
+fig.savefig('sin.png') # сохраняем график в файл
+</pre></td></tr></table>
+<pre>
+
+============================================================================================================================
+
+</pre>
+<a name="try"><h3 align=center>try / except - обработка исключений (ошибок)</h3>
+Напишите функцию get_int(start_message, error_message, end_message), принимающую три строки в качестве аргументов. Функция должна запрашивать у пользователя ввод до тех пор, пока не будет введено целое число (строка, принимаемая функцией int без ошибок).
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def get_int(start_message, error_message, end_message):
+    print(start_message) 
+    while True:
+        try:
+            s = input()
+            #if (s.isdigit()):
+            s = int(s)
+            print(end_message)
+            return s
+        except:
+            print(error_message)
+
+get_int('Input int number:', 'Wrong value. Input int number:', 'Thank you.')
+</pre></td></tr></table>
+<p>
+isdigit() не замечает отрицательные числа. Поэтому, если с ней решать, то сначала убираем минус:<br>
+n.lstrip('-+').isdigit()<br>
+и потом когда возвращать число, назад минус добавлять.
+<pre>
+
+
+=========================================================================================================================
+
+</pre>
+<a name="api"><h3 align=center>Интеграция данных с API:</h3>
+Задача: Интеграция данных с API:<br>
+– Выберите публичное API (например, OpenWeatherMap, GitHub API, Twitter API).<br>
+– Используйте библиотеку `requests` для получения данных из API.<br>
+– Преобразуйте полученные данные в удобный формат (например, Pandas DataFrame) и выполните простой анализ.<br>
+Решение: Для этой задачи давайте воспользуемся OpenWeatherMap API для получения текущей погоды (https://pogrommist.ru/openweathermap/).<br>
+Пример кода для интеграции с OpenWeatherMap API, получения данных о погоде и выполнения простого анализа с использованием
+Pandas:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import requests
+import pandas as pd
+# Ваш API ключ OpenWeatherMap (зарегистрируйтесь на сайте, чтобы получить ключ)
+api_key = 'your_api_key'
+# Город для получения погоды (замените на интересующий вас город)
+city = 'London'
+# Формирование URL для запроса к OpenWeatherMap API
+url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
+# Получение данных с API
+response = requests.get(url)
+# Проверка успешности запроса
+if response.status_code == 200:
+    # Преобразование данных в формат JSON
+    weather_data = response.json()
+    # Создание Pandas DataFrame
+    df = pd.DataFrame({
+    'City': [weather_data['name']],
+    'Temperature (Celsius)': [weather_data['main']['temp'] – 273.15], #
+    Конвертация в градусы Цельсия
+    'Weather Condition': [weather_data['weather'][0]['description']], 'Humidity': [weather_data['main']['humidity']],
+    'Wind Speed (m/s)': [weather_data['wind']['speed']],
+   })
+# Вывод данных и выполнение простого анализа
+print("Данные о погоде в", city)
+print(df)
+# Пример анализа: вывод предупреждения о низкой температуре
+if df['Temperature (Celsius)'].iloc[0] < 5:
+    print("\nПредупреждение: Низкая температура. Рекомендуется надеть теплую одежду.")
+else:
+    print(f"Ошибка {response.status_code}: Невозможно получить данные о погоде.")
+</pre></td></tr></table>
+<p>
+Не забудьте заменить `'your_api_key'` на ваш API ключ
+OpenWeatherMap. Этот код получает данные о текущей погоде для заданного города, преобразует их в DataFrame и выполняет простой
+анализ.
+<pre>
 
 
 
@@ -2996,6 +5254,4 @@ value</i>
 
 
 
-
-</div>
-<br><br><br><br></body></html>
+</pre></body></html>

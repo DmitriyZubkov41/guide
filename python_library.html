@@ -2,7 +2,7 @@
 <style>
 .menu {
        height: 100%;
-       width: 155px;
+       width: 170px;
        position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
        background-color: Gray;  
       }
@@ -15,31 +15,34 @@
           }     
 .content {
            padding: 0px 0px 0px 0px;
-           margin-left: 160px; /* То же, что и ширина боковой панели */
+           margin-left: 180px; /* То же, что и ширина боковой панели */
          }
 </style>
 </head><body>
 <title>Библиотеки python</title>
 <div class="menu">
-<a href="#lib">Стандартная библиотека:</a>
-<a href="#sys">&nbsp;&nbsp; Модуль sys</a>
-<a href="#subprocess">&nbsp;&nbsp; Модуль subprocess</a>
-<a href="#os">&nbsp;&nbsp; Модуль os</a>
-<a href="#ospath">&nbsp;&nbsp; Модуль os.path</a>
-<a href="#glob">&nbsp;&nbsp; Модуль glob</a>
-<a href="#xml">&nbsp;&nbsp; Пакет xml</a>
+<a href="index.html">Начальная</a>
+<a href="python_parsing.html">Парсинг</a>
+<table border=2 style="border-collapse:collapse;"><tr><td>
+<a href="#xml">Работа с файлами xml:</a>
+<a href="#tree">xml.etree.ElementTree</a>
+<a href="#lxml">Библиотека lxml</a>
+</td></td></table>
 <a href="#collections">&nbsp;&nbsp; Модуль collections</a>
-<a href="#re">&nbsp;&nbsp; Модуль re</a>
 <a href="#csv">&nbsp;&nbsp; Модуль CSV</a>
 <a href="#json">&nbsp;&nbsp; Модуль JSON</a>
-<p>
+<a href="#smtplib">smtplib - письма</a>
+<a href="#functools">Модуль functools</a>
 Дополнительные библиотеки:
 <a href="#requests">&nbsp;&nbsp; Модуль requests</a>
-<a href="#pandas">&nbsp;&nbsp; Модуль pandas</a>
 <a href="#datetime">&nbsp;&nbsp; Модуль datetime</a>
 <a href="#functools">&nbsp;&nbsp; Модуль functools/partial</a>
-
-
+<a href="#plotlib">Matplotlib - графики</a>
+<a href="#machin">Машинное обучение</a>
+<a href="#sql">Работа с базами данных</a>
+<a href="#opencv">Работа с изображениями OpenCV</a>
+<a href="#veb">Разработка веб-приложений Flask, Django</a>
+<a href="#test">Тестирование и DevOps</a>
 </div>
 
 <div class="content">
@@ -54,25 +57,117 @@
 <pre>pip3 --version</pre>
 У меня <i>pip 20.0.2 from /usr/lib/python3/dist-packages/pip (python 3.8)</i>
 <p>
-Для того, чтобы установить какую-нибудь библиотеку из Python Package Index (например пакет simple-crypt из следующей задачи), 
-необходимо запустить команду:
-<pre>$ pip install simple-crypt</pre>
+Для того, чтобы установить какую-нибудь библиотеку из Python Package Index, например requests, необходимо запустить команду:
+<pre>
+pip install requests
+</pre>
+Установится библиотека requests и все её зависимости.
+<p>
 Если операционная система linux скажет, что вам не хватает прав для данной операции, используйте команду:
-<pre>$ sudo pip install simple-crypt</pre>
-========================================================================================================
-
+<pre>
+sudo pip install requests
+</pre>
 <p>
+<b>Обновление библиотеки до последней версии</b>
+<pre>
+pip install -upgrade library_name
+</pre>
+<b>Узнать установлена ли библиотека или номер установленной версии можно по команде:</b>
+<pre>
+pip show library_name
+</pre>
+<p>
+<b>Посмотреть список всех установленных библиотек</b>
+<pre>
+pip freeze --local
+</pre>
+<p>
+<b>Удаление библиотеки</b>
+<pre>
+pip uninstall library_name
+</pre>
+<pre>
+
+</pre>
 Помимо создания собственных модулей python содержит большое количество собственных (встроенных) модулей, называемых 
-библиотекой стандартных  модулей. Встроенные в смысле, что эти модули в отличии от модулей других библиотек <b>не нужно 
-устанавливать.</b>
+библиотекой стандартных  модулей. <font color=red>Встроенные в каком смысле?</font>. import вроде требуется.
 <p>
-Модули стандартной библиотеки можно условно разбить на группы по тематике.
-<ul>
-<li> <b>Сервисы периода выполнения.</b><br>
-Модули: <b>sys</b>, atexit, copy, traceback, math, cmath, random, time, calendar, 
-datetime, sets, array, struct, itertools, locale, gettext.
+Библиотека также содержит встроенные функции и исключения — эти объекты не нужно импортировать откуда-либо, чтобы ими воспользоваться, это как я понимаю типа print, input и например enumerate()
+<pre>
 
-<a name="sys"><h4>Модуль sys</h4>
+
+</pre>
+<a name="venv"><h3 align=center>Особенности использования библиотек в Python-проектах</h3>
+Использование библиотек в Python-проектах может включать в себя ряд особенностей, связанных с взаимодействием с различными
+версиями Python и разрешением конфликтов и зависимостей между библиотеками.<br>
+Виртуальные окружения: Для изоляции проекта от глобальных установок и обеспечения совместимости с различными версиями
+Python, часто используются виртуальные окружения. Библиотека `venv` или инструменты, такие как `virtualenv` и `conda`, позволяют создавать изолированные окружения для каждого проекта, где можно устанавливать необходимые версии библиотек.
+<p>
+<b>Разрешение конфликтов и зависимостей между библиотеками</b><br>
+Файл зависимостей (requirements.txt): В Python-проектах часто используется файл `requirements.txt`, где перечислены все библиотеки и их версии, необходимые для работы проекта. Это позволяет легко воссоздавать окружение на других машинах.<br>
+Системы управления зависимостями: Использование инструментов управления зависимостями, таких как `pipenv` или `poetry`,
+предоставляет более продвинутые средства для разрешения зависимостей и контроля версий библиотек. Они также поддерживают
+виртуальные окружения.
+<p>
+<b>Рассмотрим подробно на примере:</b><br>
+Давайте представим, что у вас есть Python-проект, который использует две библиотеки: `requests` для работы с HTTP-запросами и
+`beautifulsoup4` для парсинга HTML-страниц. Кроме того, предположим, что проект требует Python версии 3.7.
+<p>
+1. Создание виртуального окружения:<br>
+В консоли:
+<pre>
+python3.7 -m venv myenv
+source myenv/bin/activate
+</pre>
+Эти команды создают виртуальное окружение и активируют его. Вам нужно сделать это в корневой директории вашего проекта.
+<p>
+2. Установка библиотек (в консоли):
+<pre>
+pip install requests==2.26.0 beautifulsoup4==4.10.0
+</pre>
+В файле `requirements.txt`:
+<pre>
+requests==2.26.0
+beautifulsoup4==4.10.0
+</pre>
+Это установит конкретные версии библиотек и сохраниит их в файле зависимостей.
+<p>
+3. Управление версиями Python:<br>
+Указать требуемую версию Python в файле `runtime.txt`:
+<pre>
+python-3.7.*
+</pre>
+4. Обновление кода:<br>
+Регулярно обновляйте ваш код и зависимости, чтобы использовать новые возможности и улучшения. Это может включать в себя
+регулярное выполнение:
+<pre>
+pip install –upgrade requests beautifulsoup4
+</pre>
+Обновите код вашего проекта в соответствии с новыми версиями библиотек.
+<p>
+5. Решение конфликтов:<br>
+Конфликты зависимостей в проекте могут возникнуть из-за несовместимости версий библиотек.<br>
+– Обновление кода. Попробуйте обновить версии библиотек в вашем проекте. Это может быть сделано с использованием менеджера пакетов, такого как pip для Python, npm для JavaScript, или аналогичного для других языков.<br>
+– Поиск альтернативных библиотек. Проверьте, существуют ли альтернативные библиотеки, которые не вызывают конфликтов
+зависимостей. Иногда схожие функциональности предоставляют разные пакеты, и выбор другой библиотеки может быть вполне
+разумным решением.<br>
+– Использование виртуального окружения. Виртуальные окружения позволяют изолировать зависимости для каждого проекта.<br>
+Используйте инструменты, такие как virtualenv (для Python) или venv, чтобы создать изолированное окружение для вашего проекта.<br>
+– Ручное разрешение. Если предыдущие шаги не привели к решению, может потребоваться ручное разрешение. Вам придется анализировать код обеих библиотек, понимать, какие изменения нужно внести, чтобы они совместимо работали.<br>
+– Сообщество и документация. Проверьте документацию библиотек и общество разработчиков. Возможно, есть рекомендации по
+разрешению конфликтов зависимостей, или другие разработчики сталкивались с похожей проблемой.<br>
+– Обратная связь и сообщения об ошибках. Поставьте в известность разработчиков библиотек о возникших конфликтах. В сообществе
+разработчиков часто ценится обратная связь, и они могут предоставить поддержку или исправления. Помните, что выбор подхода зависит от конкретных условий вашего проекта и доступных ресурсов.
+<pre>
+
+
+</pre>
+Модули стандартной библиотеки можно условно разбить на группы по тематике.
+<h3>Сервисы периода выполнения:</h3>
+Модули: <b>sys</b>, atexit, <b>copy</b>, traceback, math, cmath, random, time, calendar, 
+datetime, sets, array, struct, <b>itertools</b>, locale, gettext.
+
+<a name="sys"><h4 align=center>Модуль sys</h4>
 Ссылки: <a href="https://python-scripts.com/module-sys">Разбираем модуль sys</a>
 <p>
 Модуль sys предоставляет системе особые параметры и функции.
@@ -97,13 +192,275 @@ print(sys.argv)</pre>
 <br><img src="./images/python_base7.png">
 <p>
 <li> sys.executable
-<li> sys.exit
 <li> sys.modules
 <li> sys.path
 <li> sys.platform
 <li> sys.stdin/stdout/stderr
 </ol>
+<h4>sys.exit</h4>
+Данная функция позволяет разработчику выйти из Python. Функция exit принимает необязательный аргумент, обычно целое число, которое дает статус выхода. Ноль считается как успешное завершение. Обязательно проверьте, имеет ли ваша операционная система какие-либо особые значения для своих статусов выхода, чтобы вы могли следить за ними в своем собственном приложении. Обратите внимание на то, что когда вы вызываете exit, это вызовет исключение SystemExit, которое позволяет функциям очистки работать в конечных пунктах блоков try / except. Давайте взглянем на то, как вызывается данная функция:
+<pre>
+import sys
+sys.exit(0)
+ 
+Traceback (most recent call last):
+   File "&lt;pyshell#5>", line 1, in &lt;module>
+    sys.exit(0)
+SystemExit: 0
+</pre>
+Запустив данный код в IDLE, вы увидите возникшую ошибку SystemExit. Давайте создадим несколько скриптов для теста. Для начала вам нужно создать основной скрипт, программу, которая будет вызывать другой скрипт Python. Давайте назовем его “call_exit.py”. Скрипт call_exit.py должен содержать следующее:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+import subprocess
+ 
+code = subprocess.call(["python.exe", "exit.py"])
+print(code)
+</pre>
+</td></tr></table>
+Теперь создайте скрипт Python под названием“exit.py” и сохраните его в той же папке. Вставьте в него следующий код:
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+import sys
+ 
+sys.exit(0)
+</pre>
+</td></tr></table>
+Теперь давайте запустим call_exit.py.<br>
+Как вы могли заметить, написанный нами скрипт exit вернул ноль, так что он успешно заработал. Получается, мы заодно научились вызывать разные скрипты Python изнутри самого Python!
+<pre>
 
+
+
+</pre>
+<a name="copy"><h3 align=center>Модуль copy</h3>
+Ссылки: <a href="https://pythonworld.ru/moduli/modul-copy.html">Модуль copy - поверхностное и глубокое копирование объектов</a>
+<p>
+Операция присваивания не копирует объект, она лишь создаёт ссылку на объект. Для изменяемых коллекций, или для коллекций, содержащих изменяемые элементы, часто необходима такая копия, чтобы <b>её можно было изменить, не изменяя оригинал</b>. Данный модуль предоставляет общие (поверхностная и глубокая) операции копирования.
+<p>
+<b>copy.copy(x)</b> - возвращает поверхностную копию x.
+<p>
+<b>copy.deepcopy(x)</b> - возвращает полную копию x.
+<p>
+<b>copy.error</b> - возникает, если объект невозможно скопировать.
+<p>
+Разница между поверхностным и глубоким копированием существенна только для составных объектов, содержащих изменяемые объекты (например, список списков, или словарь, в качестве значений которого - списки или словари):
+<p>
+Поверхностная копия создает новый составной объект, и затем (по мере возможности) вставляет в него ссылки на объекты, находящиеся в оригинале.
+<p>
+Глубокая копия создает новый составной объект, и затем рекурсивно вставляет в него копии объектов, находящихся в оригинале.
+<pre>
+>>>
+>>> import copy
+>>> test_1 = [1, 2, 3, [1, 2, 3]]
+>>> test_copy = copy.copy(test_1)  # поверхностная копия
+>>> print(test_1, test_copy)
+[1, 2, 3, [1, 2, 3]] [1, 2, 3, [1, 2, 3]]
+>>> test_copy[3].append(4)
+>>> print(test_1, test_copy)
+<font color=red>[1, 2, 3, [1, 2, 3, 4]] [1, 2, 3, [1, 2, 3, 4]]</font>  # непонятно, вроде вставили отдельный 3 элемент, а не дополнили 2 
+>>> test_1 = [1, 2, 3, [1, 2, 3]]
+>>> test_deepcopy = copy.deepcopy(test_1)
+>>> test_deepcopy[3].append(4)
+>>> print(test_1, test_deepcopy)
+[1, 2, 3, [1, 2, 3]] [1, 2, 3, [1, 2, 3, 4]]
+</pre>
+Для операции глубокого копирования часто возникают две проблемы, которых нет у операции поверхностного копирования:
+<p>
+Рекурсивные объекты (составные объекты, которые явно или неявно содержат ссылки на себя) могут стать причиной рекурсивного цикла;
+<p>
+Поскольку глубокая копия копирует всё, она может скопировать слишком много, например, административные структуры данных, которые должны быть разделяемы даже между копиями.
+<p>
+Функция deepcopy решает эти проблемы путем:
+<p>
+Хранения "memo" словаря объектов, скопированных во время текущего прохода копирования;
+<p>
+Позволения классам, определенным пользователем, переопределять операцию копирования или набор копируемых компонентов.
+<pre>
+>>>
+>>> r = [1, 2, 3]
+>>> r.append(r)
+>>> print(r)
+[1, 2, 3, [...]]
+>>> p = copy.deepcopy(r)
+>>> print(p)
+[1, 2, 3, [...]]
+</pre>
+Этот модуль не копирует типы вроде модулей, классов, функций, методов, следа в стеке, стековых кадров, файлов, сокетов, окон, и подобных типов.
+<p>
+Поверхностная копия изменяемых объектов также может быть создана методом .copy() у списков (начиная с Python 3.3), присваиванием среза (copied_list = original_list[:]), методом .copy() словарей и множеств. Создавать копию неизменяемых объектов (таких, как, например, строк) необязательно (они же неизменяемые).
+<p>
+Для того, чтобы определить собственную реализацию копирования, класс может определить специальные методы __copy__() и __deepcopy__(). Первый вызывается для реализации операции поверхностного копирования; дополнительных аргументов не передается.
+<p>
+Второй вызывается для реализации операции глубокого копирования; ему передается один аргумент, словарь memo. Если реализация __deepcopy__() нуждается в создании глубокой копии компонента, то он должен вызвать функцию deepcopy() с компонентом в качестве первого аргумента и словарем memo в качестве второго аргумента.
+<pre>
+
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+В модулях math cmath собраны математические функции для действительных и комплексных аргументов.
+<p>
+Модуль random генерирует псевдослучайные числа для нескольких различных распределений.
+<p>
+модуль time дает функции для получения текущего времени и преобразования форматов времени.
+<p>
+Модуль sets реализует тип данных для множеств.
+<p>
+Модули array и struct реализуют низкоуровневый массив и структуру данных. Основное их назначение - разбор двоичных форматов 
+данных.
+<pre>
+
+</pre>
+<a name="itertools"><h4 align=center>Модуль itertools</h4>
+Ссылки: <a href="https://pythonworld.ru/moduli/modul-itertools.html">Модуль itertools</a>
+<p>
+Модуль itertools - это сборник полезных итераторов. Итераторы позволяют работать с данными последовательно, как 
+если бы они получались в цикле. Альтернативный подход - использование списков для хранения промежуточных результатов - требует 
+подчас большого количества памяти, тогда как использование итераторов позволяет получать значения на момент, когда они 
+действительно требуются для дальнейших вычислений.
+<p>
+<ul>
+<li> <b>itertools.count(start=0, step=1)</b> - бесконечная арифметическая прогрессия с первым членом start и шагом step.
+<p>
+<li> <b>itertools.cycle(iterable)</b> - возвращает по одному значению из последовательности, повторенной бесконечное число раз.
+<p>
+<li> <b>itertools.repeat(elem, n=Inf)</b> - повторяет elem n раз.
+<p>
+<li> <b>itertools.accumulate(iterable)</b> - аккумулирует суммы.
+<pre>
+accumulate([1,2,3,4,5]) --> 1 3 6 10 15
+</pre>
+<li> <b>itertools.chain(*iterables)</b> - возвращает по одному элементу из первого итератора, потом из второго, до тех пор, пока итераторы не кончатся.
+<p>
+<li> <b>itertools.combinations(iterable, [r])</b> - комбинации длиной r из iterable без повторяющихся элементов.
+<pre>
+combinations('ABCD', 2) --> AB AC AD BC BD CD
+</pre>
+<p>
+<li> <b>itertools.combinations_with_replacement(iterable, r)</b> - комбинации длиной r из iterable с повторяющимися элементами.
+<pre>
+combinations_with_replacement('ABCD', 2) --> AA AB AC AD BB BC BD CC CD DD
+</pre>
+<p>
+<li> <b>itertools.compress(data, selectors)</b> - (d[0] if s[0]), (d[1] if s[1]), ...
+<pre>
+compress('ABCDEF', [1,0,1,0,1,1]) --> A C E F
+</pre>
+<p>
+<li> <b>itertools.dropwhile(func, iterable)</b> - элементы iterable, начиная с первого, для которого func вернула ложь.
+<pre>
+dropwhile(lambda x: x < 5, [1,4,6,4,1]) --> 6 4 1
+</pre>
+<p>
+<li> <b>itertools.filterfalse(func, iterable)</b> - все элементы, для которых func возвращает ложь.
+<p>
+<li> <b><a name="groupby" href="https://docs.python.org/3/library/itertools.html#itertools.groupby">itertools.groupby(iterable, key=None)</a></b>
+<p>
+Из официальной документации: создаёт итератор, который возвращает последовательные ключи и группы из iterable.<br>
+key - это функция, вычисляющая значение ключа для каждого элемента. Если значение не указано или равно None, по умолчанию используется функция идентификации key, которая возвращает элемент без изменений. Как правило, итерируемый объект уже должен быть отсортирован по той же ключевой функции.<br>
+Функция groupby() работает аналогично фильтру uniq в Unix. Она генерирует разрыв или новую группу каждый раз, когда изменяется значение функции key (именно поэтому обычно необходимо выполнить сортировку данных с использованием той же функции key). Это поведение отличается от поведения SQL GROUP, которое объединяет общие элементы независимо от порядка их ввода.<br>
+Возвращаемая группа сама по себе является итератором, который совместно использует базовую итерацию с groupby(). Поскольку исходный код является общим, при расширении объекта groupby() предыдущая группа больше не отображается. Поэтому, если эти данные понадобятся позже, их следует сохранить в виде списка:
+<pre>
+groups = []
+uniquekeys = []
+data = sorted(data, key=keyfunc)
+for k, g in groupby(data, keyfunc):
+    groups.append(list(g))      # Store group iterator as a list
+    uniquekeys.append(k)
+</pre>
+groupby() эквивалентно:
+<pre>
+oupby(iterable, key=None):
+    # [k for k, g in groupby('AAAABBBCCDAABBB')] → A B C D A B
+    # [list(g) for k, g in groupby('AAAABBBCCD')] → AAAA BBB CC D
+
+    keyfunc = (lambda x: x) if key is None else key
+    iterator = iter(iterable)
+    exhausted = False
+
+    def _grouper(target_key):
+        nonlocal curr_value, curr_key, exhausted
+        yield curr_value
+        for curr_value in iterator:
+            curr_key = keyfunc(curr_value)
+            if curr_key != target_key:
+                return
+            yield curr_value
+        exhausted = True
+
+    try:
+        curr_value = next(iterator)
+    except StopIteration:
+        return
+    curr_key = keyfunc(curr_value)
+
+    while not exhausted:
+        target_key = curr_key
+        curr_group = _grouper(target_key)
+        yield curr_key, curr_group
+        if curr_key == target_key:
+            for _ in curr_group:
+                pass
+</pre>
+<p>
+Другое объяснение из https://pythonworld.ru/moduli/modul-itertools.html:<br>
+ - группирует элементы по значению. Значение получается применением функции key к элементу (если аргумент key не указан, то значением является сам элемент).
+<pre>
+>>> from itertools import groupby
+>>> things = [("animal", "bear"), ("animal", "duck"), ("plant", "cactus"),
+...           ("vehicle", "speed boat"), ("vehicle", "school bus")]
+>>> for key, group in groupby(things, lambda x: x[0]):
+...     for thing in group:
+...         print("A %s is a %s." % (thing[1], key))
+...     print()
+A bear is a animal.
+A duck is a animal.
+
+A cactus is a plant.
+
+A speed boat is a vehicle.
+A school bus is a vehicle.
+</pre>
+<p>
+<li> <b>tertools.islice(iterable[, start], stop[, step])</b> - итератор, состоящий из среза.
+<p>
+<li> <b>itertools.permutations(iterable, r=None)</b> - перестановки длиной r из iterable.
+<p>
+<li> <b>itertools.product(*iterables, repeat=1)</b> - аналог вложенных циклов.
+<pre>
+product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
+</pre>
+<p>
+<li> <b>itertools.starmap(function, iterable)</b> - применяет функцию к каждому элементу последовательности (каждый элемент распаковывается).
+<pre>
+starmap(pow, [(2,5), (3,2), (10,3)]) --> 32 9 1000
+</pre>
+<p>
+<li> <b>itertools.takewhile(func, iterable)</b> - элементы до тех пор, пока func возвращает истину.
+<pre>
+takewhile(lambda x: x<5, [1,4,6,4,1]) --> 1 4
+</pre>
+<p>
+<li> <b>itertools.tee(iterable, n=2)</b> - кортеж из n итераторов.
+<p>
+<li> <b>itertools.zip_longest(*iterables, fillvalue=None)</b> - как встроенная функция zip, но берет самый длинный итератор, а более короткие дополняет fillvalue.
+<pre>
+zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
+</pre>
+</ul>
+<pre>
+
+</pre>
+<p>
+Модуль locale применяется для работы с культурной средой. В конкретной культурной среде могут использоваться свои правила для 
+написания чисел, валют, времени и даты и т.п.
+<p>
+Модуль gettext При интернационализации программы важно не только предусмотреть возможность использования нескольких культурных 
+сред, но и перевод сообщений и меню программы на соответствующий язык.
+<pre>
+
+====================================================================================================================
+
+</pre>
 <a name="subprocess"><h3 align=center>Модуль subprocess</h3>
 Ссылки: <a href="https://python-scripts.com/subprocess">Модуль subprocess — Работаем с процессам</a>
 <p>
@@ -111,7 +468,7 @@ print(sys.argv)</pre>
 приложения и передавать им аргументы при помощи модуля subprocess. Модуль subprocess был внедрен в Python 2.4 для замены 
 настроек вызовов модуля os, таких как os.popen, os.spawn и os.system, а также для замены popen2 и старых командных модулей.
 <p>
-<ul>
+<ol>
 <li> <b>Функция вызова call</b><br>
 Модуль subprocess содержит функцию под названием call. Эта функция позволяет вам вызывать другую программу, дожидаться 
 завершения команды и вернуть код возврата. Она принимает один или несколько аргументов, а также следует ключевым аргументам (с 
@@ -139,9 +496,9 @@ code = subprocess.call(["ping", "www.yahoo.com"])</pre>
 Обратите внимание на то, что в данном примере мы передали список аргументов. Первый объект в списке это программа, которую мы 
 хотим вызвать. Все остальное в списке – это аргументы, которые мы хотим передать программе. Так что в данном примере мы 
 выполняем пинг на сайте Yahoo. Также обратите внимание на то, что код возврата нулевой, так что все прошло успешно.
-</ul>
+
 <p>
-2. <b>Функция run()</b><br>
+<li> <b>Функция run()</b><br>
 Функция subprocess.run() может выполнять команды терминала (башевские) и затем выводить результат выполнения команды в виде строки.<br>
 Пример:
 <p>
@@ -167,38 +524,12 @@ drwxrwxr-x  5 dmitriy dmitriy    4096 янв 20 14:34 mypython
 </pre>
 <p>
 Функции subprocess.run() передается список ['ls', '-al']. Он содержит имя команды ls , за которым следуют аргументы в виде отдельных строк. Обратите внимание: с передачей ['ls -al'] функция работать не будет. Вывод команды хранится в виде строки в outputStr. Электронная документация функций subprocess run() и locale.getdefaultlocale() даст вам лучшее представление о том, как они действуют, причем с ними ваш код будет работать в любой операционной системе, где функционирует Python.
+</ol>
 <pre>
 
-
-================================================================================================================
-
+====================================================================================================================
 
 </pre>
-Модуль copy содержит функции для копирования объектов.
-<p>
-В модулях math cmath собраны математические функции для действительных и комплексных аргументов.
-<p>
-Модуль random генерирует псевдослучайные числа для нескольких различных распределений.
-<p>
-модуль time дает функции для получения текущего времени и преобразования форматов времени.
-<p>
-Модуль sets реализует тип данных для множеств.
-<p>
-Модули array и struct реализуют низкоуровневый массив и структуру данных. Основное их назначение - разбор двоичных форматов 
-данных.
-<p>
-Модуль itertools содержит набор функций для работы с итераторами. Итераторы позволяют работать с данными последовательно, как 
-если бы они получались в цикле. Альтернативный подход - использование списков для хранения промежуточных результатов - требует 
-подчас большого количества памяти, тогда как использование итераторов позволяет получать значения на момент, когда они 
-действительно требуются для дальнейших вычислений.
-<p>
-Модуль locale применяется для работы с культурной средой. В конкретной культурной среде могут использоваться свои правила для 
-написания чисел, валют, времени и даты и т.п.
-<p>
-Модуль gettext При интернационализации программы важно не только предусмотреть возможность использования нескольких культурных 
-сред, но и перевод сообщений и меню программы на соответствующий язык.
-<p>
-
 <li> <b>Поддержка цикла разработки.</b> Модули: pdb, hotshot, profile, unittest, pydoc. Пакеты docutils, distutils.<br>
 Модули этого раздела помогают поддерживать документацию, производить регрессионное тестирование, отлаживать и профилировать 
 программы на Python, а также обслуживают распространение готовых программ, создавая среду для конфигурирования и установки 
@@ -394,7 +725,7 @@ print(files)</pre>
 <i>Важно: символы-шаблоны работают только для имен файлов и папок, а не для их содержимого.</i>
 <p>
 <li> <b>Обработка текстов.</b><br>
-Модули: string, re, StringIO, codecs, difflib, mmap, sgmllib, htmllib, htmlentitydefs.<br>
+Модули: string, <a href="python_funk.html#re">re</a>, StringIO, codecs, difflib, mmap, sgmllib, htmllib, htmlentitydefs.<br>
 Пакет xml.
 <pre>
 
@@ -404,52 +735,215 @@ print(files)</pre>
 
 </pre>
 <a name="xml"><h3 align=center>Пакет xml</h3>
-Ссылки: <a href="https://sky.pro/media/kak-ispolzovat-python-dlya-raboty-s-xml-2/">Как использовать Python для работы с XML</a>
-<p>
-XML - это язык разметки текста в текстовых файлах с помощью тегов. Для работы с такими файлами служит пакет XML.
-<p>
-<h4>Библиотека xml.etree.ElementTree</h4>
-Ссылки: <a href="http://grep.cs.msu.ru/python3.8_RU/digitology.tech/docs/python_3/library/xml.etree.elementtree.html">Перевод 
+Ссылки: <a href="https://sky.pro/media/kak-ispolzovat-python-dlya-raboty-s-xml-2/">Как использовать Python для работы с XML</a><br>
+<a href="http://grep.cs.msu.ru/python3.8_RU/digitology.tech/docs/python_3/library/xml.etree.elementtree.html">Перевод 
 документации</a>
 <p>
-Один из основных модулей для работы с XML в Python — это <b>xml.etree.ElementTree</b>. Он предоставляет функциональность для 
-создания, редактирования и парсинга XML-файлов.
+На 14.02.2025 самой современной и популярной библиотекой для работы с xml-файлами является библиотека xml.etree.ElementTree
+<a name="tree"><h3 align=center>xml.etree.ElementTree</h3>
+Ссылки: <a href="https://docs.python.org/3/library/xml.etree.elementtree.html">Документация</a>
 <p>
-Примеры будем смотреть на основе example.xml:
+XML по своей сути является иерархическим форматом данных, и наиболее естественным способом его представления является дерево. Для этой цели в ET есть два класса - <b>ElementTree</b> представляет весь XML-документ в виде дерева, а <b>Element</b> представляет отдельный узел в этом дереве. Взаимодействие со всем документом (чтение и запись в файлы и из них) обычно выполняется на уровне ElementTree. Взаимодействие с отдельным XML-элементом и его подэлементами выполняется на уровне Element.
 <p>
-<img src="./images/python_library.png">
+<b>Парсинг XML</b><br>
+Будем использовать country_data.xml для примеров:
 <p>
-<b>Чтение xml-файлов</b>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;data&gt;
+    &lt;country name="Liechtenstein"&gt;
+        &lt;rank&gt;1&lt;/rank&gt;
+        &lt;year&gt;2008&lt;/year&gt;
+        &lt;gdppc&gt;141100&lt;/gdppc&gt;
+        &lt;neighbor name="Austria" direction="E"/&gt;
+        &lt;neighbor name="Switzerland" direction="W"/&gt;
+    &lt;/country&gt;
+    &lt;country name="Singapore"&gt;
+        &lt;rank&gt;4&lt;/rank&gt;
+        &lt;year&gt;2011&lt;/year&gt;
+        &lt;gdppc&gt;59900&lt;/gdppc&gt;
+        &lt;neighbor name="Malaysia" direction="N"/&gt;
+    &lt;/country&gt;
+    &lt;country name="Panama"&gt;
+        &lt;rank&gt;68&lt;/rank&gt;
+        &lt;year&gt;2011&lt;/year&gt;
+        &lt;gdppc&gt;13600&lt;/gdppc&gt;
+        &lt;neighbor name="Costa Rica" direction="W"/&gt;
+        &lt;neighbor name="Colombia" direction="E"/&gt;
+    &lt;/country&gt;
+&lt;/data&gt;
+</pre></td></tr></table>
+<p>
+Мы можем импортировать эти данные, считав их из файла:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
 import xml.etree.ElementTree as ET
- 
-tree = ET.parse('/home/dmitriy/Python/mypython/example.xml')# создаем древовидную структуру с функцией синтаксического 
-анализа 
->>> print(tree)
-&lt;xml.etree.ElementTree.ElementTree object at 0x7f4acf5b6400&gt;
-root = tree.getroot()    #  получаем ее корневой элемент. Получив доступ к корневому узлу, мы можем легко перемещаться по Tree.
->>> root
-&lt;Element 'studentsList' at 0x7f4acf4c8400&gt;
-</pre>
-Здесь мы импортируем модуль ElementTree, открываем файл example.xml, а затем получаем корневой элемент дерева XML.<br>
-мы 
-<pre>
->>> root
-&lt;Element 'studentsList' at 0x7f4acf4c8400&gt;
-</pre>
-Можно прочитать  example.xml обычным способом:
-<pre>
->>> with open('/home/dmitriy/Python/mypython/example.xml') as f:
-...     for line in f:
-...         print(line.strip())
-</pre>
-И получим список строк из example.xml, но видимо нет инструментов для работы с этими тегами.
+tree = ET.parse('country_data.xml')
+root = tree.getroot()
+</pre></td></tr></table>
 <p>
-Можно посмотреть корневой тег с атрибутами:
+Или непосредственно из строки:
 <pre>
->>> print(root.tag, root.attrib)
-studentsList {}
+root = ET.fromstring(country_data_as_string)
 </pre>
+Функция fromstring() преобразует XML из строки непосредственно в Element, который является корневым элементом анализируемого дерева. Другие функции синтаксического анализа могут создавать ElementTree.
+<p>
+Как Element, root имеет тег и словарь атрибутов:
+<pre>
+>>> root.tag
+'data'
+>>> root.attrib
+{}
+</pre>
+root также имеет дочерние узлы, по которым мы можем выполнять итерации:
+<pre>
+for child in root:
+    print(child.tag, child.attrib)
+</pre>
+Вывод:
+<pre>
+country {'name': 'Liechtenstein'}
+country {'name': 'Singapore'}
+country {'name': 'Panama'}
+</pre>
+Дочерние узлы являются вложенными, и мы можем получить доступ к определенным дочерним узлам по индексу:
+<pre>
+print(root[0][0].text)
+print(root[0][1].text)
+print(root[0][2].text)
+print(root[0][3].text)
+print(root[0][4].text)
+print(root[1][3].text)
+</pre>
+Вывод:
+<pre>
+1
+2008
+141100
+None
+None
+None
+</pre>
+<p>
+<h4>Чтобы прочитать XML-документ с URL-адреса с помощью xml.etree.ElementTree</h4>
+нужно:
+<ol>
+<li> Импортировать модули urllib и xml.etree.ElementTree:
+<pre>
+import urllib.request
+import xml.etree.ElementTree as ET
+</pre>
+<li> Определить URL, с которого нужно получить XML-данные:
+<pre>
+url = 'http://example.com/data.xml'
+</pre>
+<li> Открыть URL с помощью urllib.request.urlopen и получить XML-данные в виде объекта bytes:
+<pre>
+with urllib.request.urlopen(url) as response:
+    xml_data = response.read()
+</pre>
+<li> Разобрать XML-данные с помощью xml.etree.ElementTree.fromstring и создать объект Element:
+<pre>
+root = ET.fromstring(xml_data)
+</pre>
+<li> Проработать корневой объект, чтобы извлечь нужную информацию.
+</ol>
+Если XML-документ использует кодировку, отличную от UTF-8, при разборе данных нужно указать кодировку. 
+<h4>Поиск интересных элементов</h4>
+В Element есть несколько полезных методов, которые помогают выполнять рекурсивную итерацию по всему поддереву под ним (его дочерним элементам, их дочерним элементам и т.д.). Например, Element.iter():
+<pre>
+for neighbor in root.iter('neighbor'):
+    print(neighbor.attrib)
+</pre>
+Вывод:
+<pre>
+{'name': 'Austria', 'direction': 'E'}
+{'name': 'Switzerland', 'direction': 'W'}
+{'name': 'Malaysia', 'direction': 'N'}
+{'name': 'Costa Rica', 'direction': 'W'}
+{'name': 'Colombia', 'direction': 'E'}
+</pre>
+<b>Element.findall()</b> находит только элементы с тегом, которые являются прямыми дочерними элементами текущего элемента.<br> <b>Element.find()</b> находит первый дочерний элемент с определенным тегом, а <b>Element.text</b> получает доступ к текстовому содержимому элемента.<br>
+<b>Element.get()</b> получает доступ к атрибутам элемента:
+<pre>
+for country in root.findall('country'):
+    rank = country.find('rank').text
+    name = country.get('name')
+    print(name, rank)
+</pre>
+Вывод:
+<pre>
+Liechtenstein 1
+Singapore 4
+Panama 68
+</pre>
+Более сложное определение того, какие элементы следует искать, возможно с помощью <a href="https://docs.python.org/3/library/xml.etree.elementtree.html#elementtree-xpath">XPath</a>.
+<h4>Изменение XML-файла</h4>
+ElementTree предоставляет простой способ создания XML-документов и записи их в файлы.<br>
+Метод <b>ElementTree.write()</b> служит для этой цели.
+<p>
+После создания объектом Element можно манипулировать, непосредственно изменяя его поля (например, Element.text), добавляя и модифицируя атрибуты (метод Element.set()), а также добавляя новые дочерние элементы (например, с помощью Element.append()).
+<p>
+Допустим, мы хотим добавить по одному атрибуту к рейтингу каждой страны и добавить обновленный атрибут к элементу rank:
+<pre>
+for rank in root.iter('rank'):
+    new_rank = int(rank.text) + 1
+    rank.text = str(new_rank)
+    rank.set('updated', 'yes')
+
+tree.write('output.xml')
+</pre>
+Создастся новый файл output.xml в каталоге из которого выполняется скрипт.
+<pre>
+&lt;data&gt;
+&lt;country name="Liechtenstein"&gt;
+&lt;rank updated="yes"&gt;2&lt;/rank&gt;
+&lt;year&gt;2008&lt;/year&gt;
+&lt;gdppc&gt;141100&lt;/gdppc&gt;
+&lt;neighbor name="Austria" direction="E"/&gt;
+&lt;neighbor name="Switzerland" direction="W"/&gt;
+&lt;/country&gt;
+&lt;country name="Singapore"&gt;
+&lt;rank updated="yes"&gt;5&lt;/rank&gt;
+&lt;year&gt;2011&lt;/year&gt;
+&lt;gdppc&gt;59900&lt;/gdppc&gt;
+&lt;neighbor name="Malaysia" direction="N"/&gt;
+&lt;/country&gt;
+&lt;country name="Panama"&gt;
+&lt;rank updated="yes"&gt;69&lt;/rank&gt;
+&lt;year&gt;2011&lt;/year&gt;
+&lt;gdppc&gt;13600&lt;/gdppc&gt;
+&lt;neighbor name="Costa Rica" direction="W"/&gt;
+&lt;neighbor name="Colombia" direction="E"/&gt;
+&lt;/country&gt;
+&lt;/data&gt;
+</pre>
+Мы можем удалить элементы, используя <b>Element.remove()</b>. Допустим, мы хотим удалить все страны с рейтингом выше 50:
+<pre>
+for country in root.findall('country'):
+    # используем root.findall(), чтобы избежать удаления во время обхода
+    rank = int(country.find('rank').text)
+    if rank > 50:
+        root.remove(country)
+
+tree.write('output.xml')
+</pre>
+Обратите внимание, что одновременное изменение во время итерации может привести к проблемам, точно так же, как при итерации и изменении списков Python или dicts. Поэтому в примере сначала собираются все совпадающие элементы с помощью root.findall(), и только затем выполняется итерация по списку совпадений.
+<h4>Создание XML-документов</h4>
+Функция SubElement() предоставляет удобный способ создания новых подэлементов для данного элемента:
+<pre>
+a = ET.Element('a')
+b = ET.SubElement(a, 'b')
+c = ET.SubElement(a, 'c')
+d = ET.SubElement(c, 'd')
+ET.dump(a)
+</pre>
+<p>
+<a href="https://docs.python.org/3/library/xml.etree.elementtree.html#parsing-xml-with-namespaces">Синтаксический анализ XML с использованием пространств имен</a>
+<p>
+XML - это язык разметки текста в текстовых файлах с помощью тегов. Для работы с такими файлами служит пакет XML.
 <p>
 <b>Чтение строки xml-формата</b><br>
 <pre>
@@ -652,8 +1146,10 @@ tree.write('/home/dmitriy/Python/mypython/example.xml')
 tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
 </pre>
 По указанному пути будет создан файл copy_example.xml - копия example.xml
+<pre>
 
-<h4 align=center>Библиотека lxml</h4>
+</pre>
+<a name="lxml"><h3 align=center>Библиотека lxml</h3>
 Еще одна популярная библиотека для работы с XML в Python — это lxml. Она предоставляет более быстрый и гибкий интерфейс для 
 работы с XML-данными.
 <p>
@@ -709,7 +1205,8 @@ from collections import Counter
 words = ["apple", "banana", "orange", "apple", "banana", "apple"]
 word_count = Counter(words)
  
-print(word_count)  # Counter({'apple': 3, 'banana': 2, 'orange': 1})</pre>
+print(word_count)  # Counter({'apple': 3, 'banana': 2, 'orange': 1})
+</pre>
 <p>
 <b>defaultdict</b>:<br>
 defaultdict — это подкласс словаря, который используется, когда нужно предоставить значение по умолчанию для ключей, которые 
@@ -723,172 +1220,17 @@ d["b"] += 2
  
 print(d)  # defaultdict(&lt;class 'int'&gt;, {'a': 1, 'b': 2})
 </pre>
+<pre>
+
 -------------------------------------------------------------------------------------------------------------
-<p>
-<a name="re"><h4 align=center>Модуль re</h4>
-Функции этого модуля:
-<p>
-<ol>
-<li> <b>re.match(pattern, stroka)</b><br>
-Ищет совпадает ли шаблон (pattern) с началом нашей строки.
-<p>
-<li> <b>re.fullmatch(pattern, string)</b><br>
-Проверить, подходит ли строка string под шаблон pattern
-<p>
-<pre>
->>> match = re.fullmatch(r'\d\d\D\d\d', r'12-12')
->>> print('YES' if match else 'NO')
-YES
->>> match = re.fullmatch(r'\d\d\D\d\d', r'Т. 12-12')
->>> print('YES' if match else 'NO')
-NO
+
 </pre>
-<p>
-
-
-<li> <b>re.split(pattern, string, maxsplit=0)</b><br>
-Этот метод разделяет строку по заданному шаблону.
-<pre>
-result = re.split(r'y', 'Analytics')
-print result
-
-Результат:
-['Anal', 'tics']</pre>
-
-В примере мы разделили слово «Analytics» по букве «y». Метод split() принимает также аргумент maxsplit со значением по 
-умолчанию, равным 0. В данном случае он разделит строку столько раз, сколько возможно, но если указать этот аргумент, то 
-разделение будет произведено не более указанного количества раз. Давайте посмотрим на примеры Python RegEx:
-<pre>
-result = re.split(r'i', 'Analytics Vidhya')
-print result
-
-Результат:
-['Analyt', 'cs V', 'dhya'] # все возможные участки.</pre>
-<pre>
-result = re.split(r'i', 'Analytics Vidhya',maxsplit=1)
-print result
-
-Результат:
-['Analyt', 'cs Vidhya']</pre>
-Мы установили параметр maxsplit равным 1, и в результате строка была разделена на две части вместо трех.
-<p>
-Если в шаблоне нет группирующих скобок, то re.split работает очень похожим образом на str.split. А вот если группирующие 
-скобки в шаблоне есть, то между каждыми разрезанными строками будут все соответствия каждой из подгрупп.
-<pre>
-import re 
-print(re.split(r'(\s*)([+*/-])(\s*)', r'12  +  13*15   - 6')) 
-# -> ['12', '  ', '+', '  ', '13', '', '*', '', '15', '   ', '-', ' ', '6']</pre>
-В некоторых ситуация эта возможность бывает чрезвычайно удобна! Например, достаточно из предыдущего примера убрать лишние 
-группы, и польза сразу станет очевидна!
-<pre>
-import re 
-print(re.split(r'\s*([+*/-])\s*', r'12  +  13*15   - 6')) 
-# -> ['12', '+', '13', '*', '15', '-', '6']</pre>
-<p> 
-
-<li> <b>re.search(pattern, string)</b><br>
-Найти в строке string первую строчку, подходящую под шаблон pattern<br>
-Примеры:
-<pre>
->>> import re
->>> match = re.search(r'\d\d\D\d\d', r'Телефон 123-12-12')
->>> print(match[0] if match else 'Not found')
-23-12
->>> match = re.search(r'\d\d\D\d\d', r'Телефон 1231212') 
->>> print(match[0] if match else 'Not found')
-Not found</pre>
-<p>
-<li> <b>re.findall(pattern, string)</b><br>
-Найти в строке string все непересекающиеся шаблоны pattern
-<pre>
->>> print(re.findall(r'\d\d\.\d\d\.\d{4}', r'Эта строка написана 19.01.2018, а могла бы и 01.09.2017'))
-['19.01.2018', '01.09.2017']</pre>
-<p>
-Если в шаблоне есть группирующие скобки, то вместо списка найденных подстрок будет возвращён список кортежей, в каждом из 
-которых только соответствие каждой группе. Это не всегда происходит по плану, поэтому обычно нужно использовать негруппирующие 
-скобки (?:...).
-<pre>
-import re 
-print(re.findall(r'([a-z]+)(\d*)', r'foo3, im12, go, 24buz42')) 
-# -> [('foo', '3'), ('im', '12'), ('go', ''), ('buz', '42')]</pre>
-<p>
-<li> <b>re.finditer(pattern, string)</b><br>
-Итератор по всем непересекающимся шаблонам pattern в строке string (выдаются match-объекты)
-<p>
-<pre>
-for m in re.finditer(r'\d\d\.\d\d\.\d{4}', r'Эта строка написана 19.01.2018, а могла бы и 01.09.2017'): 
-    print('Дата', m[0], 'начинается с позиции', m.start()) 
-# -> Дата 19.01.2018 начинается с позиции 20 
-# -> Дата 01.09.2017 начинается с позиции 45 </pre>
-<p>
-<li> <b>re.sub(pattern, replace, string, count=0, flags=0)</b><br>
-заменяет символы по заданному паттерну на заданные символы и возвращает исправленную строку.
-<br>Параметры:
-<p>
-pattern - регулярное выражение<br>
-replace - на что нужно заменить pattern<br>
-string - строка, к которой нужно применить регулярное выражение<br>
-count - необязательный аргумент, максимальное число вхождений, подлежащих замене. Если этот параметр опущен или равен нулю, то 
-произойдет замена всех вхождений.<br>
-flags - флаги<br>
-Возвращаемое значение:
-<p>
-Если совпадения есть - изменённая строка<br>
-string, если совпадений нет
-<p>
-<pre>
-print(re.sub(r'\d\d\.\d\d\.\d{4}', 
-             r'DD.MM.YYYY', 
-             r'Эта строка написана 19.01.2018, а могла бы и 01.09.2017')) 
-# -> Эта строка написана DD.MM.YYYY, а могла бы и DD.MM.YYYY </pre>
-<p>
-<li> <b>stroka.re.group()</b><br>
-Искомая подстрока найдена. Чтобы вывести её содержимое, применим метод group() (мы используем «r» перед строкой шаблона, чтобы 
-показать, что это «сырая» строка в Python):
-<pre>
-result = re.match(r'AV', 'AV Analytics Vidhya AV')
-print result.group(0)
-
-Результат:
-AV</pre>
-<p>
-<li> <b>re.compile(pattern, repl, string)</b><br>
-Мы можем собрать регулярное выражение в отдельный объект, который может быть использован для поиска. Это также избавляет от 
-переписывания одного и того же выражения.
-<pre>
-pattern = re.compile('AV')
-result = pattern.findall('AV Analytics Vidhya AV')
-print result
-result2 = pattern.findall('AV is largest analytics community of India')
-print result2
-
-Результат:
-['AV', 'AV']
-['AV']</pre>
-</ol>
-<p>
-Также есть методы start() и end() для того, чтобы узнать начальную и конечную позицию найденной строки.
-<pre>
-result = re.match(r'AV', 'AV Analytics Vidhya AV')
-print result.start()
-print result.end()
-
-Результат:
-0
-2</pre>
-<p>
-
-
-
-
-
-<p>
-<li> <b>Многопоточные вычисления.</b><br>
+<h4>Многопоточные вычисления.</h4>
 Модули: threading, thread, Queue.
 <p>
 ------------------------------------------------------------------------------------------------------------------
 <p>
-<li> <b>Хранение данных. Архивация.</b><br>
+<h4>Хранение данных. Архивация.</h4>
 Модули: pickle, shelve, anydbm, gdbm, gzip, zlib, zipfile, bz2, csv, tarfile.<br>
 К этой категории отнесены модули, которые работают с внешними хранилищами данных.
 <h3 align=center><a name="csv">Модуль CSV</h3>
@@ -1383,8 +1725,8 @@ In [26]: with open('sw_templates.json', 'w') as f:
     ...:
 
 In [27]: cat sw_templates.json
-{"access": ["switchport mode access", "switchport access vlan", "switchport nonegotiate", "spanning-tree portfast", "spanning-
-tree bpduguard enable"]}
+{"access": ["switchport mode access", "switchport access vlan", "switchport nonegotiate", 
+"spanning-tree portfast", "spanning-tree bpduguard enable"]}
 </pre>
 Кроме того, в JSON ключами словаря могут быть только строки. Но, если в словаре Python использовались числа, ошибки не будет. 
 Вместо этого выполнится конвертация чисел в строки:
@@ -1407,7 +1749,7 @@ Out[29]: '{"1": 100, "2": 200}'
 Для UNIX: commands, pwd, grp, fcntl, resource, termios, readline, rlcompleter. Для Windows: msvcrt, _winreg, winsound.
 <p>
 <li> <b>Поддержка сети.</b><br>
-Протоколы Интернет. Модули: cgi, Cookie, urllib, urlparse, httplib, smtplib, poplib, telnetlib, socket, asyncore. Примеры 
+Протоколы Интернет. Модули: cgi, Cookie, <b>urllib</b>, urlparse, httplib, <b>smtplib</b>, poplib, telnetlib, socket, asyncore. Примеры 
 серверов: SocketServer, BaseHTTPServer, xmlrpclib, asynchat.<br>
 Почти все модули из этой категории, обслуживающие клиентскую часть протокола, построены по одному и тому же принципу: из 
 модуля необходим только класс, объект которого содержит информацию о соединении с сервером, а методы реализуют взаимодействие 
@@ -1416,7 +1758,161 @@ Out[29]: '{"1": 100, "2": 200}'
 Примеры серверов используются по другому принципу. В модуле с реализацией сервера описан базовый класс, из которого 
 пользователь модуля должен наследовать свой класс, реализующий требуемую функциональность. Правда, иногда замещать нужно всего 
 один или два метода.
+</ul>
+<pre>
+
+</pre>
+<a name="smtplib"><h3 align=center>smtplib</h3>
+Ссылки: <a href="https://sky.pro/wiki/python/rassylka-elektronnyh-pisem-s-python/">Рассылка электронных писем с Python</a>
 <p>
+Для отправки электронных писем с Python нам понадобятся несколько библиотек. Основная библиотека, которую мы будем использовать, это <b>smtplib</b>, которая входит в стандартную библиотеку Python. Для работы с вложениями и форматированием писем мы также будем использовать библиотеку <b>email</b>.
+<pre>
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+</pre>
+Если вы планируете использовать базу данных для автоматизации рассылки писем, вам также понадобится библиотека для работы с вашей базой данных, например, <b>sqlite3</b> для SQLite или <b>psycopg2</b> для PostgreSQL.
+<pre>
+import sqlite3  # Для работы с SQLite
+</pre>
+Установка и настройка библиотек — это первый шаг в процессе отправки электронных писем с Python. Библиотека smtplib является частью стандартной библиотеки Python, поэтому вам не нужно устанавливать ее отдельно. Эта библиотека предоставляет функциональность для взаимодействия с SMTP-серверами, что позволяет отправлять электронные письма. Библиотека email используется для создания и форматирования электронных писем, включая добавление вложений и форматирование текста.
+<p>
+Если вы планируете автоматизировать процесс рассылки писем, используя базу данных, вам также потребуется библиотека для работы с вашей базой данных. В нашем примере мы будем использовать SQLite, которая является легковесной и удобной для небольших приложений. Однако вы можете использовать любую другую базу данных, заменив библиотеку sqlite3 на соответствующую библиотеку для вашей базы данных.
+<h4>Создание и отправка простого письма</h4>
+Начнем с создания и отправки простого текстового письма. Для этого нам нужно создать объект SMTP-сессии и использовать его для отправки письма.
+<pre>
+def send_simple_email(sender_email, receiver_email, subject, body, smtp_server, smtp_port, login, password):
+    # Создаем объект MIMEMultipart
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+
+    # Добавляем тело письма
+    msg.attach(MIMEText(body, 'plain'))
+
+    # Устанавливаем соединение с сервером
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()
+    server.login(login, password)
+
+    # Отправляем письмо
+    server.sendmail(sender_email, receiver_email, msg.as_string())
+    server.quit()
+
+# Пример использования функции
+send_simple_email(
+    sender_email="your_email@example.com",
+    receiver_email="receiver@example.com",
+    subject="Тестовое письмо",
+    body="Это тестовое письмо, отправленное с помощью Python.",
+    smtp_server="smtp.example.com",
+    smtp_port=587,
+    login="your_email@example.com",
+    password="your_password"
+)
+</pre>
+Создание и отправка простого письма — это первый шаг в освоении отправки электронных писем с помощью Python. В этом примере мы создаем функцию send_simple_email, которая принимает несколько параметров, включая адрес отправителя, адрес получателя, тему письма, тело письма, а также параметры для подключения к SMTP-серверу. Мы используем библиотеку smtplib для установления соединения с сервером и отправки письма.
+<p>
+Функция send_simple_email создает объект MIMEMultipart, который представляет собой электронное письмо. Мы добавляем тело письма с помощью метода attach и устанавливаем соединение с SMTP-сервером. После успешного входа в систему мы отправляем письмо и закрываем соединение. Пример использования функции показывает, как можно отправить тестовое письмо с помощью этой функции.
+<h4>Отправка писем с вложениями</h4>
+Теперь рассмотрим, как отправлять письма с вложениями. Для этого нам нужно добавить вложение к нашему объекту MIMEMultipart.
+<pre>
+def send_email_with_attachment(sender_email, receiver_email, subject, body, attachment_path, smtp_server, smtp_port, 
+                               login, password):
+    # Создаем объект MIMEMultipart
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+
+    # Добавляем тело письма
+    msg.attach(MIMEText(body, 'plain'))
+
+    # Открываем файл для чтения в бинарном режиме
+    with open(attachment_path, "rb") as attachment:
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
+
+    # Кодируем файл в base64
+    encoders.encode_base64(part)
+    part.add_header(
+        "Content-Disposition",
+        f"attachment; filename= {attachment_path}",
+    )
+
+    # Добавляем вложение к нашему сообщению
+    msg.attach(part)
+
+    # Устанавливаем соединение с сервером
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()
+    server.login(login, password)
+
+    # Отправляем письмо
+    server.sendmail(sender_email, receiver_email, msg.as_string())
+    server.quit()
+
+# Пример использования функции
+send_email_with_attachment(
+    sender_email="your_email@example.com",
+    receiver_email="receiver@example.com",
+    subject="Письмо с вложением",
+    body="Это письмо с вложением, отправленное с помощью Python.",
+    attachment_path="path/to/your/file.txt",
+    smtp_server="smtp.example.com",
+    smtp_port=587,
+    login="your_email@example.com",
+    password="your_password"
+)
+</pre>
+Отправка писем с вложениями — это следующий шаг в освоении отправки электронных писем с помощью Python. В этом примере мы создаем функцию send_email_with_attachment, которая позволяет отправлять письма с вложениями. Функция принимает те же параметры, что и send_simple_email, а также путь к файлу вложения.
+<p>
+Мы открываем файл для чтения в бинарном режиме и создаем объект MIMEBase, который представляет собой вложение. Затем мы кодируем файл в base64 и добавляем заголовок, указывающий имя файла. Вложение добавляется к объекту MIMEMultipart, и письмо отправляется аналогично простому письму. Пример использования функции показывает, как можно отправить письмо с вложением с помощью этой функции.
+<h4>Автоматизация рассылки писем через базу данных</h4>
+Для автоматизации рассылки писем через базу данных нам нужно будет извлекать данные из базы данных и использовать их для отправки писем. В этом примере мы будем использовать SQLite.
+<pre>
+def fetch_emails_from_db(db_path):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT email, subject, body FROM emails")
+    emails = cursor.fetchall()
+    conn.close()
+    return emails
+
+def send_bulk_emails(db_path, smtp_server, smtp_port, login, password):
+    emails = fetch_emails_from_db(db_path)
+    for email in emails:
+        receiver_email, subject, body = email
+        send_simple_email(
+            sender_email=login,
+            receiver_email=receiver_email,
+            subject=subject,
+            body=body,
+            smtp_server=smtp_server,
+            smtp_port=smtp_port,
+            login=login,
+            password=password
+        )
+
+# Пример использования функции
+send_bulk_emails(
+    db_path="path/to/your/database.db",
+    smtp_server="smtp.example.com",
+    smtp_port=587,
+    login="your_email@example.com",
+    password="your_password"
+)
+</pre>
+Автоматизация рассылки писем через базу данных — это мощный инструмент, который позволяет отправлять большое количество писем с минимальными усилиями. В этом примере мы создаем две функции: fetch_emails_from_db и send_bulk_emails. Функция fetch_emails_from_db извлекает данные из базы данных SQLite, включая адреса электронной почты, темы и тела писем.
+<p>
+Функция send_bulk_emails использует данные, извлеченные из базы данных, для отправки писем. Мы проходим по каждому записанному в базе данных письму и вызываем функцию send_simple_email для отправки письма. Этот подход позволяет автоматизировать процесс рассылки и отправлять большое количество писем с минимальными усилиями. Пример использования функции показывает, как можно использовать эти функции для отправки массовых писем.
+<p>
+Теперь вы знаете, как отправлять электронные письма с помощью Python, включая отправку писем с вложениями и автоматизацию рассылки через базу данных. Эти навыки помогут вам создавать более сложные и полезные приложения. Вы можете адаптировать эти примеры для работы с любой другой базой данных или SMTP-сервером, что делает этот подход универсальным и гибким.
+<p>
+<ul>
 <li> <b>Поддержка Internet.</b><br>
 Форматы данных. Модули: quopri, uu, base64, binhex, binascii, rfc822, mimetools, MimeWriter, multifile, mailbox. Пакет 
 email.<br>
@@ -1441,14 +1937,18 @@ wxWidgets), PyGTK и т.д. Среди этих пакетов в основно
 Очень часто модули содержат один или несколько классов, с помощью которых создается объект нужного типа, а затем речь идет уже 
 не об именах из модуля, а об атрибутах этого объекта. И наоборот, некоторые модули содержат лишь функции, достаточно общие для 
 того, чтобы работать над произвольными объектами (либо достаточно большой категорией объектов).
+<pre>
 
-<h4><a name="functools"</a>Модуль functools</h4>
-Ссылка: <a href="https://habr.com/ru/companies/otus/articles/504102/">Введение в Python Functools</a>
+
+</pre>
+<h3 align=center><a name="functools"</a>Модуль functools</h3>
+Ссылка: <a href="https://habr.com/ru/companies/otus/articles/504102/">Введение в Python Functools</a><br>
+<a href="https://pythonworld.ru/moduli/modul-functools.html">Модуль functools</a>
 <p>
 Functools – это библиотека Python, которая предназначена для работы с функциями высшего порядка. Такие функции могут принимать 
 в себя другие функции и возвращать функции. Они помогают разработчиком писать код, который можно переиспользовать. Функции 
 можно использовать или расширять, не переписывая их полностью. Модуль functools в Python предоставляет различные инструменты, 
-которые позволяют добиться описанного эффекта. Например Partial.
+которые позволяют добиться описанного эффекта. Модуль functools определяет следующие функции:
 <p>
 <b>Partial</b><br>
 С помощью partial функции можно заменить существующую функцию, которой уже переданы аргументы. Более того, мы также можем 
@@ -1468,8 +1968,8 @@ Functools – это библиотека Python, которая предназ�
 <pre>
 def multiply(x, y):
  
-    return x * y</pre>
-
+    return x * y
+</pre>
 Теперь рассмотрим случай, когда нам понадобилось удвоить или утроить заданное число. В таком случае новые функции мы 
 определим, как показано ниже:
 <pre>
@@ -1480,7 +1980,8 @@ def doubleNum(x):
        return multiply(x, 2)
  
 def tripleNum(x):
-       return multiply(x, 3)</pre>
+       return multiply(x, 3)
+</pre>
 Когда сценария работы функции всего 2-3, конечно, логичнее сделать, как показано выше. Но когда нужно написать еще 100 таких 
 функций, то смысла переписывать один и тот же код столько раз нет. Здесь нам и пригодятся partial функции. Чтобы ими 
 воспользоваться, во-первых, нам нужно импортировать partial из Functools.
@@ -1495,21 +1996,148 @@ tripleNum = partial(multiply, 3)
  
 Print(doubleNum(10))
  
-Output: 20</pre>
-
+Output: 20
+</pre>
 Как видно из примера, значения по умолчанию будут заменены переменными слева. Вместо x будет 2, а вместо y будет 10 при вызове 
 doubleNum(10). В этом примере порядок не будет иметь принципиального значения, но в других вариантах использования он может 
 иметь значение.
+<h4>functools.cmp_to_key(func)</h4>
+превращает функцию сравнения в key-функцию. Используется с инструментами, принимающие key-функции (sorted(), min(), max(), heapq.nlargest(), heapq.nsmallest(), itertools.groupby()). Эта функция в основном используется в качестве переходного инструмента для программ, преобразованных из Python 2, которые поддерживали использование функций сравнения.
+<p>
+Функция сравнения - функция, принимающая два аргумента, сравнивающая их и возвращающая отрицательное число, если первый аргумент меньше, ноль, если равен и положительное число, если больше. Key-функция - функция, принимающая один аргумент и возвращающая другое значение, определяющее положение аргумента при сортировке.
+<h4>@functools.lru_cache(maxsize=128, typed=False)</h4>
+декоратор, который сохраняет результаты maxsize последних вызовов. Это может сэкономить время при дорогих вычислениях, если функция периодически вызывается с теми же аргументами.<br>
+Поскольку в качестве кэша используется словарь, все аргументы должны быть хешируемыми.
+<p>
+Если maxsize установлен в None, кэш может возрастать бесконечно. Также функция наиболее эффективна, если maxsize это степень двойки.
+<p>
+Если typed - True, аргументы функции с разными типами будут кэшироваться отдельно. Например, f(3) и f(3.0) будут считаться разными вызовами, возвращающие, возможно, различный результат.
+<p>
+Чтобы помочь измерить эффективность кэширования и отрегулировать размер кэша, обёрнутая функция дополняется функцией cache_info(), возвращающая namedtuple, показывающий попадания в кэш, промахи, максимальный размер и текущий размер. В многопоточном окружении, количество попаданий и промахов приблизительно.
+<p>
+Также имеется функция cache_clear() для очистки кэша.
+<p>
+Оригинальная функция доступна через атрибут __wrapped__.
+<pre>
+>>>
+>>> from functools import lru_cache
+>>> # Числа Фибоначчи (попробуйте убрать lru_cache) :)
+...
+>>> @lru_cache(maxsize=None)
+... def fib(n):
+...     if n < 2:
+...         return n
+...     return fib(n-1) + fib(n-2)
+...
+>>>
+>>> print([fib(n) for n in range(100)])
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, ...]
+>>> print(fib.cache_info())
+CacheInfo(hits=196, misses=100, maxsize=None, currsize=100)
+</pre>
+<h4>@functools.total_ordering</h4>
+ - декоратор класса, в котором задан один или более методов сравнения. Этот декоратор автоматически добавляет все остальные методы. Класс должен определять один из методов __lt__(), __le__(), __gt__(), или __ge__(). Кроме того, он должен определять метод __eq__().<br>
+Например:
+<pre>
+@total_ordering
+class Student:
+    def __eq__(self, other):
+        return ((self.lastname.lower(), self.firstname.lower()) ==
+                (other.lastname.lower(), other.firstname.lower()))
+    def __lt__(self, other):
+        return ((self.lastname.lower(), self.firstname.lower()) <
+                (other.lastname.lower(), other.firstname.lower()))
+</pre>
+<h4>functools.reduce(function, iterable[, initializer])</h4>
+ - берёт два первых элемента, применяет к ним функцию, берёт значение и третий элемент, и таким образом сворачивает iterable в одно значение. Например, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) эквивалентно ((((1+2)+3)+4)+5). Если задан initializer, он помещается в начале последовательности.
+<h4>functools.update_wrapper(wrapper, wrapped, assigned=WRAPPER_ASSIGNMENTS, updated=WRAPPER_UPDATES)</h4>
+ - обновляет функцию-оболочку, чтобы она стала похожей на обёрнутую функцию. assigned - кортеж, указывающий, какие атрибуты исходной функции копируются в функцию-оболочку (по умолчанию это WRAPPER_ASSIGNMENTS (__name__, __module__, __annotations__ и __doc__)). updated - кортеж, указывающий, какие атрибуты обновляются (по умолчанию это WRAPPER_UPDATES (обновляется __dict__ функции-оболочки)).
+<h4>@functools.wraps(wrapped, assigned=WRAPPER_ASSIGNMENTS, updated=WRAPPER_UPDATES)</h4>
+ - удобная функция для вызова partial(update_wrapper, wrapped=wrapped, assigned=assigned, updated=updated) как декоратора при определении функции-оболочки. Например:
+<pre>
+>>>
+>>> from functools import wraps
+>>> def my_decorator(f):
+...     @wraps(f)
+...     def wrapper(*args, **kwds):
+...         print('Calling decorated function')
+...         return f(*args, **kwds)
+...     return wrapper
+...
+>>> @my_decorator
+... def example():
+...     """Docstring"""
+...     print('Called example function')
+...
+>>> example()
+Calling decorated function
+Called example function
+>>> print(example.__name__)
+example
+>>> print(example.__doc__)
+Docstring
+</pre>
+<pre>
 
 
 
+
+
+</pre>
 <h2 align=center>Дополнительные библиотеки</h2>
 Python  может работать с дополнительными библиотеками, которые в состав python не входят и их нужно устанавливать в систему.
-<h3><a name="requests">Библиотека requests</h3>
-Служит для отправки запросов на сервер и получения от него ответа.
-<p>
-Для установки служит команда: <b>pip3 install requests</b><br>
-У меня установлен уже в python.
+<a name="requests"><h3 align=center>Библиотека requests</h3>
+В современном мире взаимодействие с веб-ресурсами через HTTP-запросы является неотъемлемой частью многих приложений и
+программ. Библиотека Requests в языке программирования Python предоставляет удобные средства для отправки HTTP-запросов и
+получения данных из веб-ресурсов. Requests упрощает процесс взаимодействия с веб-серверами. С ее помощью можно легко отправлять GET-, POST- и другие типы запросов, устанавливать заголовки, передавать параметры и обрабатывать ответы. Это особенно полезно при создании веб-скраперов, веб-приложений или при интеграции с внешними API.<br>
+Процесс использования библиотеки Requests начинается с отправки запроса к конкретному URL-адресу. Мы можем указать различные
+параметры запроса, такие как заголовки, параметры, данные формы и т.д. После отправки запроса мы получаем объект ответа, содержащий информацию о статусе запроса, заголовках и теле ответа.<br>
+Библиотека Requests также предоставляет удобные методы для работы с различными типами данных, такими как JSON или бинарные данные. Это позволяет легко взаимодействовать с веб-ресурсами, обмениваться данными и выполнять различные операции. Зная основы работы с библиотекой Requests, разработчики могут легко интегрировать HTTP-запросы в свои проекты, обеспечивая эффективное взаимодействие с веб-ресурсами.<br>
+Рассмотрим основные этапы работы с Requests:<br>
+1. Установка библиотеки Requests:
+<pre>
+pip install requests
+</pre>
+2. Импорт библиотеки:<br>
+После установки библиотеку нужно импортировать в свой скрипт или проект:
+<pre>
+import requests
+</pre>
+3. Отправка GET-запроса:<br>
+Для отправки GET-запроса к определенному URL-адресу используется метод `get()`:
+<pre>
+response = requests.get('https://example.com')
+</pre>
+4. Обработка ответа:<br>
+После отправки запроса, объект `response` содержит всю информацию о полученном ответе, такую как статус код, заголовки и
+содержимое:
+<pre>
+print(response.status_code)
+print(response.headers)
+print(response.text)
+</pre>
+5. Передача параметров:<br>
+Можно передавать параметры в запрос, например, при выполнении GET-запроса с параметрами:
+<pre>
+params = {'key1': 'value1', 'key2': 'value2'}
+response = requests.get('https://example.com/api', params=params)
+</pre>
+6. Отправка POST-запроса:<br>
+Для отправки POST-запроса с данными можно использовать метод `post()`:
+<pre>
+data = {'key1': 'value1', 'key2': 'value2'}
+response = requests.post('https://example.com/api', data=data)
+</pre>
+7. Работа с JSON:<br>
+Если сервер возвращает данные в формате JSON, можно легко обработать их с помощью метода `json()`:
+<pre>
+json_data = response.json()
+</pre>
+8. Обработка исключений:<br>
+Рекомендуется обрабатывать возможные исключения, такие как `requests.exceptions.RequestException`, которые могут возникнуть при
+неверных запросах или проблемах с сетью.<br>
+Эти основные шаги позволяют использовать библиотеку Requests для взаимодействия с веб-ресурсами, отправки запросов, передачи
+параметров и обработки полученных данных.
 <p>
 Пример простого запроса в программе:
 <pre>
@@ -1517,132 +2145,10 @@ import requests
 r = requests.get('htpp://example.com')  # простой get-запрос
 print(r.text) # вывод ответа от сервера</pre>
 <img src="./images/python_base8.png">
-
-
-<h3><a name="pandas">Библиотека pandas</h3>
-Ссылки: <a href="https://education.yandex.ru/handbook/python/article/modul-pandas">Модуль pandas</a>
-<p>
-Применяется для обработки и анализа табличных данных. В этой библиотеке используется numpy для удобного хранения данных и вычислений.
- <b>Установка:</b>
-<pre>pip install pandas</pre>
-
-<li> NumPy - работа с числовыми массивами<br>
-<b>Установка:</b><br>
-sudo apt-get install python3-numpy<br>
-или<br>
-sudo pip3 install numpy
-<p>
-<b>Функции:</b><br>
-n.ndim - количество строк в двухмерном массиве<br>
-n.shape - количество строк и столбцов в двухмерном массиве<br>
-n.size - количество элементов в двухмерном массиве<br>
-array() - создаёт массив<br>
-linspace(start, end, количество чисел в интервале от start до end) - генерирует числа<br>
-reshape(количество строк, коли-во столбцов) - превращает одномерный массив в двухмерный.
-<p>
-<i>Когда вы используете
-from numpy import *
-<p>
-Это значит, что будут подключены все имеющиеся библиотеки питона. И это очень плохо. Во-первых, все это счастье грузится ну очень долго. А во-вторых, если среди ваших библиотек окажутся взаимоисключающие, т.е. разные библиотеки, но использующие одинаковые имена функций, то ваш питон начнет пестрить сообщениями об ошибках, поскольку он не будет знать из какой библиотеки ему использовать ту или иную функцию. Чтобы этого не происходило, забудьте про эту строку и подключайте только то, что вам действительно необходимо в работе.
-<p>
-Допустим, мы хотим pапустить код из примера:
 <pre>
-x = linspace(0, 5, 10)
-y = x ** 2
-print(x)
-print(y)
 
-figure()
-plot(x, y, 'r')
-xlabel('x')
-ylabel('y')
-title('title')
-show()</pre>
 
-в этом коде используется linspace из numpy и figure(), plot(), xlabel(), ylabel(), title(), show() из matplotlib. Понятно, что подключать ради них абсолютно все библиотеки крайне глупо. Как мы можем поступить в данном случае? Ну, вариантов у нас несколько:
-<pre>
---- Вариант 1 ---
-from numpy import *
-from matplotlib.pyplot import *
-
-x = linspace(0, 5, 10)
-y = x ** 2
-print(x)
-print(y)
-
-figure()
-plot(x, y, 'r')
-xlabel('x')
-ylabel('y')
-title('title')
-show()
-
---- Вариант 2 ---
-import numpy, matplotlib.pyplot
-
-x = numpy.linspace(0, 5, 10)
-y = x ** 2
-print(x)
-print(y)
-
-matplotlib.pyplot.figure()
-matplotlib.pyplot.plot(x, y, 'r')
-matplotlib.pyplot.xlabel('x')
-matplotlib.pyplot.ylabel('y')
-matplotlib.pyplot.title('title')
-matplotlib.pyplot.show()
-
---- Вариант 3 (второй вариант, но чуть короче) ---
-import numpy as a
-import matplotlib.pyplot as b
-
-x = a.linspace(0, 5, 10)
-y = x ** 2
-print(x)
-print(y)
-
-b.figure()
-b.plot(x, y, 'r')
-b.xlabel('x')
-b.ylabel('y')
-b.title('title')
-b.show()
 </pre>
-Можно отдельно каждую функцию импортировать и переименовать... ну и так далее. По большому счету все зависит от того как у вас 
-настроено рабочее окружение питона, т.е. какие библиотеки у него прописаны, а какие установлены, но по каким-то причинам не 
-попадают в поле зрения. Например, данный вариант будет работать на Ubuntu Linux 17.10, но заставить его работать в Slackware 
-Linux окажется весьма не просто.</i>
-<p>
-<li> matplotlob - построение графиков<br>
-Ссылки: <a href="https://stepik.org/lesson/7629/step/1?unit=1285">библиотека matplotlob</a><br>
-<a href="https://stepik.org/lesson/196432/step/1?auth=registration&unit=172894">matplotlib</a>
-<p>
-<i>В чем разница между matplotlib и pylab? Что такое pylab?Почему вызываем его а не matplotlib?<br>
-matplotlib - ﻿это пакет, pylab﻿ - ﻿библиотека из него.<br>
-https://matplotlib.org/api/pyplot_api.html</i>
-<p>
-<i>Импорт рylab неявным образом импортирует все функции из numpy и matplotlib россыпью? Пояснять неплохо бы. Не лучшее решение, по-моему. Во-первых, не очевидно для новичков, во-вторых, пространство имен засоряется неимоверно. Там еще обе библиотеки как np и plt модули импортируются.
-<p>
-Лучше явно:<pre>
-import numpy as np
-import matplotlib.pyplot as plt
-x = np.linspace(0, 5, 10)
-y = x**2
-plt.figure()
-plt.plot(x, y, 'r')</pre>
-
-...и так далее.</i>
-<p>
-<li> SciPy - функции для научных вычислений
-<p>
-<li> Scikit-learn - алгоритмы машинного обучения
-<p>
-<li> PythonSeaborn - визулизация статистических данных
-</ol>
-
-
-
-
 <h3 align=center><a name="datetime">Модуль datetime</h3>
 Ссылка: <a href="https://pythonru.com/primery/kak-ispolzovat-modul-datetime-v-python">Как использовать модуль datetime в 
 Python</a><br>
@@ -1797,6 +2303,559 @@ future_date = datetime.datetime.today() + datetime.timedelta(days=21)
 print(future_date)</pre>
 Результат:
 <pre>2020-12-05 16:14:09.718325</pre>
+<pre>
+
+
+</pre>
+<a name="grafika"><h2 align=center>Библиотеки для работы с графиками и визуализации данных</h2>
+Matplotlib, Seaborn, Plotty
+<a name="plotlib"><h3 align=center>Библиотека Matplotlib</h3>
+Ссылки: <a href="https://skillbox.ru/media/code/biblioteka-matplotlib-dlya-postroeniya-grafikov/">Библиотека Matplotlib для построения графиков</a>
+<p>
+Matplotlib является самой популярной библиотекой для построения графиков и визуализации данных для Питон.<br>
+Matplotlib используют для визуализации данных любой сложности. Библиотека позволяет строить разные варианты графиков: линейные, трёхмерные, диаграммы рассеяния и другие, а также комбинировать их.<br>
+Дополнительные библиотеки позволяют расширить возможности анализа данных. Например, модуль Cartopy добавляет возможность работать с картографической информацией. Подробно про Matplotlib можно узнать из <a href="https://matplotlib.org/3.6.2/users/index.html">официальной документации</a>.
+<p>
+<img src="./images/python_library5.png">
+<p>
+Сама Matplotlib является основой для других библиотек — например, Seaborn позволяет проще создавать графики и имеет больше возможностей для косметического улучшения их внешнего вида. Но Matplotlib — это базовая библиотека для визуализации данных, незаменимая в анализе данных.
+<p>
+<b>Как связаны Matplotlib, Pyplot и Pylab</b><br>
+При погружении в Matplotlib можно встретить упоминание двух модулей — Pyplot и Pylab. Важно понимать, какой из них использовать в работе и почему они появились. Разберёмся в терминологии.
+<p>
+Библиотека Matplotlib — это пакет для визуализации данных в Python. Pyplot — это модуль в пакете Matplotlib. Его вы часто будете видеть в коде как matplotlib.pyplot. Модуль помогает автоматически создавать оси, фигуры и другие компоненты, не задумываясь о том, как это происходит. Именно Pyplot используется в большинстве случаев.
+<p>
+Pylab — это ещё один модуль, который устанавливается вместе с пакетом Matplotlib. Он одновременно импортирует Pyplot и библиотеку NumPy для работы с массивами в интерактивном режиме или для доступа к функциям черчения при работе с данными.<br>
+Сейчас Pylab имеет только историческое значение — он облегчал переход с MATLAB на Matplotlib, так как позволял обходиться без операторов импорта (а именно так привыкли работать пользователи MATLAB). Вы можете встретиться с Pylab в примерах кода на разных сайтах, но на практике использовать модуль не придётся.
+<h4>Установка и импорт библиотеки</h4>
+Matplotlib — универсальная библиотека, которая работает в Python на Windows, macOS и Linux. При работе с Google Colab или Jupyter Notebook устанавливать Python и Matplotlib не понадобится — язык программирования и библиотека уже доступны «из коробки». Но если вы решили писать код в другой IDE, например в Visual Studio Code, то сначала установите Python, а затем библиотеку Learn через терминал:
+<pre>
+pip3 install matplotlib
+</pre>
+Теперь можно переходить к импорту библиотеки:
+<pre>
+import matplotlib.pyplot as plt
+</pre>
+Сокращение plt для библиотеки — общепринятое. Вы встретите его в официальной документации, книгах и в ноутбуках других людей.
+<h4>Строим первый график в Matplotlib</h4>
+Для начала создадим две переменные — x и y, которые будут содержать координаты точек по осям х и у:
+<pre>
+x = [1, 2, 3, 4, 5]
+y = [25, 32, 34, 20, 25]
+</pre>
+Теперь построим график, который соединит эти точки:
+<pre>
+plt.plot(x, y)
+plt.show()
+</pre>
+Мы получили обычный линейный график. Разберём каждую команду:<br>
+plt.plot() — стандартная функция, которая строит график в соответствии со значениями, которые ей были переданы. Мы передали в неё координаты точек;
+<p>
+plt.show() — функция, которая отвечает за вывод визуализированных данных на экран. Её можно и не указывать, но тогда, помимо красивой картинки, мы увидим разную техническую информацию.
+<p>
+Дополним наш первый график заголовком и подписями осей:
+<pre>
+plt.plot(x, y)
+plt.xlabel('Ось х') #Подпись для оси х
+plt.ylabel('Ось y') #Подпись для оси y
+plt.title('Первый график') #Название
+plt.show()
+</pre>
+С помощью Matplotlib можно настроить отображение любого графика. Например, мы можем изменить цвет линии, а также выделить точки, координаты которых задаём в переменных:
+<pre>
+plt.plot(x, y, color='green', marker='o', markersize=7)
+</pre>
+Теперь точки хорошо видны, а цвет точек и линии изменился на зелёный.
+<h4>Диаграмма рассеяния, или scatterplot</h4>
+Диаграмма рассеяния используется для оценки взаимосвязи двух переменных, значения которых откладываются по разным осям. Для её построения используется функция plt.scatter(), аргументами которой выступают переменные с дискретными значениями:
+<pre>
+x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+y = [25, 32, 34, 20, 25, 23, 21, 33, 19, 28]
+
+plt.scatter(x, y)
+plt.show()
+</pre>
+Диаграмма рассеяния выглядит как множество отдельных точек.
+<h4>Столбчатая диаграмма</h4>
+Такой тип визуализации позволяет удобно сравнивать значения отдельных переменных. В столбчатой диаграмме длина столбцов пропорциональна показателям, которые они отображают. Как правило, одна из осей соответствует одной категории, а вторая — её дискретному значению.<br>
+Например, столбчатая диаграмма позволяет наглядно показать величину прибыли по месяцам. Построим следующий график:
+<pre>
+x = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май']
+y = [2, 4, 3, 1, 7]
+
+plt.bar(x, y, label='Величина прибыли') #Параметр label позволяет задать название величины для легенды
+plt.xlabel('Месяц года')
+plt.ylabel('Прибыль, в млн руб.')
+plt.title('Пример столбчатой диаграммы')
+plt.legend()
+plt.show()
+</pre>
+Столбчатая диаграмма позволяет увидеть динамику изменения прибыли по месяцам.
+<h4>Круговая диаграмма</h4>
+Круговую диаграмму используют для отображения состава групп. Например, мы можем наглядно показать, какие марки автомобилей преобладают на дорогах города:
+<pre>
+vals = [24, 17, 53, 21, 35]
+labels = ["Ford", "Toyota", "BMW", "Audi", "Jaguar"]
+
+plt.pie(vals, labels=labels)
+plt.title("Распределение марок автомобилей на дороге")
+plt.show()
+</pre>
+Так информация нагляднее, но непонятно, какая именно доля приходится на каждую марку автомобиля. Поэтому круговые диаграммы всегда лучше дополнять значениями в процентах. Отредактируем наш код, добавив к функции pie параметр autopct:
+<pre>
+vals = [24, 17, 53, 21, 35]
+labels = ["Ford", "Toyota", "BMW", "Audi", "Jaguar"]
+
+plt.pie(vals, labels=labels, autopct='%1.1f%%')
+plt.title("Распределение марок автомобилей на дороге")
+plt.show()
+</pre>
+В параметр мы передаём формат отображения числа. В нашем случае это будет целое число с одним знаком после запятой.
+<pre>
+
+
+</pre>
+<a name="machin"><h2 align=center>Библиотеки для машинного обучения и искусственного интеллекта</h2>
+Scitit-learn - библиотека для машинного обучения<br> 
+Tensor-Flow - одна из ведущих библиотек для создания и обучения моделей глубокого обучения. Поддерживает широкий спектр архитектур нейтронных сетей. Успешно применяется в различных областях, таких как компьютерное зрение, обработка естественного языка, анализ данных и других задачах.<br>
+Py-Torch - библиотека глубокого обучения, представляющая динамические вычислительные графы.
+<pre>
+
+
+</pre>
+<a name="sql"><h3 align=center>Библиотеки для работы с базами данных</h3>
+Ссылки: книга Джейд Картер Python библиотеки стр. 109
+<p>
+В Python существует несколько библиотек, облегчающих взаимодействие с различными системами управления базами данных (СУБД). Некоторые из наиболее распространенных библиотек в этой области включают SQLite, MySQL и PostgreSQL.
+<p>
+<b>SQLite</b><br>
+SQLite представляет собой легкую, встроенную СУБД, которая не требует отдельного сервера и хранит базу данных в одном файле. В
+Python для работы с SQLite используется встроенная библиотека <b>sqlite3</b>. Эта библиотека предоставляет методы для выполнения SQL-запросов, вставки, обновления и удаления данных. SQLite часто используется для небольших проектов, тестирования
+и прототипирования.<br>
+Пример работы с SQLite в Python:
+<pre>
+import sqlite3
+# Подключение к базе данных
+conn = sqlite3.connect('example.db')
+# Создание курсора
+cursor = conn.cursor()
+# Выполнение SQL-запроса
+cursor.execute('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)')
+# Вставка данных
+cursor.execute('INSERT INTO users (name, age) VALUES (?, ?)', ('John Doe', 25))
+# Получение данных
+cursor.execute('SELECT * FROM users')
+data = cursor.fetchall()
+# Закрытие соединения
+conn.close()
+</pre>
+<p>
+<b>MySQL и PostgreSQL</b><br>
+Для работы с более мощными и распределенными СУБД, такими как MySQL и PostgreSQL, в Python применяются соответствующие
+библиотеки. Для MySQL часто используется библиотека <b>mysql-connector-python</b>, а для PostgreSQL – <b>psycopg2</b>. Эти библиотеки обеспечивают аналогичный функционал, но ориентированы на конкретные особенности каждой СУБД.
+<p>
+<b>Интеграция в приложения Python</b><br>
+Для интеграции с базой данных в приложении Python, разработчики могут использовать соответствующие библиотеки, создавая подключения к базам данных. Это подключение может быть использовано для выполнения различных операций с данными, таких как вставка, обновление, удаление и выборка.<br>
+Пример интеграции с MySQL:
+<pre>
+import mysql.connector
+# Подключение к базе данных
+conn = mysql.connector.connect(host='localhost', user='user', password='password', database='example')
+# Создание курсора
+cursor = conn.cursor()
+# Выполнение SQL-запроса
+cursor.execute('CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT)')
+# Вставка данных
+cursor.execute('INSERT INTO users (name, age) VALUES (%s, %s)', ('John Doe', 25))
+# Получение данных
+cursor.execute('SELECT * FROM users')
+data = cursor.fetchall()
+# Закрытие соединения
+conn.close()
+</pre>
+Рассмотрим пример кода для выполнения операций с базой данных с использованием библиотеки SQLite в Python. Предположим, что у нас есть простая таблица "users" с полями "id", "name" и "email".
+<pre>
+import sqlite3
+# Подключение к базе данных
+conn = sqlite3.connect('example.db')
+# Создание таблицы "users"
+cursor = conn.cursor()
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS users (
+id INTEGER PRIMARY KEY,
+name TEXT NOT NULL,
+email TEXT NOT NULL
+)
+''')
+conn.commit()
+# Вставка данных в таблицу
+cursor.execute('''
+INSERT INTO users (name, email) VALUES (?, ?)
+''', ('John Doe', 'john@example.com'))
+conn.commit()
+# Выбор всех пользователей
+cursor.execute('SELECT * FROM users')
+all_users = cursor.fetchall()
+# Выбор пользователей с определенным именем
+cursor.execute('SELECT * FROM users WHERE name=?', ('John Doe',))
+john_doe_users = cursor.fetchall()
+# Обновление email пользователя с id=1
+cursor.execute('UPDATE users SET email=? WHERE id=?',
+('new_email@example.com', 1))
+conn.commit(
+# Удаление пользователя с id=1
+cursor.execute('DELETE FROM users WHERE id=?', (1,))
+conn.commit()
+# Закрытие соединения с базой данных
+conn.close()
+</pre>
+Подробные комментарии:<br>
+Подключение к базе данных: Создается подключение к базе данных SQLite с именем 'example.db'. Если база данных не существует, она будет создана. Создание таблицы "users": Мы используем объект `cursor`, чтобы выполнить SQL-запрос на создание таблицы "users" с полями "id", "name" и "email". Если таблица уже существует, операция игнорируется.<br>
+Вставка данных в таблицу: Мы используем `execute`, чтобы вставить нового пользователя с именем "John Doe" и email "john@example.com" в таблицу "users".<br>
+Выбор данных из таблицы: С помощью `execute` выполняется запрос на выбор всех пользователей, и результат сохраняется в переменной `all_users`.<br>
+Выбор пользователей с определенным именем: Мы используем `execute`, чтобы выбрать всех пользователей с именем "John Doe"
+и сохранить результат в переменной `john_doe_users`.<br>
+Обновление данных в таблице: С помощью SQL-запроса мы обновляем email пользователя с id=1 на "new_email@example.com".<br>
+Удаление данных из таблицы: Мы используем SQL-запрос для удаления пользователя с id=1.<br>
+Закрытие соединения: После завершения всех операций с базой данных, соединение закрывается с помощью `close`.
+<pre>
+
+
+
+</pre>
+<h2 align=center>Библиотеки для работы с изображениями OpenCV, Pillow и их применение в обработке изображений</h2>
+Ссылки: Джейд Картер Python библиотеки стр.123
+<a name="opencv"><h3 align=center>Библиотека OpenCV</h3>
+OpenCV (Open Source Computer Vision Library) – это библиотека с открытым исходным кодом, предоставляет богатый функционал для выполнения операций над изображениями, таких как фильтрация, преобразования цветов, обнаружение объектов, отслеживание движения, распознавание образов, калибровка камер и многое другое. Благодаря многоплатформенности и поддержке различных языков программирования, включая Python, OpenCV стал неотъемлемой частью многих проектов в области компьютерного зрения, робототехники, машинного обучения и даже в разработке приложений виртуальной и дополненной реальности.
+<p>
+Для начала работы с OpenCV в Python необходимо установить библиотеку. Это можно сделать с помощью команды:
+<pre>
+<font size=5>pip install opencv-python</font>
+</pre>
+Примеры использования OpenCV в области компьютерного зрения:
+<p>
+<b>Задача: Обнаружение лиц на фотографии</b>.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import cv2
+# Загрузка фотографии
+image_path = 'path/to/your/image.jpg'
+image = cv2.imread(image_path)
+# Преобразование в оттенки серого (если это цветное изображение)
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# Используем каскадный классификатор для обнаружения лиц
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5)
+# Отрисовка прямоугольников вокруг обнаруженных лиц
+for (x, y, w, h) in faces:
+    cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+    # Вывод результата
+    cv2.imshow('Detected Faces', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+</pre></td></tr></table>
+<p>
+В этом примере OpenCV используется для обнаружения лиц на фотографии. Мы загружаем изображение, преобразуем его в оттенки
+серого, а затем используем каскадный классификатор лиц для поиска лиц. Обнаруженные лица выделяются прямоугольниками, и результат отображается. Эта задача является частью обширного спектра приложений компьютерного зрения, таких как системы
+видеонаблюдения, автоматическая фокусировка камер, распознавание эмоций и многие другие. Такие проекты часто включают в себя разработку решений в области робототехники, машинного обучения и даже виртуальной или дополненной реальности.
+<p>
+<b>Задача: Использование OpenCV для обработки изображений</b>.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import cv2
+import numpy as np
+# Загрузка изображения
+image_path = 'path/to/your/image.jpg'
+image = cv2.imread(image_path)
+# Преобразование изображения в оттенки серого
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# Применение фильтра Гаусса для сглаживания
+blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+# Выделение границ с использованием оператора Canny
+edges = cv2.Canny(blurred_image, 50, 150)
+# Сохранение результата
+cv2.imwrite('path/to/your/processed_image.jpg', edges)
+# Отображение исходного и обработанного изображения
+cv2.imshow('Original Image', image)
+cv2.imshow('Processed Image', edges)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+</pre></td></tr></table>
+<p>
+В этом примере используется библиотека OpenCV для загрузки изображения, преобразования его в оттенки серого, применения фильтра Гаусса для сглаживания и выделения границ с использованием оператора Canny. OpenCV предоставляет обширные возможности для обработки изображений, включая фильтрацию, сегментацию, детекцию объектов и многое другое. Он часто применяется в компьютерном зрении, робототехнике и других областях, где требуется работа с изображениями.
+<p>
+<b>Задача: Отслеживание движения с использованием OpenCV</b>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import cv2
+import numpy as np
+# Загрузка видеофайла или использование встроенной камеры
+video_path = 'path/to/your/video.mp4' # или 0 для использования камеры
+cap = cv2.VideoCapture(video_path)
+# Задаем начальные координаты для отслеживания движения
+initial_frame = None
+while True:
+# Чтение кадра
+ret, frame = cap.read()
+# Прекращаем цикл, если кадры закончились
+if not ret:
+    break
+# Преобразование кадра в оттенки серого
+gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+# Применение размытия для уменьшения шума
+gray_frame = cv2.GaussianBlur(gray_frame, (21, 21), 0)
+# Инициализация начального кадра
+if initial_frame is None:
+    initial_frame = gray_frame
+    continue
+# Вычисление разности между текущим и начальным кадром
+frame_delta = cv2.absdiff(initial_frame, gray_frame)
+# Превращение разности в бинарное изображение
+_, thresh = cv2.threshold(frame_delta, 30, 255, cv2.THRESH_BINARY)
+# Детекция контуров
+contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+# Отображение контуров на исходном кадре
+for contour in contours:
+    if cv2.contourArea(contour) < 1000: # минимальная площадь для отслеживания
+        continue
+x, y, w, h = cv2.boundingRect(contour)
+cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+# Отображение исходного и обработанного кадров
+cv2.imshow('Original Frame', frame)
+cv2.imshow('Processed Frame', thresh)
+# Прерывание при нажатии клавиши 'q'
+if cv2.waitKey(30) & 0xFF == ord('q'):
+    break
+# Освобождение ресурсов и закрытие окон
+cap.release()
+cv2.destroyAllWindows()
+</pre></td></tr></table>
+<p>
+Этот код использует OpenCV для отслеживания движения на видео. Он вычисляет разницу между текущим кадром и начальным кадром,
+преобразует эту разницу в бинарное изображение, находит контуры объектов и отображает прямоугольники вокруг объектов, которые
+двигаются.
+<p>
+<b>Джейд Картер Python библиотеки часть 2 стр.180</b><br>
+Пример обработки изображений включает следующие задачи:<br>
+чтение изображения, изменение его размеров, преобразование в оттенки серого, применение фильтров, а также сохранение результатов.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import cv2
+import numpy as np
+
+# Шаг 1: Загрузка изображения
+# Загрузим изображение из файла. Убедитесь, что в рабочей директории есть изображение "example.jpg".
+image = cv2.imread("example.jpg")
+# Проверка успешной загрузки изображения
+if image is None:
+    print("Ошибка: изображение не удалось загрузить.")
+else:
+    print(f"Изображение успешно загружено. Размеры: {image.shape}")
+# Шаг 2: Отображение исходного изображения
+cv2.imshow("Оригинальное изображение", image)
+cv2.waitKey(0) # Ожидание нажатия клавиши
+cv2.destroyAllWindows()
+# Шаг 3: Изменение размера изображения
+resized_image = cv2.resize(image, (300, 300)) # Изменение размера до 300x300 пикселей
+cv2.imshow("Измененное изображение", resized_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Шаг 4: Преобразование в оттенки серого
+gray_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+cv2.imshow("Оттенки серого", gray_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Шаг 5: Применение фильтра размытия
+blurred_image = cv2.GaussianBlur(gray_image, (7, 7), 0) # Применение размытия с ядром 7x7
+cv2.imshow("Размытое изображение", blurred_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Шаг 6: Обнаружение границ с использованием оператора Canny
+edges = cv2.Canny(blurred_image, 50, 150) # Пороговые значения для границ
+cv2.imshow("Обнаружение границ", edges)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Шаг 7: Сохранение результата
+cv2.imwrite("result.jpg", edges)
+print("Результат сохранён в файл result.jpg")
+</pre></td></tr></table>
+<p>
+В данном примере решается сразу несколько задач. Сначала изображение загружается в формате BGR (стандартный формат OpenCV). После этого оно преобразуется в различные формы: уменьшается до заданных размеров, переводится в оттенки серого, подвергается размытию и обработке с целью выявления границ. Границы определяются с помощью метода Canny, который выделяет контуры объектов на изображении. Результирующее изображение сохраняется на диск. Основные моменты работы с OpenCV включают управление окнами
+для отображения результатов (`cv2.imshow`), применение различных фильтров (`cv2.GaussianBlur`) и преобразований (например,
+`cv2.cvtColor` для перевода изображения в другой цветовой формат). Пример легко адаптируется для выполнения других задач, таких как преобразование яркости, наложение текстов и форм, а также применение сложных операций, например, обнаружение лиц или
+объектов. OpenCV обеспечивает простоту выполнения этих операций, предоставляя мощный инструмент для визуальных и мультимедийных
+задач.
+<pre>
+
+
+</pre>
+<h3 align=center>Pillow (PIL Fork):</h3>
+Pillow – это форк библиотеки Python Imaging Library (PIL) и представляет собой простой и удобный в использовании инструмент
+для работы с изображениями в Python. Он предоставляет базовые операции для открытия, изменения размера, поворота, фильтрации и
+сохранения изображений. Pillow также поддерживает множество форматов изображений, что делает его удобным инструментом для
+обработки и конвертации изображений в различные форматы. В отличие от OpenCV, Pillow ориентирован на простые операции с
+изображениями и предназначен для быстрого выполнения основных задач, связанных с обработкой изображений. Поэтому он может использоваться в более легких проектах, где не требуется сложных алгоритмов компьютерного зрения.<br>
+Задача: Обработка изображения с использованием Pillow (PIL)
+<pre>
+from PIL import Image, ImageFilter
+# Загрузка изображения
+image_path = 'path/to/your/image.jpg'
+image = Image.open(image_path)
+# Применение фильтра размытия
+blurred_image = image.filter(ImageFilter.BLUR)
+# Сохранение результата
+blurred_image.save('path/to/your/blurred_image.jpg')
+# Отображение исходного и обработанного изображения
+image.show()
+blurred_image.show()
+</pre>
+В этом примере используется библиотека Pillow (PIL) для загрузки изображения, применения фильтра размытия и сохранения результата. Благодаря Pillow, можно легко выполнять различные операции с изображениями, такие как изменение размера, наложение фильтров, изменение цветовой гаммы и другие. Это часто применяется в обработке изображений для подготовки данных перед их
+использованием в анализе данных или машинном обучении. Обе библиотеки находят широкое применение в различных сферах,
+включая разработку приложений, научные исследования, обработку медицинских изображений, создание графики и дизайн.
+<pre>
+
+
+</pre>
+<a name="veb"><h3 align=center>Библиотеки для разработки веб-приложений Flask, Django, Pyramid и создание веб-приложений на Python</h3>
+Ссылки: Джейд Картер Python библиотеки стр 133
+<p>
+Библиотеки Flask, Django и Pyramid предоставляют инструменты для создания веб-приложений на языке программирования Python.
+Давайте рассмотрим каждую из них и их основные принципы:<br>
+1. Flask<br>
+Это легкий и гибкий микрофреймворк для создания веб-приложений на языке программирования Python. Он предоставляет базовые
+инструменты, необходимые для построения веб-приложений, оставляя при этом множество архитектурных решений на усмотрение
+разработчика. Flask известен своей простотой и легкостью в освоении, что делает его отличным выбором для новичков и для тех, кто предпочитает более свободный подход к разработке. Flask является микрофреймворком, что означает, что он предоставляет основные инструменты для создания веб-приложений, но оставляет множество решений на усмотрение разработчика. Flask легко расширяется с использованием различных расширений (extensions) для добавления функциональности, такой как обработка форм, аутентификация и др.<br>
+Одной из ключевых особенностей Flask является его система маршрутизации. С использованием декораторов, таких как `@app.route('/')`, разработчики могут определить, какие функции должны обрабатывать запросы по определенным URL-ам. Это
+позволяет легко создавать структуру веб-приложения и определять, какие действия выполнять при определенных запросах. Flask также обеспечивает механизмы работы с формами, управление сессиями, инструменты для взаимодействия с базами данных и многое
+другое. Расширения Flask добавляют дополнительные возможности, позволяя разработчикам легко интегрировать функциональность,
+такую как аутентификация пользователей, обработка форм, и другие расширенные возможности.<br>
+Благодаря своей модульной структуре и активному сообществу разработчиков, Flask является популярным выбором для создания
+разнообразных веб-приложений, от простых сайтов и блогов до более сложных проектов, включая API и микросервисы.
+<p>
+2. Django<br>
+Django – это высокоуровневый веб-фреймворк на языке программирования Python, который предоставляет разработчикам полный набор инструментов для создания сложных и масштабируемых веб-приложений. Он разработан с упором на принципы DRY (Don't Repeat Yourself) и концепции "батареек включены", что означает, что Django включает в себя множество инструментов и библиотек,
+упрощающих разработку, а также предоставляет структуру и стандарты для создания веб-приложений. Одной из ключевых особенностей Django является его ORM (Object-Relational Mapping), позволяющий взаимодействовать с базой данных, используя объектно-ориентированный подход. Django поддерживает множество баз данных, включая PostgreSQL, MySQL, SQLite и другие.<br>
+Фреймворк также предоставляет мощные средства для обработки URL-ов, создания шаблонов, управления аутентификацией и
+авторизацией пользователей, а также множество других инструментов для обработки форм, работы с изображениями, кеширования и т.д.<br>
+Django также активно использует понятие "приложений" – многоразовых компонентов, которые можно использовать в различных проектах. Это способствует повторному использованию кода и созданию модульных приложений. Среди других преимуществ Django можно выделить встроенную административную панель, которая автоматически генерируется на основе моделей данных, и систему миграций, упрощающую управление изменениями в базе данных.<br>
+Django часто выбирается для разработки крупных веб-приложений, таких как социальные сети, электронные коммерции, новостные
+порталы и другие проекты, где важны высокая производительность и расширяемость.
+<pre>
+
+
+
+</pre>
+<a name="test"><h2 align=center>Тестирование и DevOps</h2>
+Ссылки: книга Джейд Картер Python библиотеки часть 2 стр. 201
+<h3 align=center>Pytest</h3>
+Pytest – это одна из самых популярных библиотек для тестирования Python-кода.
+<p>
+Основные концепции Pytest:<br>
+1. Тестовые функции и тестовые классы: Тесты в Pytest могут быть написаны как функции или методы классов. Однако чаще всего для
+простоты используются функции.<br>
+2. Ассерты: В тестах Pytest часто применяются утверждения (assertions), с помощью которых проверяется, соответствует ли
+результат ожиданиям.<br>
+3. Фикстуры: Фикстуры в Pytest предоставляют возможность для подготовки и очистки ресурсов, таких как базы данных или внешние
+сервисы, которые могут потребоваться для выполнения тестов.<br>
+4. Параметризация: Pytest позволяет параметризовать тесты, что даёт возможность запускать один и тот же тест с различными
+входными данными.
+<p>
+Установка Pytest:
+<pre>
+pip install pytest
+</pre>
+Для начала создадим простой тест. Пусть у нас есть функция `add(a, b)`, которая складывает два числа:
+<pre>
+# my_module.py
+def add(a, b):
+    return a + b
+</pre>
+Теперь напишем тест для этой функции. Тесты принято размещать в файле, название которого начинается с `test_` или заканчивается на `_test.py`:
+<pre>
+# test_my_module.py
+from my_module import add
+
+def test_add():
+    assert add(1, 2) == 3
+    assert add(0, 0) == 0
+    assert add(-1, 1) == 0
+</pre>
+В этом примере функция `test_add` проверяет, что функция `add` возвращает правильные результаты для различных входных значений.
+<p>
+<b>Запуск тестов</b><br>
+Чтобы запустить тесты, достаточно выполнить в терминале команду:
+<pre>
+pytest test_my_module.py
+</pre>
+Pytest автоматически находит все тестовые функции, которые начинаются с `test_`, и выполняет их. Если все тесты пройдут
+успешно, вы получите сообщение, что все тесты прошли. Если какой-либо тест не прошёл, Pytest предоставит подробный отчёт о том, что пошло не так.
+<p>
+<b>Использование фикстур</b><br>
+Фикстуры в Pytest позволяют автоматически выполнять код до и после выполнения тестов. Это полезно, например, для подготовки
+данных, настройки соединений с базой данных, или для очистки ресурсов после выполнения теста.
+<pre>
+# test_my_module.pyimport pytest
+from my_module import add
+@pytest.fixture
+def setup_data():
+    # Подготовка данных или создание объектов
+    a = 1
+    b = 2
+    return a, b
+def test_add_with_fixture(setup_data):
+    a, b = setup_data
+    assert add(a, b) == 3
+</pre>
+Здесь фикстура `setup_data` подготавливает данные, которые потом передаются в тестовую функцию `test_add_with_fixture`. Фикстуры могут быть использованы для многократного использования кода и улучшения читаемости тестов.
+<p>
+<b>Параметризация тестов</b><br>
+Pytest также поддерживает параметризацию тестов, что позволяет запускать один и тот же тест с различными входными данными:
+<pre>
+# test_my_module.py
+import pytest
+from my_module import add
+
+@pytest.mark.parametrize("a, b, expected", [
+(1, 2, 3),
+(0, 0, 0),
+(-1, 1, 0)
+])
+def test_add_parametrized(a, b, expected):
+    assert add(a, b) == expected
+</pre>
+Здесь используется декоратор `pytest.mark.parametrize`, который позволяет передать несколько наборов значений в одну тестовую
+функцию. В результате тест будет выполнен для каждого набора значений.
+<p>
+<b>Запуск всех тестов</b><br>
+Чтобы запустить все тесты в проекте, достаточно вызвать в терминале команду:
+<pre>
+pytest
+</pre>
+Pytest будет искать все файлы, начинающиеся с `test_`, и запускать тесты из них. Это удобно, если вы хотите выполнить все тесты проекта без необходимости указывать конкретный файл.
+<p>
+<b>Тестирование исключений</b><br>
+Pytest позволяет легко проверять, выбрасываются ли исключения в определённых случаях. Для этого используется контекстный менеджер `pytest.raises`:
+<pre>
+# my_module.py
+def divide(a, b):
+if b == 0:
+raise ValueError("Cannot divide by zero")
+return a / b
+</pre>
+Теперь напишем тест для функции `divide`, который проверит, что исключение выбрасывается при делении на ноль:
+<pre>
+# test_my_module.py
+import pytest
+from my_module import divide
+def test_divide_by_zero():
+with pytest.raises(ValueError):
+divide(1, 0)
+</pre>
+Здесь тест проверяет, что при делении на ноль возникает исключение `ValueError`.
 <pre>
 
 
