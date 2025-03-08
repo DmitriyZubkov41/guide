@@ -1,19 +1,58 @@
-<html><head></head><body>
-<title>Учебник</title>
-<h2 align="center"><a href="https://wiki.ros.org/ru/ROS/Tutorials">Из официальной документации</a></h3>
-<h2><a href="http://wiki.ros.org/ROS/Tutorials/CreatingPackage">Создание пакетов</a></h2>
+<html><head>
+<style>
+.menu {
+       height: 100%;
+       width: 160px;
+       position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
+       background-color: Gray;
+      }
+ .menu a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  */color: #818181;
+  display: block;
+          }     
+.content {
+           margin-left: 170px; /* То же, что и ширина боковой панели */
+         }
+</style>
+</head><body>
+<title>Перевод учебника</title>
+<div class="menu">
+<a href="index.html">Начальная</a><br>
+<a href="ros_set.html">Установка / настройка ROS</a>
+<a href="ros_message.html">Сообщения</a>
+<a href="ros_service.html">Сервисы (services)</a>
+<a href="ros_message.html">Сообщения</a>
+<a href="rosparam.html">Сервер параметров (Parameter Server)</a>
+<a href="ros_rqt.html">Графические утилиты</a>
+<a href="ros_launch.html">Команда roslaunch</a>
+<a href="ros_control.html">ROS Control</a>
+<a href="ros_difficult.html">Средний уровень</a>
+<a href="ros2.html">ROS2</a><br>
+<a href="rviz.html">Rviz</a><br>
+Перевод учебника:
+<a href="#package">Создание пакета</a>
+</div>
+<div class="content">
+Ссылка: <a href="https://wiki.ros.org/ru/ROS/Tutorials">Учебник по ROS</a></h3>
+<h3 align=center><a name="package" href="http://wiki.ros.org/ROS/Tutorials/CreatingPackage">Создание пакетов</a></h3>
 <ol>
-    <li><h3>Что такое catkin пакет?</h3>
+<li> <h4>Что такое catkin пакет?</h4>
 Чтобы catkin пакет считался таким, он должен иметь признаки:
-<ul>
-    <li> пакет должен содержать файл package.xml
-    <li> должен содержать файл  CMakeLists.txt
-    <li> У каждого пакета должна быть своя собственная папка. Это означает, что нет ни вложенных пакетов, ни нескольких пакетов, использующих один и тот же каталог.
-    </ul>
-<li><h3 align="center">Пакеты в catkin workspace</h3>
+ <ul>
+  <li> пакет должен содержать файл package.xml
+  <li> должен содержать файл  CMakeLists.txt
+  <li> У каждого пакета должна быть своя собственная папка. Это означает, что нет ни вложенных пакетов, ни нескольких пакетов, использующих один и тот же каталог.
+ </ul>
+Пакет находится в каталоге src .
+<p>
+<li> <h4>Пакеты в catkin workspace</h4>
 Обычный catkin workspace:<br>
 <img src="./images/catkin_ws.png">
-<li>Создание catkin-пакета.<br>
+<p>
+<li> Создание catkin-пакета.<br>
     Общий синтаксис команды создания пакета:<br>
     <font color="green">catkin_create_pkg &lt;package_name&gt; [depend1] [depend2] [depend3]</font><br>
 catkin_create_pkg требует, чтобы вы указали ему имя пакета и, возможно, список зависимостей, от которых зависит этот пакет.<br>
@@ -186,7 +225,7 @@ catkin_make</font>
 Сделаем его исполняемым:<br>
 <b>chmod +x talker.py</b>
 <p>
-<img src="./images/ros_talker.png">
+<img src="images/rostutorials.png">
 <p>
 Код talker.py:
 <p>
@@ -235,7 +274,7 @@ catkin_install_python(PROGRAMS scripts/talker.py
 <li> wget https://raw.github.com/ros/ros_tutorials/kinetic-devel/rospy_tutorials/001_talker_listener/listener.py
 <li> chmod +x listener.py
 </ul>
-<img src="./images/ros_listener.png">
+<img src="./images/rostutorials1.png">
 <li><p>
 Код:
 <br><img src="./images/code_listener.png">
@@ -354,7 +393,7 @@ rosrun turtlesim turtle_teleop_key</b><br>
 или если знаете имена нужных топиков:<br>
 <b>time rosbag info /tmp/mybagfile.bag | grep -E "(topic1|topic2|topic3)"</b>
 <p>
-<img src="./images/rosbag_record.png">
+<img src="./images/rostutorials4.png">
 
 <h3 align=center>Вариант 2: используем скрипт ros_readbagfile, чтобы извлечь интересующие темы</h3>
 <b>Установка команды ros_readbagfile:</b>
@@ -386,16 +425,15 @@ ln -si "${PWD}/ros_readbagfile.py" ~/bin/ros_readbagfile<br>
 <font color=green>time ros_readbagfile &lt;mybagfile.bag&gt; [topic1] [topic2] [topic3] [...]</font><br>
 Выведу только 1 топик /turtle1/cmd_vel:<br>
 <b>time ros_readbagfile 2024-07-21-19-21-13.bag /turtle1/cmd_vel</b><br>
-<img src="./images/time_ros_readbagfile.png">
 <li> Запишем сообщения 2024-07-21-19-21-13.bag /turtle1/cmd_vel в файл topics.yaml без вывода в терминал:<br>
- <b>time ros_readbagfile &lt;mybagfile.bag&gt; [topic1] [topic2] [topic3] [...] > topics.yaml</b><br>
- <img src="./images/ros_yml.png">
- <p>
+<b>time ros_readbagfile &lt;mybagfile.bag&gt; [topic1] [topic2] [topic3] [...] > topics.yaml</b><br>
+<img src="images/rostutorials2.png">
+<p>
  Если хотим одновременно записывать в файл и выводить на экран, то использовать команду такого формата:
  <p>
- <font color=green>time ros_readbagfile &lt;mybagfile.bag&gt; [topic1] [topic2] [topic3] [...] | tee topics.yaml</font>
- <p>
- <img src="./images/time_ros_readbagfile1.png">
+<font color=green>time ros_readbagfile &lt;mybagfile.bag&gt; [topic1] [topic2] [topic3] [...] | tee topics.yaml</font>
+<p>
+<img src="images/rostutorials3.png">
 <p>
 При желании, чтобы увидеть "прогресс", наблюдая, как увеличивается размер файла yaml, в новом терминале запустить команду:<br>
 <b>watch -n 1 'du -sk topics.yaml | awk '\''{printf "%.3f MiB %s\n", $1/1024, $2}'\'''</b>
@@ -422,26 +460,8 @@ ln -si "${PWD}/ros_readbagfile.py" ~/bin/ros_readbagfile<br>
 Однако скрипту ros_readbagfile требуется всего 1 минута 37 секунд на том же компьютере, чтобы прочитать ту же тему из того же файла bag объемом 18 ГБ! Таким образом, ros_readbagfile работает в 11,5/(1+37/60) = ~в 7 раз быстрее!
 <li> Потому что rostopic может одновременно читать только одну тему, в то время как ros_readbagfile может читать любое количество тем одновременно!
 </ul>
+<pre>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br><br><br><br></body></html>
+</pre></div></body></html>
