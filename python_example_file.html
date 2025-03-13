@@ -2,7 +2,7 @@
 <style>
 .menu {
        height: 100%;
-       width: 130px;
+       width: 145px;
        position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
        background-color: Gray;  
       }
@@ -14,7 +14,7 @@
   display: block;
           }     
 .content {
-           margin-left: 140px; /* То же, что и ширина боковой панели */
+           margin-left: 155px; /* То же, что и ширина боковой панели */
            padding: 0px 0px 0px 0px;
          }
 </style>
@@ -29,7 +29,10 @@
 <a href="#xml">Работа с XML</a>
 <a href="#parsing">Парсинг файлов</a>
 <a href="#plot">Построение графиков</a>
-<a href="#api">API</a>
+<a href="#api">API</a><br>
+Библиотеки:
+<a href="#itertools">&nbsp;&nbsp; itertools.permutations</a>
+<a href="#stdin">&nbsp;&nbsp; stdin</a>
 </div>
 <div class="content">
 <h3 align=center><a name="file">Файл, методы работы с файлами</h3>
@@ -501,60 +504,30 @@ for line in sys.stdin:
 
 </pre>
 <a name="regularn"><h3 align=center>Регулярные выражения</h3>
+<b>Метод search()</b><br>
 Вам дана последовательность строк.<br>
 Выведите строки, содержащие две буквы "z﻿", между которыми ровно три символа.
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
-Моё:
-<pre>
-from sys import stdin
-import re
-
-for line in stdin:
-    if re.search(r'z\D\D\Dz', line.rstrip()):
-        print(line.rstrip())</pre>
-</td><td valign=top>
-Другое:
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
 import re
 import sys
 
-for line in sys.stdin:
+for line in <font color=red>sys.stdin</font>:
     line = line.strip()
-    if re.search(r"z...z", line):
-        print(line)</pre>
-</td></tr></table>
+    if <b>re.search(r"z...z", line)</b>:
+        print(line)
+</pre></td></tr></table>
+<p>
+Метод search ищет входит ли шаблон в строку. Если входит, то функция возвращает объект Match, иначе — None.
 <pre>
-
-
 -------------------------------------------------------------------------------------------------------------------------
 
-
 </pre>
-Вам дана последовательность строк.<br>
-Выведите строки, содержащие обратный слеш "\﻿".
-<p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
-Моё:
-<pre>
-from sys import stdin
-import re
-
-for line in stdin:
-    line = line.strip()
-    if re.search(r'\\', line):
-        print(line)</pre>
-</td></tr></table>
-<pre>
-
-
------------------------------------------------------------------------------------------------------------------------
-
-
-</pre>
+<b>Метод search() и \b</b><br>
 Вам дана последовательность строк.<br>
 Выведите строки, содержащие слово, состоящее из двух одинаковых частей (тандемный повтор).
 <p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
 Моё:
 <pre>
 from sys import stdin
@@ -563,30 +536,23 @@ import re
 for line in stdin:
     line = line.strip()
     if re.search(r'\b(.+)\1\b', line):
-        print(line)</pre>
-</td>
-<td>
-Другое:
-<pre>
-import re
-import sys
-
-for line in sys.stdin:
-    line = line.strip()
-    if re.search(r"\b(\w+)\1\b", line):
         print(line)
+
+print(re.search(r'\b(.+)\1\b', "abcabc"))  # &lt;re.Match object; span=(0, 6), match='abcabc'>
+print(re.search(r'\b(.+)\1\b', "abcabcd")) # 2 None
+print(re.search(r'abc', "abcd"))           # &lt;re.Match object; span=(0, 3), match='abc'>
 </pre></td></tr></table>
+<p>
+\b в начале и конце шаблона означает начало и конец слова, поэтому во 2 строке search вернул None.<br>
+\1 - номер группы
 <pre>
-
-
 -------------------------------------------------------------------------------------------------------------------
 
-
 </pre>
-Вам дана последовательность строк.<br>
+<b>Замена подстроки, метод sub</b><br>
 В каждой строке замените все вхождения подстроки "human" на подстроку "computer"﻿ и выведите полученные строки.
 <p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
 Моё:
 <pre>
 from sys import stdin
@@ -594,50 +560,26 @@ import re
 
 for line in stdin:
     line = line.strip()
-    print(re.sub('human', 'computer', line))</pre>
-</td>
-<td>
-Другое:
-<pre>
-import re
-import sys
-
-print(re.sub(r'human', 'computer', sys.stdin.read()), end='')
+    print(re.sub('human', 'computer', line))
 </pre></td></tr></table>
 <pre>
-
-
 -----------------------------------------------------------------------------------------------------------------------
 
-
 </pre>
-Вам дана последовательность строк.<br>
+<b>Замена подстроки, метод sub</b><br>
 В каждой строке замените первое вхождение слова, состоящего только из латинских букв "a" (регистр не важен), на слово "argh".
 <p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
-Моё:
-<pre>
-from sys import stdin
-import re
-
-for line in stdin:
-    print(re.sub(r'\ba+\b', 'argh', line.strip(), count = 1, flags=re.IGNORECASE))</pre>
-</td></tr>
-<tr><td>
-Другое:
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
 import sys
 import re
 
-[print(re.sub(r'\b[<b>aA]</b>+\b', 'argh', line.rstrip(), 1)) for line in sys.stdin]</pre></td></tr></table>
+[print(re.sub(r'\b[<b>aA]</b>+\b', 'argh', line.rstrip(), 1)) for line in sys.stdin]
+</pre></td></tr></table>
 <pre>
-
-
 ---------------------------------------------------------------------------------------------------------------------
-
-
 </pre>
-Вам дана последовательность строк.<br>
+<b>Замена подстроки, метод sub, номер группы</b><br>
 В каждой строке поменяйте местами две первых буквы в каждом слове, состоящем хотя бы из двух букв.<br>
 Буквой считается символ из группы \w.
 <p>
@@ -650,32 +592,31 @@ import re
 for line in stdin:
     print(re.sub(r'\b(\w)(\w)', r'\2\1', line.strip()))</pre>
 </td></tr></table>
+<p>
+\b - начало слова<br>
+(\w)(\w) - это две группы, имеют номера 1 и 2.
 <pre>
-
-
 ---------------------------------------------------------------------------------------------------------------------
-
-
 </pre>
-Вам дана последовательность строк.<br>
+<b>Замена подстроки, метод sub, номер группы</b><br>
 В каждой строке замените все вхождения нескольких одинаковых букв на одну букву.<br>
 Буквой считается символ из группы \w.
 <p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
-Моё:
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
 from sys import stdin
 import re
 
 for line in stdin:
-    print(re.sub(r'(\w)\1+', r'\1', line.strip()))</pre>
-</td></tr></table>
+    print(re.sub(r'(\w)\1+', <font color=red>r'\1'</font>, line.strip()))
+</pre></td></tr></table>
+<p>
+Первый аргумент функции sub - это шаблон в строке, который нужно заменить. Второй аргумент - это чем будем менять шаблон.
+<p>
+r'\1' эквивалентно re.search(...).group(1), первому выражению, разделенному круглыми скобками, внутри регулярного выражения.<br>
+Группы нумеруют начиная с 1.
 <pre>
-
-
 ------------------------------------------------------------------------------------------------------------------------
-
-
 </pre>
 Вашей программе на вход подаются две строки, содержащие url двух документов A и B.<br>
 Выведите Yes, если из A в B можно перейти за два перехода, иначе выведите No.
@@ -817,7 +758,7 @@ print(*links, sep='\n')
 После чего преобразуем серии и получим исходную закодированную строку:<br>
 aaabccccCCaB
 <p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td valign=top>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
 <pre>
 import re
 
@@ -845,12 +786,112 @@ for i in input():  # 3ab4c2CaB
     n = ''
 </pre></td></tr></table>
 <pre>
+-----------------------------------------------------------------------------------------------------------------------------
+</pre>
+<b>Codewars 4 kyu</b><br>
+Найти для выражений типа "??*??=302?" число вместо вопросительного знака. Если число двузначное, то первый знак, если не минус, не может быть 0.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import re
+
+def solve_runes(runes):
+    lst1 = re.split(r'=', runes)                               #1
+    result = lst1[1]
+    if lst1[0][0] == '-':                                      # 2
+        lst2 = re.split(r'([+*-])', lst1[0][1:], maxsplit=1)
+        left_operand = '-' + lst2[0]
+    else:
+        lst2 = re.split(r'([+*-])', lst1[0], maxsplit=1)
+        left_operand = lst2[0]
+    operator = lst2[1]
+    right_operand = lst2[2]
+    print("runes=", runes)
+    print("left_operand=", left_operand) 
+    print("operator=", operator)
+    print("right_operand=", right_operand)
+    print("result=", result)
+    print()
+    
+    lst_runes = [0,1,2,3,4,5,6,7,8,9]
+    pattern = r'(-?\?[\d|\?])'                          # 3
+    if re.match(pattern, left_operand) or re.match(pattern, right_operand) or re.match(pattern, result):
+        lst_runes.remove(0)
+        
+    all_numbers = left_operand + right_operand + result  # 4
+    print("all_numbers=", all_numbers)
+    for i in all_numbers:
+        print("i=", i)
+        if i.isdigit() and int(i) in lst_runes:
+            lst_runes.remove(int(i))
+            print("2lst_runes=", lst_runes)
+    print("3lst_runes=", lst_runes)
+    lst3 = lst_runes[:]
+    for i in lst3:
+        lo = int(left_operand.replace('?', str(i)))
+        ro = int(right_operand.replace('?', str(i)))
+        res = int(result.replace('?', str(i)))
+        print("i=", i, "lo=", lo, "ro=", ro, "res=", res)
+        if operator == '+' and lo + ro != res:
+            lst_runes.remove(i)
+        elif operator == '-' and lo - ro != res:
+            #print("lo - ro=", lo - ro)
+            lst_runes.remove(i)
+        elif operator == '*' and lo * ro != res:
+            lst_runes.remove(i)
+        lst_runes.sort()
+    
+    return lst_runes[0] if len(lst_runes) != 0 else -1
 
 
+#print(solve_runes("1+1=?"))          # 2
+#print(solve_runes("123*45?=5?088"))  # 6, "Answer for runes = '123*45?=5?088' ")
+#print(solve_runes("-19--45=5?"))     # -1, "Answer for runes = '19--45=5?' ")
+#print(solve_runes("??*??=302?"))     # 5, "Answer for runes = '??*??=302?' ")
+#print(solve_runes("?*11=??"))        # 2, "Answer for runes = '?*11=??' ")
+print(solve_runes("-?56373--9216=-?47157"))        # 8, "Answer for runes = '??*1=??' ")
+</pre></td></tr></table>
+<p>
+1 строка - расщепляю строку на список из двух элементов по '='. Второй элемент списка - это после знака равно.
+<p>
+2. Условие, что первый символ - это знак минус.
+<p>
+3. pattern = r'(-?\?[\d|\?])' - шаблон, чтобы возможно отсеять 0 из списка возможных цифр lst_runes.  Шаблон начинается с -? - это значит минус или его нет. Далее \? - это ?, его экранирую, чтобы не считался метасимволом.<br>
+Функция match() ишет шаблон в начале строки.<br>
+Если условие выполняется, то удаляю 0 из lst_runes.remove(0): lst_runes.remove(0)
+<p>
+4. В all_numbers суммирую все символы. Далее смотрю каждый символ и если он является цифрой (isdigit()) и присутствует в списке lst_runes, то удаляю из этого списка: lst_runes.remove(int(i)) Далее вместо '?' подставляю элемент из lst_runes и если равенство не выполняется, то удаляю этот элемент. Итоговый список сортирую: lst_runes.sort() и если не пустой, то: return 1 элемент списка.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import re
+
+def solve_runes(runes):
+    for d in sorted(set("0123456789") - set(runes)):           # 1
+        toTest = runes.replace("?",d)                          # 2
+        if re.search(r'([^\d]|\b)0\d+', toTest): continue
+        l,r = toTest.split("=")
+        if eval(l) == eval(r): return int(d)
+    return -1
+</pre></td></tr></table>
+<p>
+1. set("0123456789") равно {'1', '9', '8', '6', '5', '7', '0', '3', '4', '2'}<br>
+Например: set("-?56373--9216=-?47157") равно {'1', '9', '6', '5', '7', '=', '-', '3', '4', '?', '2'}<br>
+И set("0123456789") - set("-?56373--9216=-?47157") равно {'8', '0'}
+<p>
+2.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def solve_runes(runes):
+    for c in sorted(set('0123456789') - set(runes)):        
+        s = runes.replace('?', c).replace('-', ' - ').replace('+', ' + ').replace('*', ' * ').replace('=', ' == ')
+        if not any(e[0] == '0' and e != '0' for e in s.split()) and eval(s): return int(c)
+    return -1
+</pre></td></tr></table>
+<pre>
 
 =======================================================================================================================
-
-
 
 </pre>
 <a name="table"><h3 align=center>Работа с таблицами</h3>
@@ -1466,7 +1507,7 @@ import pandas as pd
 
 url = 'https://stepik.org/media/attachments/lesson/245290/trekking3.xlsx'
 sheet_1 = pd.read_excel(url, sheet_name=0, index_col=0).fillna(0)
-sheet_2 = pd.read_excel(url,	sheet_name=1, index_col=[0])  # параметр index_col=[0] назначает нулевой столбец 'День' индексным
+sheet_2 = pd.read_excel(url,	sheet_name=1, index_col=[0])  # параметр index_col=[0] делает нулевой столбец 'День' индексным
 for day in sheet_2.index.unique():  # атрибут index выдает индекс меток, а функция unique() сокращает его до уникальных 
   ration = pd.concat([sheet_2.loc[day].groupby('Продукт').sum(), sheet_1], axis=1, join='inner')
   
@@ -1654,6 +1695,317 @@ else:
 Не забудьте заменить `'your_api_key'` на ваш API ключ
 OpenWeatherMap. Этот код получает данные о текущей погоде для заданного города, преобразует их в DataFrame и выполняет простой
 анализ.
+<pre>
+
+==========================================================================================================================
+
+</pre>
+<a name="library"><h2 align=center>Библиотеки</h2>
+<b>Codewars 3 kyu</b><br>
+<a name="itertools"><b>Модуль  permutations из библиотеки itertools</b><br>
+Получить из слова весь возможный список слов и вывести номер слова в этом отсортированном списке.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+<b>from itertools import permutations</b>
+
+def list_position(word):
+    list_words = []
+    for i in permutations(word):
+        list_words.append(''.join(i))
+        
+    list_words = list(set(list_words))
+    list_words.sort()
+    return list_words.index(word)+1
+
+#list_position('ABAB')
+#list_position('BAAA')
+print(list_position('QUESTION'))
+</pre></td></tr></table>
+<p>
+<a href="https://kotoff.net/article/python/97-generacija-vsevozmozhnyh-kombinacij-iz-nabora-simvolov-kombinatorika-v-python-itertools.html">Ссылка</a><br>
+Модуль  permutations формирует список слов из входного слова.
+<p>
+Решение без импорта модуля:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def list_position(word):
+    list_words = []
+    list_word = list(word)
+    s = ''
+    get_simvol(list_word, s, list_words, 0)    
+        
+    return list_words
+
+
+def get_simvol(list_word, s, list_words, recurs):
+    recurs +=1
+    i = 0
+    <b>while i < len(list_word):</b>
+        #print("recurs=", recurs)
+        #print("До удаления list_word=", list_word, "s=", s)
+        <b>s1 = s
+        list_word1 = list_word[:]</b>    # без этой строки list_word везде равен последнему list_word = []
+        s1 += list_word1.pop(i)
+        #print("После удаления элемента из list_word1, list_word=", list_word, "и list_word1=", list_word1, "s=", s, "s1=", s1)
+        if list_word1 != []:
+            get_simvol(list_word1, s1, list_words, recurs)
+            i +=1
+        else:
+            list_words.append(s1)
+            #print("Добавляем=", s1)
+            return  list_words
+
+print(list_position('12345'))
+</pre></td></tr></table>
+<p>
+1. Почему i выходит за range(0, 1)<br>
+Мы список сократили с двух до одного элемента, но переменная i по-видимому живет независимой жизнью, как в первой итерации запомнила, что range(0, 2), так этим и живет даже когда реальный range(0, 1)<br>
+Решение выполнить перебор через цикл <b>while</b> .
+<p>
+2. Вернулись в рекурсию, но в строке:<br>
+while i < len(list_word)<br>
+list_word теперь изменился, а нужен как до изменения в теле цикла.<br>
+Решение: list_word1 = list_word[:] переместил до удаления элемента и элемент теперь удаляю из list_word1 В итоге list_word не меняется.
+<p>
+3. Возвращаемся в рекурсию, s равен значению после удаления элемента из list_word1 , а нужно чтобы  равнялся как до удаления.
+<p>
+2 и 3 проблемы одинаковые, связанные с тем, что переменная из условия цикла меняется в теле цикла из-за этого проблемы.<br>
+<font color=brown size=5>Никогда не менять переменную из условия цикла в теле цикла</font>.
+
+Напишите программу, которая подключает модуль math и, используя значение числа π из этого модуля, находит для переданного ей на
+стандартный ввод радиуса круга периметр этого круга и выводит его на стандартный вывод.
+<pre>
+from math import pi
+print(float(input()) * pi * 2)
+</pre>
+<pre>
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Напишите программу, которая запускается из консоли и печатает значения всех переданных аргументов на экран (имя скрипта 
+выводить не нужно). Не изменяйте порядок аргументов при выводе.
+<p>
+Для доступа к аргументам командной строки программы подключите модуль sys и используйте переменную argv из этого модуля.
+<pre>
+import sys
+print(*sys.argv[1::])</pre>
+Метод sys.argv выдаст список, где первый элемент - это имя вызвавшей программы, а следующие - это аргументы программы. Посколь
+ку нам не нужно имя программы, то к списку применяем срез.
+<br><img src="./images/python_example.png"><br>
+Первую и вторую команду применили без среза.<br>
+3 команду без звездочки внутри print()
+<pre>
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Скачайте файл. В нём указан адрес другого файла, который нужно скачать с использованием модуля requests и посчитать число 
+строк в нём.
+<p>
+Используйте функцию get для получения файла.
+<p>
+После получения файла вы можете проверить результат, обратившись к полю text. Если результат работы скрипта не принимается, 
+проверьте поле url на правильность. Для подсчёта количества строк разбейте текст с помощью метода splitlines.
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+import requests
+# Прочитаем url со скачанного файла
+with open('/home/dmitriy/Python/mypython/dataset_3378_2.txt') as f:
+    s = f.read()
+    # print(s)  #  адрес страницы, которую нужно скачать
+r = requests.get(s)  # простой get-запрос
+#print('Ответ сервера:', '\n', r.text.splitlines()) # вывод ответа от сервера
+#print('Ответ сервера:', '\n', r.text)
+for i in r.text.splitlines():
+    print(i)
+print('количество строк=', len(r.text.splitlines()))
+</pre>
+</td></tr></table>
+<font color=red>SyntaxError: unexpected character after line continuation character</font><br>
+Данная ошибка означает, что где-то болтается '\'  вне строки. После того, как в print('Ответ сервера:', <font color=red>\n
+</font>, r.text) <b>\n</b> заключил в кавычки, ошибка исчезла.
+<p>
+r = requests.get(s).splitline()  # простой get-запрос<br>
+<font color=red>AttributeError: 'Response' object has no attribute 'splitline'</font><br>
+Ошибку устранил, когда метод splitline() применил к объекту r.text, а не в команде <b>r = requests.get(s).splitline()</b>, 
+которая вызывала ошибку.
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+Имеется набор файлов, каждый из которых, кроме последнего, содержит имя следующего файла.
+Первое слово в тексте последнего файла: "We".
+<p>
+Скачайте предложенный файл. В нём содержится ссылка на первый файл из этого набора.
+<p>
+Все файлы располагаются в каталоге по адресу:
+https://stepik.org/media/attachments/course67/3.6.3/
+<p>
+Загрузите содержимое ﻿последнего файла из набора, как ответ на это задание.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+url = 'https://stepik.org/media/attachments/course67/3.6.3/'
+import requests
+with open('/home/dmitriy/Python/mypython/dataset_3378_3.txt') as f:
+    u = f.read()
+    # u = u[len(url):]
+    #print('Адрес 1 файла из набора:', url+u)
+    print('Адрес 1 файла из набора:', u)
+    # u = requests.get(url + u)
+    u = requests.get(u)
+k = 0 # счетчик файлов
+while True:
+    if u.text.split()[0] == 'We':
+        break
+    u = requests.get(url + u.text)
+    print('k=', k, 'адрес следующего файла:', url+u.text)
+    k +=1
+print('Последний файл:\n\n', u.text)
+</pre>
+</td></tr></table>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Не моё:
+<pre>
+import requests
+url, name = 'https://stepik.org/media/attachments/course67/3.6.3/', '699991.txt'
+while <b>name[:2] != 'We':</b>
+    name = requests.get(url + name).text
+print(name)</pre>
+Еще:
+<pre>
+import requests
+with open('dataset_3378_3.txt') as txt:
+    a = txt.readline().strip()
+print(a)
+a = str(requests.get(a).text)
+b = 'https://stepik.org/media/attachments/course67/3.6.3/'
+while 'we' not in a:
+    print(a)
+    <b>a = requests.get(b + a).text</b>
+print(a)
+</pre>
+</td></tr></table>
+<font color=red>u = requests.get(str(url+u))<br>
+TypeError: can only concatenate str (not "Response") to str</font><br>
+Так и не смог решить проблему, извращенно сначало первый из набора отдельно вытащил url из файла и только к следующим через 
+цикл посылал запрос. Похоже надо было так: <b>u = requests.get(url + u).text</b>
+<pre>
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+
+</pre>
+В первой строке дано три числа, соответствующие некоторой дате date -- год, месяц и день.<br>
+Во второй строке дано одно число days -- число дней.<br>
+Вычислите и выведите год, месяц и день даты, которая наступит, когда с момента исходной даты date пройдет число дней, равное 
+days.<br>
+Примечание: Для решения этой задачи используйте стандартный модуль datetime.
+Вам будут полезны класс datetime.date для хранения даты и класс datetime.timedelta﻿ для прибавления дней к дате.
+<p>
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td rowspan=3 valign=top>
+Моё:
+<pre>
+from datetime import datetime as dt, timedelta
+
+first_date=dt.strptime(input(), '%Y %m %d')
+end_date = first_date + timedelta(int(input()))
+end_date1 = end_date.strftime('%Y %m %d')
+date = end_date1.split()
+for i in date:
+    print(int(i), end=' ')</pre>
+</td>
+<td>
+Другое:
+<pre>
+import datetime
+inp = datetime.datetime.strptime(input(), "%Y %m %d")
+inp += datetime.timedelta(days=int(input())) 
+print(f'{inp.year} {inp.month} {inp.day}')
+
+</pre>
+</td></tr>
+<tr><td>
+Другое:
+<pre>
+import datetime
+y, m, d = map(int, input().split())
+days = int(input())
+current = datetime.date(year=y, month=m, day=d)
+current += datetime.timedelta(days=days)
+print("{} {} {}".format(current.year, current.month, current.day))</pre>
+</td></tr>
+<tr>
+<td>
+Ещё:
+<pre>
+import datetime
+<b>(y,m,d) = [int(n) for n in input().split()]</b>
+d = datetime.date(y, m, d)+ datetime.timedelta(int(input()))
+print(d.year, d.month, d.day)</pre>
+</td></tr></table>
+<p>
+1. Скажите, пожалуйста, почему datetime.datetime...? А если datetime.strptime, то "datetime не имеет атрибута strptime"
+<br>
+Потому что метод класса datetime, который преобразует строку в datetime, есть операция datetime.strptime(date_string, format). 
+То есть, чтобы корректно написать операцию переформатирования введенной строки в формат даты, мы сначала прописываем класс 
+datetime, затем через точку метод datetime.strptime().. в скобках - соответствующие аргументы
+<pre>
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+
+</pre>
+<a name='os'><b>Модуль os</b><br>
+Вам дана в архиве (ссылка) файловая структура, состоящая из директорий и файлов.
+<br>Вам необходимо распаковать этот архив, и затем найти в данной файловой структуре все директории, в которых есть хотя бы 
+один файл с расширением ".py". 
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+Моё:
+<pre>
+from os import getcwd, walk, chdir
+
+chdir('/home/dmitriy/Python/mypython/main')
+lst = set()
+for root, directories, filenames in walk(getcwd()):
+    for filename in filenames:
+        if filename.endswith('.py'):
+            lst.add(root[30::])
+for x in sorted(lst):
+    print(x)</pre>
+</td>
+<td valign=top>
+Другое:
+<pre>
+import os
+
+for cur_dir, subdirs, files in os.walk("main"):
+    for file in files:
+        if file.endswith(".py"):
+            print(cur_dir)
+            break
+</pre>
+</td></tr></table>
+<p>
+1. os.walk() идет по директориям в алфавитном порядке. За счет этого можно не сортировать итоговый список.<br>
+2. chdir - переход на нужную папку<br>
+getcwd() - текущая папка<br>
+walk(dir) - выдает генератор - итератор, где его элемент состоит из строки (каталог), списка входящих каталогов и еще один 
+список из файлов. <br>
+3. lst.add(root[30::]) - срез, чтобы обрезать лишний путь к каталогу.
 <pre>
 
 
