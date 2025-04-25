@@ -35,12 +35,13 @@
 <a href="#dict">Словари</a>
 Алгоритмы:
 <a href="#matrix">Матрицы</a>
-<a href="#lst_array">Односвязные списки</a>
+<a href="#bfs">BFS - поиск в ширину</a>
+<a href="#dfs">Поиск в глубину (DFS)</a>
+<a href="#bubble">Пузырьковая сортировка</a>
 <a href="#graf">Задачи на графы</a>
 <a href="#fun">Функции:</a>
 <a href="#recurs_fun">Рекурсивные функции</a>
 <a href="#lambda">&nbsp;&nbsp; lambda-функции</a>
-<a href="#obiekt">Объекты</a>
 <a href="#oop">ООП</a>
 <a href="#iterator">Итерироние классов</a>
 <a href="#gener">Функции-итераторы</a>
@@ -642,6 +643,106 @@ print(d)
 <p>
 2. Ошибка «TypeError: 'type' object is not subscriptable» в Python возникает, когда пытаются получить доступ к элементу объекта, используя индекс, а объект не поддерживает такую операцию.
 <pre>
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Codewars 4 kyu<br>
+Поиск интересных цифр</b>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def is_interesting(number, awesome_phrases):
+    lst1 = [number + n  for n in range(-2, 3)]
+    lst1.remove(number)
+    lst1.insert(0, number)
+    if number > 97:
+        # Сравнение с числами массива:
+        if number in awesome_phrases or number % 100==0 or (number > 99 and check_number(number)) or (number>99 and
+ str(number)==str(number)[::-1]):
+            return 2
+        # Случаи, когда возврат 1
+        for n in lst1:
+            if n in awesome_phrases or str(n) == str(n)[::-1] or check_number(n):
+                return 1
+    return 0
+<font color=red>
+def check_number(number):
+    # Проверим последовательно цифры в числе
+    str1 = str(number) + '!'
+    for step in (1, -1):
+        for i in range( len(str1) - 2 ):
+            if number % 10 != 0:
+                if int(str1[i]) != int(str1[i+1]) + step:
+                    break
+                if str1[i+2] == '!':
+                    return 2
+            else:
+                if i < (len(str1) - 3) and int(str1[i]) + step != int(str1[i+1]):
+                    break
+                if step == 1 and str1[-3] != '9':
+                    break
+                if step == -1 and str1[-3] != '1':
+                    break
+                if str1[i+2] == '!':
+                    return 2
+    return 0
+</font>
+print(is_interesting(3, [1337, 256]))      # 0
+print(is_interesting(1336, [1337, 256]))   # 1
+print(is_interesting(1337, [1337, 256]))   # 2
+print(is_interesting(11208, [1337, 256]))  # 0
+print(is_interesting(11209, [1337, 256]))  # 1
+print(is_interesting(11211, [1337, 256]))  # 2
+print(is_interesting(7000, [1337, 256]))   # 2
+print(is_interesting(1221, [1337, 256]))   # 2
+print(is_interesting(890, [1337, 256]))    # 2
+print(is_interesting(1235, [1337, 256]))   # 1
+print(is_interesting(123, [1337, 256]))    # 2
+print(is_interesting(98, [1337, 256]))     # 1
+print(is_interesting(96, [1337, 256]))     # 0
+</pre></td></tr></table>
+<p>
+Написал целую функцию check_number, чтобы определить состоит ли число из последовательно на 1 увеличивющихся/уменьшающихся цифр. Когда можно было всего одной элементарной строкой описать, как в других примерах.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+Не моё:
+<pre>
+def is_incrementing(number): return str(number) in '1234567890'
+def is_decrementing(number): return str(number) in '9876543210'
+def is_palindrome(number):   return str(number) == str(number)[::-1]
+def is_round(number):        return set(str(number)[1:]) == set('0')
+
+def is_interesting(number, awesome_phrases):
+    tests = (is_round, is_incrementing, is_decrementing,
+             is_palindrome, <font color=red>awesome_phrases.__contains__</font>)
+       
+    for num, color in zip(range(number, number+3), (2, 1, 1)):
+        if num >= 100 and any(test(num) for test in tests):
+            return color
+    return 0
+</pre></td></tr></table>
+<p>
+Функция zip возвращает zip-объект кортежей.<br>
+Функция any возвращает True, если хотя бы один элемент из аргумента-последовательности является истинным значением.<br>
+Непонятно, но например если число 1200, то вернёт False. is_round(number) помоему описана неправильно.<br>
+<i>Чтобы переопределить оператор 'in' в собственном классе, вам нужно реализовать метод __contains__. Данный метод даёт возможность указать собственные условия проверки вхождения элемента в объект этого класса. Метод __contains__ применяется для определения логики проверки принадлежности элемента вашему классу.</i><br>
+__contains__ - это магический метод (встроенная функция) класса, но вот что он делает, я так и не понял.
+<p>
+Другое решение:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def is_good(n, awesome):
+    return n in awesome or str(n) in "1234567890 9876543210" or str(n) == str(n)[::-1] or int(str(n)[1:]) == 0
+
+def is_interesting(n, awesome):
+    if n > 99 and is_good(n, awesome):
+        return 2
+    if n > 97 and (is_good(n + 1, awesome) or is_good(n + 2, awesome)):
+        return 1
+    return 0
+</pre></td></tr></table>
+<pre>
 
 ======================================================================================================================
 
@@ -651,7 +752,7 @@ print(d)
 Напишите функцию, которая для заданного натурального числа n генерирует последовательность чисел, описанную в гипотезе Коллатца:<br>
 Если n четное, то делим его пополам, если нечётное, то умножаем на 3 и прибавляем 1. С итогом вычисления снова проделываем эту операцию до тех пор, пока в результате не будет получено число 1.
 <p>
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
 n = int(input())
 
@@ -1934,10 +2035,461 @@ def snail(array):
     return out
 </pre></td></tr></table>
 <pre>
+---------------------------------------------------------------------------------------------------------------------------
 
+</pre>
+<b>Codewars 4 kyu:<br>
+Преобразование матрицы в numpy объект, чтение матрицы без промежуточного столбца, рекурсия</b><br>
+Вычислить детерминант матрицы.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import numpy as np
+
+def determinant(table):
+    N = len(table)
+    determ = 0
+    m = np.array(table)
+    for col in range(N):
+        if N == 1:
+            return m[0][0]
+        if N == 2:
+            return m[0][0] * m[1][1] - m[0][1] * m[1][0]
+        <b>srez = [i for i in range(len(table[0])) if i != col]</b> # вычисляю список столбцов
+        <b>table1 = m[1:, srez]</b>                                 # без верхнего ряда и минус col столбец
+        if col % 2 != 0:
+            determ -= m[0][col] * determinant(table1)
+        else:
+            determ += m[0][col] * determinant(table1)
+    return determ
+       
+m2 = [[5]]
+print(determinant(m2))          # 5
+m1 = [[4, 6], [3,8]]
+print(determinant(m1))          # 14
+m5 = [[2,4,2],[3,1,1],[1,2,0]]  # 10
+print(determinant(m5))
+</pre></td></tr></table>
+<p>
+Если уж импортировал numpy, то надо было использовать встроенный метод для определения детерминанта, как в решении ниже.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td valign=top>
+Не моё:
+<pre>
+import numpy as np
+
+def determinant(a):
+    return round(np.linalg.det(np.matrix(a)))
+</pre></td>
+<td>
+<pre>
+def determinant(matrix):
+    result = 0
+    l = len(matrix)
+
+    #base case when length of matrix is 1
+    if l == 1:
+        return matrix[0][0]
+
+    #base case when length of matrix is 2
+    if l == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+    #for length of matrix > 2
+    for j in range(0, l):
+        # create a sub matrix to find the determinant
+        if l!=2:
+            sub_matrix = []               
+            sub_matrix = [(row[0:j]+row[j+1:]) for row in matrix[1:]]
+        result = result + (-1)**j * matrix[0][j] * determinant(sub_matrix)
+    return result
+</pre></td></tr></table>
+<p>
+В правом решении непонятно, если j = 0, то (-1 ** 0) = -1, а должно быть 1. 
+<pre>
+==========================================================================================================================
+
+</pre>
+<a name="bfs"><h4 align=center>BFS - алгоритм поиска в ширину</h4>
+<b>Codewars 4 kyu<br>
+BFS, Квадратная матрица</b><br>
+Дана квадратная матрица, где точки - это пустота, а 'W' - стена. Нужно выяснить можно ли из ячейки (0,0) добраться в правый нижний угол.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def path_finder(maze):
+        
+    # Сформируем из строки maze матрицу n*n
+    n = int(len(maze) ** 0.5)
+    table = maze.split('\n')                 # 1
+    for i in range(n):
+        table[i] = list(table[i])
+    
+    table[0][0] = '1'
+    Flag = do_step(table, 0, 0, 1, n)
+    for i in range(n):
+        print(table[i])
+    return Flag
+
+def do_step(table, row, col, count, n):
+    if row == n - 1 and col == n -1:
+        return True
+    for step in ('up', 'down', 'left', 'right'):
+        # Вверх
+        if step == 'up' and row - 1 > -1 and table[row - 1][col] != 'W' and table[row - 1][col] == '.':
+            count +=1
+            table[row-1][col] = count
+            if do_step(table, row-1, col, count, n):
+                return True
+           
+        # Влево
+        if step == 'left' and col - 1 > -1 and table[row][col-1] != 'W' and table[row][col-1] == '.':
+            count +=1
+            table[row][col-1] = count
+            if do_step(table, row, col-1, count, n):
+                return True
+        # Вправо
+        if step == 'right' and col + 1 < n and table[row][col+1] != 'W' and table[row][col+1] == '.':
+            count +=1
+            table[row][col+1] = count
+            if row == n - 1 and col + 1 == n -1:
+                return True
+            if do_step(table, row, col+1, count, n):
+                return True
+        # Вниз
+        if step == 'down' and row + 1 < n and table[row+1][col] != 'W' and table[row+1][col] == '.':
+            count +=1
+            table[row+1][col] = count
+            if row + 1 == n - 1 and col == n -1:
+                return True
+            if do_step(table, row+1, col, count, n):
+                return True
+    return False
+
+maze = "\n".join([
+        '.',
+])
+
+print(path_finder(maze))
+</pre></td></tr></table>
+<p>
+1. Чтобы можно было в каждую ячейку записывать значение преобразовывать в список буду каждый ряд таблицы.<br>
+Непонятно только почему в решении ниже в matrix[x][y] записывается 'x' вместо '.'
+<p>
+2. Ниже даны решения, намного меньше кода и без рекурсии.
+<p>
+Другое решение:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def path_finder(maze):
+    matrix = list(map(list, maze.splitlines()))
+    stack, length = [[0, 0]], len(matrix)
+    while len(stack):
+      x, y = stack.pop()
+      if matrix[x][y] == '.':
+        matrix[x][y] = 'x'
+        for x, y in (x, y-1), (x, y+1), (x-1, y), (x+1, y):
+          if 0 <= x < length and 0 <= y < length:
+            stack.append((x, y))
+    return matrix[length-1][length-1] == 'x'
+</pre></td></tr></table>
+<p>
+<font color=red>Нифига не понятно</font>
+<p>
+Другое:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def path_finder(maze):
+    <b>maze = [list(level) for level in maze.split("\n")]</b>   # 1
+    N = len(maze)
+    Q = [(0, 0)]
+    
+    while Q:
+        x, y = Q.pop(0)        
+        if x >= 0 and y >= 0 and x < N and y < N:
+            if x == N-1 and y == N-1:
+                return True
+            if maze[y][x] == '.':
+                maze[y][x] = 'W'
+                directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+                for dx, dy in directions:
+                    Q.append((x + dx, y + dy))
+    return False
+</pre></td></tr></table>
+<p>
+1. Более короткий код получения матрицы по сравнению с моим способом. 1 строка кода вместо трёх.
+<p>
+2. В цикл первым подаётся список Q = [(0,0)] - левая верхняя ячейка, далее этот элемент в списке удаляется, но добавляется 4 новых элементов и снова на вход цикла.
+<pre>
+----------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>BFS, количество ходов самого короткого маршрута</b><br>
+Предыдущая задача, но теперь нужно найти количество ходов кратчайшего маршрута.<br>
+Сначала решал через рекурсию:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+from copy import deepcopy
+
+def path_finder(maze):
+    # Сформируем из строки maze матрицу n*n
+    table = [list(level) for level in maze.split("\n")]    
+    N = len(table)
+    min_count = False
+    count = -1
+    result = do_step(table, 0, 0, N, count, min_count)
+    return result
+    
+def do_step(table, row, col, N, count, min_count):
+    if row >= 0 and col >= 0 and row < N and col < N and table[row][col] == '.':
+        count += 1
+        if min_count != False and count > min_count:
+            
+            return min_count
+        table[row][col] = count
+        # Достигли конечной точки
+        if row == N - 1 and col == N -1:
+            if min_count == False or count < min_count:
+                min_count = count
+                min_table = table[:]
+                return min_count
+        # Do next step
+        for x,y in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            table1 = deepcopy(table)
+            min_count = do_step(table1, row+x, col+y, N, count, min_count)
+    return min_count
+</pre></td></tr></table>
+<p>
+Но на некоторых матрицах в частности пустой это решение очень долго ищет решение.<br>
+Другое мое окончательное решение на основе <a href="https://stackoverflow.com/questions/8922060/how-to-trace-the-path-in-a-breadth-first-search">Как отследить путь при поиске в ширину?</a>:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def path_finder(maze):
+    table = [list(row) for row in maze.split("\n")]
+    print("table=", table)       # для maze вариант a table= [['.', 'W', '.'], ['.', 'W', '.'], ['.', '.', '.']]
+    N = len(table)
+    queue = [[(0, 0)]]
+    count = 0
+    while queue:
+        # path - вариант маршрута, уже пройденный
+        path = queue.pop(0)        # рассмотрим маршрут, первый в очереди
+        print("path=", path)
+        count += 1
+        table[path[-1][0]][path[-1][1]] = count
+        if path[-1] == (N-1, N-1): # проверяем, достигли ли конечной ячейки
+            for i in range(N):
+                print(table[i])
+            return len(path) - 1
+               
+        for x,y in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            # new_path - новый маршрут, состоящий из уже пройденного маршрута path и добавляемого кортежа (row, col)
+            new_path = list(path)
+            row = path[-1][0] + x
+            col = path[-1][1] + y
+            if row >= 0 and col >= 0 and row < N and col < N and (row, col) and table[row][col] == '.':
+                new_path.append((row, col))
+                print("new_path=", new_path)
+                queue.append(new_path)        # все варианты маршрутов
+        
+        print("queue=", queue)
+    
+    return False
+
+a = "\n".join([
+  ".W.",
+  ".W.",
+  "..."
+])
+
+b = "\n".join([
+  ".W.",
+  ".W.",
+  "W.."
+])
+c = "\n".join([
+  "......",
+  "......",
+  "......",
+  "......",
+  "......",
+  "......"
+])
+</pre></td></tr></table>
+<p>
+maze вариант c , решение выдалось примерно через секунд 5-7 и сайт не принял решение.<p>
+Если посмотреть итоговую таблицу table скажем на c:
+<pre>
+[1, 3, 7, 15, 31, 63]
+[2, 6, 14, 30, 62, 125]
+[4, 12, 28, 60, 123, 237]
+[8, 24, 56, 119, 234, 419]
+[16, 48, 111, 227, 415, 671]
+[32, 95, 212, 404, 666, 672]
+</pre>
+Можно обратить внимание, что ячейка (1, 1) сначала принимала значение 5, а  потом когда перешли на маршрут 1 -3 , поменяла значение на 6. То есть дважды рассматривалась. Можно было после маршрута (0, 0) -> (1, 0) -> (1, 1), когда  стали рассматривать маршрут (0, 0) -> (0, 1) , ячейку (1, 1) пропустить, как уже посещаемую. Массив visited надо было ввести, чтобы быстрее решение искалось.
+<p>
+<font color=red>Не понятно почему такие большие разрывы между значениями count соседских ячеек.</font>
+<p> 
+Не моё решение:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def path_finder(maze):
+    maze = list(map(list, maze.splitlines()))            # 1
+    print("maze=", maze)                                 # maze= [['.', 'W', '.'], ['.', 'W', '.'], ['.', '.', '.']]
+    lenmaze_y, lenmaze_x = len(maze), len(maze[0])
+    queue = [(0, 0, 0)]
+    
+    while queue:
+        y,x,cnt = queue.pop(0)
+        print("y=", y, "x=", x, "cnt=", cnt)      
+        if x >= 0 and y >= 0 and x < lenmaze_x and y < lenmaze_y:
+            if maze[y][x] == '.':
+                maze[y][x] = cnt
+                directions = [(1, 0),(0, 1),(-1, 0),(0, -1)]
+                for direction_y, direction_x in directions:
+                    queue.append((y + direction_y, x + direction_x, cnt+1))  # 3
+                print("queue =", queue)
+            if x == lenmaze_x-1 and y == lenmaze_y-1:
+                for i in range(lenmaze_y):
+                    print(maze[i])                      # 2
+                return maze[y][x]
+            
+    return False
+            
+
+      
+d = "\n".join([
+  "......",
+  "......",
+  "......",
+  "......",
+  ".....W",
+  "....W."
+])
+
+a = "\n".join([
+  ".W.",
+  ".W.",
+  "..."
+])
+b = "\n".join([
+  ".W.",
+  ".W.",
+  "W.."
+])
+c = "\n".join([
+  "......",
+  "......",
+  "......",
+  "......",
+  "......",
+  "......"
+])
+#print(path_finder(d))
+print(path_finder(a))
+#print(path_finder(b))
+</pre></td></tr></table>
+<p>
+1. table = [list(row) for row in maze.split("\n")] и maze = list(map(list, maze.splitlines())) дают одинаковый результат.
+<p>
+2. Вывод:
+<pre>
+[0, 1, 2, 3, 4, 5]
+[1, 2, 3, 4, 5, 6]
+[2, 3, 4, 5, 6, 7]
+[3, 4, 5, 6, 7, 8]
+[4, 5, 6, 7, 8, 9]
+[5, 6, 7, 8, 9, 10]
+</pre>
+Очень наглядно.
+<p>
+3. queue.append((y + direction_y, x + direction_x, cnt+1))<br>
+Значение очереди на последней ячейке для пустой матрицы 6x6
+queue = [(5, 5, 10), (4, 4, 10), (5, 3, 10), (5, 5, 10), (4, 6, 10), (3, 5, 10), (4, 4, 10)]<br>
+У меня:<br>
+new_path = list(path)<br>
+new_path.append((row, col))<br>
+queue.append(new_path)<br>
+queue содержал 252 вложенных списка из примерно 10 элементов.
+<pre>
 ------------------------------------------------------------------------------------------------------------------------
 
 </pre>
+<b>Codewars 4kyu</b><br>
+Поиск самого дорогого маршрута в пирамиде
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def longest_slide_down(pyramid):
+    N = len(pyramid)
+    path = [[[0, 0], pyramid[0][0]]]
+    tmp_path = []
+    for row in range(N-1):
+        for col in range(len(pyramid[row])):
+            # маршрут по прямой вниз
+            tmp_path.append( path[col][:-1] + [[row+1, col]] + [path[col][-1] + pyramid[row+1][col]] )
+            # удаляю из пары маршрутов с совпадающим последним блоком менее дорогой
+            if col != 0 and tmp_path[col+1][-2] == tmp_path[col][-2]:
+                if tmp_path[col+1][-1] >= tmp_path[col][-1]:
+                    del tmp_path[col]
+                else:
+                    del tmp_path[col+1]
+            # маршрут на правый блок
+            tmp_path.append( path[col][:-1] + [[row+1, col+1]] + [path[col][-1] + pyramid[row+1][col+1]] )
+            if col != 0 and tmp_path[col+1][-2] == tmp_path[col][-2]:
+                if tmp_path[col+1][-1] >= tmp_path[col][-1]:
+                    del tmp_path[col]
+                else:
+                    del tmp_path[col+1]
+        
+        path.clear()
+        path = tmp_path[:]
+        tmp_path.clear()
+    print("path=", path)
+    result = max([path[i][-1] for i in range(len(path))])
+    return result
+
+print(longest_slide_down([[75],
+                          [95, 64],
+                          [17, 47, 82],
+                          [18, 35, 87, 10]]))
+</pre></td></tr></table>
+<p>
+1. Дана ячека c row col . На какие ячейки ниже рядом можно перейти? Ответ: на следующий ряд: row+1 на столбцы: col и col+1
+<p>
+2. Меняю элемент маршрута, также добавляю в него новый, но еще не закончил маршрут, снова перебираю его с добавленным маршрутом, так не должно быть. Ответ: ввел отдельный список для добавляемых маршрутов tmp_path. Как обход ряда заканчиваю, очищаю оригинальный path и присваиваю ему tmp_path. После этого очищаю tmp_path.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def longest_slide_down(p):
+    res = p.pop()           # результат перебора текущей строки tmp
+    print("res=", res)      
+    while p:                # идём снизу вверх по пирамиде
+        tmp = p.pop()       # следующая (выше строки res) строка пирамиды, которую будем перебирать.
+        print("tmp=", tmp)  # tmp= [7, 4] и tmp= [3]
+        res = [tmp[i] + max(res[i],res[i+1])  for i in range(len(tmp))]
+        print("res=", res) 
+    return res.pop()
+
+
+print(longest_slide_down([[75],
+                          [95, 64],
+                          [17, 47, 82],
+                          [18, 35, 87, 10]]))
+</pre></td></tr></table>
+<p>
+Перебирает пирамиду снизу вверх.
+<pre>
+
+===========================================================================================================================
+
+</pre>
+<a name="dfs"><h3 align=center>Алгоритм поиска в глубину (DFS)</h3>
 <b>Пример обхода в глубину</b><br>
 Решение судоку.
 <p>
@@ -2047,6 +2599,157 @@ printMatrix(sudoku(puzzle1))
 </pre></td></tr></table>
 <p>
 Долго разбирался почему при выводе матрицы ниже появлялась строка None . Оказывается функция всегда что-то возвращает, даже если в ней отсутствует return, в этом случае она возвращает None . Поэтому не нужно было print(funk()), а просто вызвать функцию funk() .
+<pre>
+---------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Codewars 4 kyu: 4 By 4 Skyscrapers</b><br>
+Правила просты.<br>
+Цель игры - разместить небоскрёбы по всем ячейкам сетки в соответствии со следующими правилами:<br>
+- Высота небоскрёбов варьируется от 1 до величины размера сетки, например для головоломки размером 4x4 высота небоскрёбов будет иметь значения от 1 до 4.<br>
+- В каждой строке и каждом столбце запрещено размещать небоскрёбы одинаковой высоты.<br>
+- Числа по краям сетки указывают, какое количество небоскрёбов можно увидеть, если взглянуть в направлении, указанном стрелкой.<br>
+Разместите числа в каждой ячейке сетки для обозначения высоты небоскрёбов.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def solve_puzzle (clues):
+    table = [[0 for j in range(4)] for i in range(4)] # создаём 4*4 таблицу с нулями
+    
+    # заполняем четвёрками
+    for i in range(16):
+        if clues[i] == 1:
+            table[dcl[i][0]][dcl[i][1]] = 4
+    
+    # заполняем таблицу       
+    for row in range(4):
+        for col in range(4):
+            if table[row][col] == 0:
+                # получаем список возможных этажей для ячейки row, col
+                list_numbers = get_list_numbers(table, row, col)
+    '''
+    for i in range(4):
+        #print(table[i])
+    '''
+    return table 
+
+
+def get_list_numbers(table, row, col):
+    str_numbers = '1234'
+    list_numbers = list(set(str_numbers) - set(table[row]) - set(table[col]))
+    list_numbers1 = list_numbers[:]
+    for n in list_numbers1:
+        if table[row][col] == n:
+            get_clues(table, row, col)
+
+    return list_numbers
+
+
+# получить чему будет равен clue при данном значении ячейки
+def get_clues(table, row, col):
+    # Во первых чему для row, col равен clues?
+    
+    return clue
+
+dcl = {0:[0,0], 1:[0,1], 2:[0,2], 3:[0,3], 4:[0,3], 5:[1,3], 6:[2,3], 7:[3,3], 8:[3,3], 9:[3,2], 10:[3,1],
+ 11:[3,0], 12:[3,0], 13:[2,0], 14:[1,0], 15:[0,0]}
+dcl1 = {v:k for k, v in dcl.items()}
+print(dcl1)                 # TypeError: unhashable type: 'list'
+
+clues = (
+( 2, 2, 1, 3,  
+  2, 2, 3, 1,  
+  1, 2, 2, 3,  
+  3, 2, 1, 3 ),
+
+
+( 0, 0, 1, 2,   
+  0, 2, 0, 0,   
+  0, 3, 0, 0, 
+  0, 1, 0, 0 )
+)
+
+outcomes = (
+( ( 1, 3, 4, 2 ),       
+  ( 4, 2, 1, 3 ),       
+  ( 3, 4, 2, 1 ),
+  ( 2, 1, 3, 4 ) ),
+
+
+( ( 2, 1, 4, 3 ), 
+  ( 3, 4, 1, 2 ), 
+  ( 4, 2, 3, 1 ), 
+  ( 1, 3, 2, 4 ) )
+)
+
+
+solve_puzzle (clues[0])       # outcomes[0]
+
+</pre></td></tr></table>
+<p>
+1. Заполнили матрицу нулями. Теперь, где подсказки равны 1, в соответсвующие ячейки поставим 4.<br>
+Соответствие между номером подсказки и адресом ячейки?
+<pre>
+
+</pre>
+<h2 align=center>Алгоритмы сортировки</h2>
+<a name="bubble"><h3 align=center>Пузырьковая сортировка</h3>
+<b>Codewars 4 kyu: Recover a secret string from random triplets</b><br>
+Получить секретную строку из матрицы относительных положений символов.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def recover_secret(triplets):
+    count_row = len(triplets)
+    count_col = len(triplets[0])
+    <font color=red>set1 = set()   
+    for row in range(count_row):
+        set1 = set1 | set(triplets[row])</font>
+    secret_word = list(set1)
+    #secret_word = ['s', 't', 'p', 'h', 'u', 'a', 'i', 'w']
+    flag = True
+    while flag:
+        flag = False
+        for row in range(count_row):
+            for col in  range(1, count_col):
+                ch = triplets[row][col]
+                prev_ch = triplets[row][col-1]
+                print()
+                print("prev_ch=", prev_ch, "ch=", ch)
+                if secret_word.index(ch) < secret_word.index(prev_ch):
+                    secret_word.remove(ch)
+                    secret_word.insert(secret_word.index(prev_ch)+1, ch)
+                    print("secret_word=", secret_word)
+                    flag = True  
+    return ''.join(secret_word)        
+    
+
+triplets = [
+          ['t','u','p'],
+          ['w','h','i'],
+          ['t','s','u'],
+          ['a','t','s'],
+          ['h','a','p'],
+          ['t','i','s'],
+          ['w','h','s']
+        ]
+print(recover_secret(triplets)) # "whatisup"
+</pre></td></tr>
+<tr><td>
+Не моё:
+<pre>
+def recoverSecret(triplets):
+    <b>letters = list(set([l for t in triplets for l in t]))</b>     # 1   
+            
+    for t in triplets * len(letters):
+        for i in range(len(t)-1):
+            a, b = letters.index(t[i]), letters.index(t[i+1])
+            if( a > b ): letters[b], letters[a] = letters[a], letters[b]
+            
+    return ''.join(letters)
+</pre></td></tr></table>
+<p>
+1. Просто и за 1 строку сделал, что я за 4 строки сделал
 <pre>
 
 =============================================================================================================================
@@ -3306,7 +4009,7 @@ def do_next_step(towers, path, lst_towers):
             #print(f"Положение: lst_towers={lst_towers}")
             copy_towers = copy.deepcopy(towers)
             copy_path = copy.deepcopy(path)
-            copy_lst_towers = copy.deepcopy(lst_towers)
+            copy_lst_towers = <b>copy.deepcopy(lst_towers)</b>
             if check_step(copy_towers, copy_lst_towers, from_tower, to_tower) != 0:
                 #print(f"Ход разрешили, ходим от {from_tower} башни в {to_tower}")
                 disk = copy_towers[from_tower].pop()
@@ -3342,8 +4045,7 @@ for i in best_path:
 Проблему решил так: check_towers = copy.deepcopy(towers)<br>
 предварительно: import copy
 <p>
-<li> При возврате к предыдущему шагу переменные сохраняют значение с последней итерации цикла<br>
-Создал копии оригинала и их отправляю в рекурсивной функции
+<li> <font color=brown size=5>При возврате к предыдущему шагу переменные сохраняют значение с последней итерации цикла. Создал копии оригинала и их отправляю в рекурсивной функции</font>
 <p>
 <li> Сделал обозначения башен в виде букв: A B C, но когда нужно удалить элемент списка: lst_to_towers[from_tower].pop()<br>
 то получаю ошибку:<br>
@@ -3376,9 +4078,7 @@ for i in path:
 <pre>
 
 
-
 =========================================================================================================================
-
 
 
 </pre>
@@ -3565,19 +4265,14 @@ s=set()
 for obj in objects:
     s.add(id(obj))
 print(len(s))
-</pre>
-</td></tr></table>
+</pre></td></tr></table>
 <pre>
 
-
-
-===================================================================================================================
-
-
+============================================================================================================================
 
 </pre>
-<h3 align=center><a name="oop">ООП</h3>
-<b>Простенький класс с функцией определения экземпляра __init__() и двумя методами.</b><br>
+<a name="oop"><h3 align=center>ООП</h3>
+Простенький класс с функцией определения экземпляра __init__() и двумя методами.<br>
 Реализуйте класс MoneyBox, для работы с виртуальной копилкой.<br>
 Каждая копилка имеет ограниченную вместимость, которая выражается целым числом – количеством монет, которые можно положить в 
 копилку. Класс должен поддерживать информацию о количестве монет в копилке, предоставлять возможность добавлять монеты в 
@@ -4178,6 +4873,67 @@ print(fib(1481423))  # долго
 </pre></td></tr></table>
 <p>
 <font color=red>Решение не принято.</font>
+<pre>
+------------------------------------------------------------------------------------------------------------------------------
+
+</pre>
+<b>Codewars 4 kyu</b><br>
+Написать функцию, которая принимает число num, а возвращает наименьшее число из таких же цифр числа num.
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+from itertools import permutations
+
+def next_smaller(n):
+    result = 0
+    spisok = [int(x) for x in list(str(n))]
+    digits_as_chars = map(str, spisok)
+    lst_numbers = permutations(digits_as_chars)
+    print(list(lst_numbers))
+    
+    lst_numbers = [int("".join(num)) for num in lst_numbers]
+    lst_numbers.sort()
+    print("1lst_numbers=", lst_numbers)
+    if lst_numbers.index(n) == 0 or (len(str(lst_numbers[lst_numbers.index(n) - 1])) < len(spisok)):
+        return -1 
+    return lst_numbers[lst_numbers.index(n) - 1]   
+    
+
+#print(next_smaller(907))        #  790
+#print(next_smaller(531))        # 513
+#print(next_smaller(135))        # -1
+#print(next_smaller(2071))       # 2017
+#print(next_smaller(414))        # 144
+#print(next_smaller(123456798))  # 123456789
+<font color=red>print(next_smaller(59884848483559))</font> 
+#print(next_smaller(1027))        # -1
+</pre></td></tr></table>
+<p>
+Для числа 59884848483559 метод permutations очень долго генерирует список, я так и не дождался. Сайт не принял решение. Надо искать другое решение.<br>
+Решение не нашёл. У других:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+def next_smaller(n):
+    s = list(str(n))
+    i = j = len(s) - 1
+    while i > 0 and s[i - 1] <= s[i]:
+        i -= 1
+    if i <= 0: return -1
+    while s[j] >= s[i - 1]:
+        j -= 1
+    s[i - 1], s[j] = s[j], s[i - 1]
+    s[i:] = reversed(s[i:])
+    if s[0] == '0': return -1
+    return int(''.join(s))
+
+print(next_smaller(59884848483559))
+</pre></td></tr></table>
+<p>
+Непонятно.
+<pre>
+
+
 
 
 

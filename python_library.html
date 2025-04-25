@@ -20,26 +20,28 @@
                */font-size: 20рх;
                color: brown;
               }
+           
+           */h3 {
+               color: green;
+              }*/
+         }
 </style>
 </head><body>
 <title>Библиотеки python</title>
 <div class="menu">
 <a href="index.html">Начальная</a>
 <a href="python_parsing.html">Парсинг<a>
-<table border=2 style="border-collapse:collapse;"><tr><td>
-<a href="#xml">Работа с файлами xml:</a>
-<a href="#tree">xml.etree.ElementTree</a>
-<a href="#lxml">Библиотека lxml</a>
-</td></td></table>
+Встроенные модули:<br>
 <a href="#collections">&nbsp;&nbsp; Модуль collections</a>
 <a href="#csv">&nbsp;&nbsp; Модуль CSV</a>
 <a href="#json">&nbsp;&nbsp; Модуль JSON</a>
 <a href="#smtplib">smtplib - письма</a>
 <a href="#functools">Модуль functools</a>
-Дополнительные библиотеки:
+<a href="#io">io - работа с потоками</a>
+<a href="#time">Модули time и datetime</a>
+<p>
+Дополн-ые библиотеки:
 <a href="#requests">&nbsp;&nbsp; Модуль requests</a>
-<a href="#datetime">&nbsp;&nbsp; Модуль datetime</a>
-<a href="#functools">&nbsp;&nbsp; Модуль functools/partial</a>
 <a href="#plotlib">Matplotlib - графики</a>
 <a href="#machin">Машинное обучение</a>
 <a href="#sql">Работа с базами данных</a>
@@ -49,7 +51,7 @@
 <a href="#game">Pygame - разработка игр</a>
 </div>
 <div class="content">
-<h3 align=center><a name="lib">Обзор стандартной библиотеки</h3>
+<h2 align=center><a name="lib">Стандартная библиотека и библиотека дополнительных модулей</h2>
 Ссылки: <a href="https://intuit.ru/studies/courses/49/49/lecture/27060?page=4">Обзор стандартной библиотеки</a><br>
 <a href="https://docs.python.org/3/library/">Список модулей стандартной библиотеки</a><br>
 <a href="https://pythonworld.ru/moduli">Модули</a>
@@ -107,6 +109,21 @@ dir(pandas)
 Выведутся все атрибуты, доступные для модуля:
 <p>
 <img src="images/python_library6.png">
+<p>
+<b>Узнать состав встроенных модулей (стандартная библиотека) можно так (режим интерпретатора):</b>
+<pre>
+>>> import sys
+>>> sys.builtin_module_names
+</pre>
+Вернёт кортеж строк, содержащий имена всех модулей, скомпилированных в этом интерпретаторе Python.  У меня вернул следующий состав:
+<pre>
+('_abc', '_ast', '_bisect', '_blake2', '_codecs', '_collections', '_csv', '_datetime', '_elementtree', '_functools',
+ '_heapq', '_imp', '_io', '_locale', '_md5', '_operator', '_pickle', '_posixsubprocess', '_random', '_sha1', 
+'_sha256', '_sha3', '_sha512', '_signal', '_socket', '_sre', '_stat', '_statistics', '_string', '_struct',
+ '_symtable', '_thread', '_tracemalloc', '_warnings', '_weakref', 'array', 'atexit', 'binascii', 'builtins', 'cmath', 
+'errno', 'faulthandler', 'fcntl', 'gc', 'grp', 'itertools', 'marshal', 'math', 'posix', 'pwd', 'pyexpat', 'select', 
+'spwd', 'sys', 'syslog', 'time', 'unicodedata', 'xxsubtype', 'zlib')
+</pre>
 <pre>
 
 </pre>
@@ -434,9 +451,29 @@ A speed boat is a vehicle.
 A school bus is a vehicle.
 </pre>
 <p>
-<li> <b>tertools.islice(iterable[, start], stop[, step])</b> - итератор, состоящий из среза.
+<li> <b>itertools.islice(iterable[, start], stop[, step])</b> - итератор, состоящий из среза.
 <p>
-<li> <b>itertools.permutations(iterable, r=None)</b> - перестановки длиной r из iterable.
+<li> <b>itertools.permutations(iterable, r=None)</b><br>
+Возвращает последовательные r перестановок элементов в итерируемом объекте. Если параметр r не указан или стоит в значении None, то по умолчанию r принимает длину итерируемого объекта и генерирует все возможные полноценные перестановки.
+<pre>
+import itertools
+l1=itertools.permutations("ABC")
+print (list(l1))  # [('A', 'B', 'C'), ('A', 'C', 'B'), ('B', 'A', 'C'), ('B', 'C', 'A'), ('C', 'A', 'B'), ('C', 'B', 'A')]
+
+l2=itertools.permutations([3,2,1])
+print (list(l2))  #Output:[(3, 2, 1), (3, 1, 2), (2, 3, 1), (2, 1, 3), (1, 3, 2), (1, 2, 3)]
+
+# элементы рассматриваются как уникальные в зависимости от их положения, а не от их значения.
+l3=itertools.permutations([1,1])
+print (list(l3))  #Output:[(1, 1), (1, 1)]
+
+l4=itertools.permutations(<b>[</b>"ABC"<b>]</b>)
+print (list(l4))  #Output:[('ABC',)]
+
+# Значение r указано как 2. Оно вернёт все возможные перестановки из 2 значений.
+l5=itertools.permutations([1,2,3,4],2)
+print (list(l5))  #Output:[(1, 2), (1, 3), (1, 4), (2, 1), (2, 3), (2, 4), (3, 1), (3, 2), (3, 4), (4, 1), (4, 2), (4, 3)]
+</pre>
 <p>
 <li> <b>itertools.product(*iterables, repeat=1)</b> - аналог вложенных циклов.
 <pre>
@@ -738,467 +775,8 @@ print(files)</pre>
 <i>Важно: символы-шаблоны работают только для имен файлов и папок, а не для их содержимого.</i>
 <p>
 <li> <b>Обработка текстов.</b><br>
-Модули: string, <a href="python_funk.html#re">re</a>, StringIO, codecs, difflib, mmap, sgmllib, htmllib, htmlentitydefs.<br>
-Пакет xml.
-<pre>
+Модули: string, <a href="python_funk.html#re">re</a>, StringIO, codecs, difflib, mmap, sgmllib, htmllib, htmlentitydefs.
 
-
------------------------------------------------------------------------------------------------------------
-
-
-</pre>
-<a name="xml"><h3 align=center>Пакет xml</h3>
-Ссылки: <a href="https://sky.pro/media/kak-ispolzovat-python-dlya-raboty-s-xml-2/">Как использовать Python для работы с XML</a><br>
-<a href="http://grep.cs.msu.ru/python3.8_RU/digitology.tech/docs/python_3/library/xml.etree.elementtree.html">Перевод 
-документации</a>
-<p>
-На 14.02.2025 самой современной и популярной библиотекой для работы с xml-файлами является библиотека xml.etree.ElementTree
-<a name="tree"><h3 align=center>xml.etree.ElementTree</h3>
-Ссылки: <a href="https://docs.python.org/3/library/xml.etree.elementtree.html">Документация</a>
-<p>
-XML по своей сути является иерархическим форматом данных, и наиболее естественным способом его представления является дерево. Для этой цели в ET есть два класса - <b>ElementTree</b> представляет весь XML-документ в виде дерева, а <b>Element</b> представляет отдельный узел в этом дереве. Взаимодействие со всем документом (чтение и запись в файлы и из них) обычно выполняется на уровне ElementTree. Взаимодействие с отдельным XML-элементом и его подэлементами выполняется на уровне Element.
-<p>
-<b>Парсинг XML</b><br>
-Будем использовать country_data.xml для примеров:
-<p>
-<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
-<pre>
-&lt;?xml version="1.0"?&gt;
-&lt;data&gt;
-    &lt;country name="Liechtenstein"&gt;
-        &lt;rank&gt;1&lt;/rank&gt;
-        &lt;year&gt;2008&lt;/year&gt;
-        &lt;gdppc&gt;141100&lt;/gdppc&gt;
-        &lt;neighbor name="Austria" direction="E"/&gt;
-        &lt;neighbor name="Switzerland" direction="W"/&gt;
-    &lt;/country&gt;
-    &lt;country name="Singapore"&gt;
-        &lt;rank&gt;4&lt;/rank&gt;
-        &lt;year&gt;2011&lt;/year&gt;
-        &lt;gdppc&gt;59900&lt;/gdppc&gt;
-        &lt;neighbor name="Malaysia" direction="N"/&gt;
-    &lt;/country&gt;
-    &lt;country name="Panama"&gt;
-        &lt;rank&gt;68&lt;/rank&gt;
-        &lt;year&gt;2011&lt;/year&gt;
-        &lt;gdppc&gt;13600&lt;/gdppc&gt;
-        &lt;neighbor name="Costa Rica" direction="W"/&gt;
-        &lt;neighbor name="Colombia" direction="E"/&gt;
-    &lt;/country&gt;
-&lt;/data&gt;
-</pre></td></tr></table>
-<p>
-Мы можем импортировать эти данные, считав их из файла:
-<p>
-<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
-<pre>
-import xml.etree.ElementTree as ET
-tree = ET.parse('country_data.xml')
-root = tree.getroot()
-</pre></td></tr></table>
-<p>
-Или непосредственно из строки:
-<pre>
-root = ET.fromstring(country_data_as_string)
-</pre>
-Функция fromstring() преобразует XML из строки непосредственно в Element, который является корневым элементом анализируемого дерева. Другие функции синтаксического анализа могут создавать ElementTree.
-<p>
-Как Element, root имеет тег и словарь атрибутов:
-<pre>
->>> root.tag
-'data'
->>> root.attrib
-{}
-</pre>
-root также имеет дочерние узлы, по которым мы можем выполнять итерации:
-<pre>
-for child in root:
-    print(child.tag, child.attrib)
-</pre>
-Вывод:
-<pre>
-country {'name': 'Liechtenstein'}
-country {'name': 'Singapore'}
-country {'name': 'Panama'}
-</pre>
-Дочерние узлы являются вложенными, и мы можем получить доступ к определенным дочерним узлам по индексу:
-<pre>
-print(root[0][0].text)
-print(root[0][1].text)
-print(root[0][2].text)
-print(root[0][3].text)
-print(root[0][4].text)
-print(root[1][3].text)
-</pre>
-Вывод:
-<pre>
-1
-2008
-141100
-None
-None
-None
-</pre>
-<p>
-<h4>Чтобы прочитать XML-документ с URL-адреса с помощью xml.etree.ElementTree</h4>
-нужно:
-<ol>
-<li> Импортировать модули urllib и xml.etree.ElementTree:
-<pre>
-import urllib.request
-import xml.etree.ElementTree as ET
-</pre>
-<li> Определить URL, с которого нужно получить XML-данные:
-<pre>
-url = 'http://example.com/data.xml'
-</pre>
-<li> Открыть URL с помощью urllib.request.urlopen и получить XML-данные в виде объекта bytes:
-<pre>
-with urllib.request.urlopen(url) as response:
-    xml_data = response.read()
-</pre>
-<li> Разобрать XML-данные с помощью xml.etree.ElementTree.fromstring и создать объект Element:
-<pre>
-root = ET.fromstring(xml_data)
-</pre>
-<li> Проработать корневой объект, чтобы извлечь нужную информацию.
-</ol>
-Если XML-документ использует кодировку, отличную от UTF-8, при разборе данных нужно указать кодировку. 
-<h4>Поиск интересных элементов</h4>
-В Element есть несколько полезных методов, которые помогают выполнять рекурсивную итерацию по всему поддереву под ним (его дочерним элементам, их дочерним элементам и т.д.). Например, Element.iter():
-<pre>
-for neighbor in root.iter('neighbor'):
-    print(neighbor.attrib)
-</pre>
-Вывод:
-<pre>
-{'name': 'Austria', 'direction': 'E'}
-{'name': 'Switzerland', 'direction': 'W'}
-{'name': 'Malaysia', 'direction': 'N'}
-{'name': 'Costa Rica', 'direction': 'W'}
-{'name': 'Colombia', 'direction': 'E'}
-</pre>
-<b>Element.findall()</b> находит только элементы с тегом, которые являются прямыми дочерними элементами текущего элемента.<br> <b>Element.find()</b> находит первый дочерний элемент с определенным тегом, а <b>Element.text</b> получает доступ к текстовому содержимому элемента.<br>
-<b>Element.get()</b> получает доступ к атрибутам элемента:
-<pre>
-for country in root.findall('country'):
-    rank = country.find('rank').text
-    name = country.get('name')
-    print(name, rank)
-</pre>
-Вывод:
-<pre>
-Liechtenstein 1
-Singapore 4
-Panama 68
-</pre>
-Более сложное определение того, какие элементы следует искать, возможно с помощью <a href="https://docs.python.org/3/library/xml.etree.elementtree.html#elementtree-xpath">XPath</a>.
-<h4>Изменение XML-файла</h4>
-ElementTree предоставляет простой способ создания XML-документов и записи их в файлы.<br>
-Метод <b>ElementTree.write()</b> служит для этой цели.
-<p>
-После создания объектом Element можно манипулировать, непосредственно изменяя его поля (например, Element.text), добавляя и модифицируя атрибуты (метод Element.set()), а также добавляя новые дочерние элементы (например, с помощью Element.append()).
-<p>
-Допустим, мы хотим добавить по одному атрибуту к рейтингу каждой страны и добавить обновленный атрибут к элементу rank:
-<pre>
-for rank in root.iter('rank'):
-    new_rank = int(rank.text) + 1
-    rank.text = str(new_rank)
-    rank.set('updated', 'yes')
-
-tree.write('output.xml')
-</pre>
-Создастся новый файл output.xml в каталоге из которого выполняется скрипт.
-<pre>
-&lt;data&gt;
-&lt;country name="Liechtenstein"&gt;
-&lt;rank updated="yes"&gt;2&lt;/rank&gt;
-&lt;year&gt;2008&lt;/year&gt;
-&lt;gdppc&gt;141100&lt;/gdppc&gt;
-&lt;neighbor name="Austria" direction="E"/&gt;
-&lt;neighbor name="Switzerland" direction="W"/&gt;
-&lt;/country&gt;
-&lt;country name="Singapore"&gt;
-&lt;rank updated="yes"&gt;5&lt;/rank&gt;
-&lt;year&gt;2011&lt;/year&gt;
-&lt;gdppc&gt;59900&lt;/gdppc&gt;
-&lt;neighbor name="Malaysia" direction="N"/&gt;
-&lt;/country&gt;
-&lt;country name="Panama"&gt;
-&lt;rank updated="yes"&gt;69&lt;/rank&gt;
-&lt;year&gt;2011&lt;/year&gt;
-&lt;gdppc&gt;13600&lt;/gdppc&gt;
-&lt;neighbor name="Costa Rica" direction="W"/&gt;
-&lt;neighbor name="Colombia" direction="E"/&gt;
-&lt;/country&gt;
-&lt;/data&gt;
-</pre>
-Мы можем удалить элементы, используя <b>Element.remove()</b>. Допустим, мы хотим удалить все страны с рейтингом выше 50:
-<pre>
-for country in root.findall('country'):
-    # используем root.findall(), чтобы избежать удаления во время обхода
-    rank = int(country.find('rank').text)
-    if rank > 50:
-        root.remove(country)
-
-tree.write('output.xml')
-</pre>
-Обратите внимание, что одновременное изменение во время итерации может привести к проблемам, точно так же, как при итерации и изменении списков Python или dicts. Поэтому в примере сначала собираются все совпадающие элементы с помощью root.findall(), и только затем выполняется итерация по списку совпадений.
-<h4>Создание XML-документов</h4>
-Функция SubElement() предоставляет удобный способ создания новых подэлементов для данного элемента:
-<pre>
-a = ET.Element('a')
-b = ET.SubElement(a, 'b')
-c = ET.SubElement(a, 'c')
-d = ET.SubElement(c, 'd')
-ET.dump(a)
-</pre>
-<p>
-<a href="https://docs.python.org/3/library/xml.etree.elementtree.html#parsing-xml-with-namespaces">Синтаксический анализ XML с использованием пространств имен</a>
-<p>
-XML - это язык разметки текста в текстовых файлах с помощью тегов. Для работы с такими файлами служит пакет XML.
-<p>
-<b>Чтение строки xml-формата</b><br>
-<pre>
-xml_string = '''
-&lt;data&gt;
-    &lt;country name="Russia"&gt;
-        &lt;city&gt;Moscow&lt;/city&gt;
-    &lt;/country&gt;
-    &lt;country name="USA"&gt;
-        &lt;city&gt;New York&lt;/city&gt;
-    &lt;/country&gt;
-&lt;/data&gt;
-'''
- 
-# Загрузка XML-строки в объект ElementTree
-root = ET.fromstring(xml_string)
- 
-# Итерация по элементам
-for country in root.findall('country'):
-    name = country.get('name')
-    city = country.find('city').text
-    print(f'{name}: {city}')
-</pre>
-<b>Функция fromstring()</b>: создать элемент из строки<br>
-Вы можете создать элемент или дерево элементов из строки, содержащей XML, с помощью этой функции; она возвращает новый 
-экземпляр Element, представляющий весь этот XML.
-
-etree.fromstring(s)
-где s - строка.
-<p>
-<b>Посмотреть определенный тег по индексу:</b><br>
-Нумерация тегов начинается с нуля.
-<pre>
-print(root[0])
-<Element 'student' at 0x7f4acf4cf770>
->>> print(root[0].text)
-first studentt
-</pre>
-Здесь root[0] - это первый тег внутри корневого. Им является тег 'student'. Чтобы посмотреть содержимое этого тега, 
-используется метод text.
-<p>
-<pre>
->>> print(root[0][1])
-&lt;Element 'lastName' at 0x7f4acf4e31d0&gt;
->>> print(root[0][1].text)
-Pascal
-</pre>
-Сначало смотрим второй тег внутри первого от корневого, а потом смотрим его содержимое.
-
-<h4>Обход элементов XML</h4>
-Мы можем обойти все элементы XML-дерева, используя метод iter():
-<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
-<pre>
-for elem in root.iter():
-    print(elem.tag, elem.attrib)
-Вывод:
-studentsList {}
-student {'id': '1'}
-firstName {}
-lastName {}
-certificate {}
-scores {}
-modele1 {}
-modele2 {}
-modele3 {}
-student {'id': '1'}
-firstName {}
-lastName {}
-certificate {}
-scores {}
-modele1 {}
-modele2 {}
-modele3 {}
-</pre>
-</td></tr></table>
-Это выведет название и атрибуты каждого элемента в дереве.
-<p>
-<b>Увидеть только теги с атрибутами:</b>
-<pre>
->>> for elem in root:
-...     print(elem.tag, elem.attrib)
-... 
-student {'id': '1'}
-student {'id': '1'}
-</pre>
-<b>Узнать количество определенных элементов (тегов):</b>
-<pre>
->>> for elem in root.iter('scores'):
-...     print(elem)
-... 
-&lt;Element 'scores' at 0x7f4ace04da40&gt;
-&lt;Element 'scores' at 0x7f4ace05b9a0&gt;
-</pre>
-Внутри нашего example.xml находится два тега 'scores'
-<p>
-<b>Операции с содержимым тегов:</b>
-<pre>
->>> for element in root.iter('scores'):
-...     score_sum = 0
-...     for child in element:
-...          score_sum += float(child.text)
-...     print(score_sum)
-... 
-240.0
-240.0
-</pre>
-Узнали суммарную сумму баллов для каждого студента.
-<h4>Поиск элементов по тегу</h4>
-Чтобы найти все элементы с определенным тегом, можно использовать метод findall():
-<pre>
-for elem in root.findall('tag_name'):
-    print(elem.attrib)
-</pre>
-Это выведет атрибуты всех элементов с тегом tag_name.
-<h4>Изменение атрибутов и текста элементов</h4>
-Мы можем изменить атрибуты и текст элементов следующим образом:
-<pre>
-for elem in root.iter('tag_name'):
-    elem.set('attribute_name', 'new_value')
-    elem.text = 'new_text'
-</pre>
-Это изменит атрибут attribute_name и текст у всех элементов с тегом tag_name.
-
-<h4>Создание новых элементов (тегов)</h4>
-<pre>
-from xml.etree import ElementTree                    # импорт необходимого ElementTree
-description = ElementTree.Element('description')     # создаем тег description
-description.text = 'Это содержимое тега description' # содержимое этого тега
-root[1].append(description)                          # этот тег будет помещен внутри 2 тега от корневого
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml') # записываем изменения
-</pre>
-Результат:
-<p>
-<img src="./images/python_library1.png">
-
-<h4 align=center>Удаление</h4>
-<p>
-<b>Удаление атрибута</b><br>
-Допустим я хочу удалить из тега student его атрибут 'id = "1"' и содержимое  "first student".
-<pre>
-root[0].attrib.pop('id', None)
-'1'
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
-</pre>
-Результат:
-<p>
-<img src="./images/python_library2.png">
-<p>
-Удалили из root[0] (первый тег от корня) атрибут.
-<p>
-<pre>
->>> root[1].attrib.pop('id', None)
-'1'
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
-</pre>
-Удалили атрибут у второго тега student.
-<p>
-<b>Удаление одного подэлемента</b><br>
-Один конкретный подэлемент можно удалить с помощью remove функции. Эта функция должна указать узел, который мы хотим 
-удалить.
-<p>
-Удалим тег description у второго тега student, это root[1][4]:
-<pre>
-root[1].remove(root[1][4])
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
-</pre>
-Результат:
-<p>
-<img src="./images/python_library3.png">
-<p>
-<b>root[0].clear()</b> - удалит все теги внутри root[0]
-<p>
-<b>Удаление текстового содержимого</b>:<br>
-Удалить у тегов root[0] и root[1] текстовое содержимое:
-<pre>
-root[0].text = None
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
-root[1].text = None
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
-</pre>
-Результат:
-<p>
-<img src="./images/python_library4.png">
-<p>
-<h4>Сохранение изменений в файл</h4>
-Чтобы сохранить изменения в файл, мы можем использовать метод write():
-<pre>
-tree.write('/home/dmitriy/Python/mypython/example.xml')
-</pre>
-Это сохранит измененное дерево XML в файл example.xml.
-<p>
-Сделал изменения в example.xml, обновил страницу в браузере '/home/dmitriy/Python/mypython/example.xml', ничего не изменилось. 
-Тогда
-<pre>
->>> tree.write('/home/dmitriy/Python/mypython/example.xml')</pre>
-и снова обновил страницу, страница изменилась.
-<p>
-<b>Создать копию файла example.xml</b>:
-<pre>
-tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
-</pre>
-По указанному пути будет создан файл copy_example.xml - копия example.xml
-<pre>
-
-</pre>
-<a name="lxml"><h3 align=center>Библиотека lxml</h3>
-Еще одна популярная библиотека для работы с XML в Python — это lxml. Она предоставляет более быстрый и гибкий интерфейс для 
-работы с XML-данными.
-<p>
-Для установки библиотеки lxml, выполните следующую команду:
-<pre>
-pip install lxml
-</pre>
-Основы работы с lxml аналогичны xml.etree.ElementTree. Однако, библиотека lxml также предоставляет дополнительные возможности, 
-такие как поддержка XPath и валидация схемы.
-<pre>
-from lxml import etree
- 
-tree = etree.parse('example.xml')
-root = tree.getroot()
- 
-result = root.xpath('//tag_name[@attribute_name="value"]')
-</pre>
-Здесь мы используем метод xpath() для поиска всех элементов с тегом tag_name, у которых атрибут attribute_name равен «value».
-<p>
-Пример:
-<pre>
-from lxml import etree
-import requests
-
-res = requests.get("http://docs.python.org/3/") 
-print(res.status_code) #статус-код страницы
-print(res.headres["Content-Type"]) #тип данных, чтобы убедиться, что работаем с HTML
-
-#Парсер - ПО, выделяющее определенные части информации из массива данных по заданным правилам
-parser = etree.HTMLParser() #parcer позволит работать с теми данными в виде HTML, которые плохо сформированы
-root = etree.fromstring(res.text, parser) #передача данных в формате HTML в переменную
-
-#print(root)
-for element in root.iter("a"): #перебираем все элементы в поддереве корня, которые являются атрибутом "a"
-    print(element, element.attrib) #вывод элементов и их атрибутов
-</pre>
 <pre>
 
 
@@ -2115,74 +1693,200 @@ Docstring
 </pre>
 <pre>
 
-
-
-
-
 </pre>
-<h2 align=center>Дополнительные библиотеки</h2>
-Python  может работать с дополнительными библиотеками, которые в состав python не входят и их нужно устанавливать в систему.
-<a name="requests"><h3 align=center>Библиотека requests</h3>
-В современном мире взаимодействие с веб-ресурсами через HTTP-запросы является неотъемлемой частью многих приложений и
-программ. Библиотека Requests в языке программирования Python предоставляет удобные средства для отправки HTTP-запросов и
-получения данных из веб-ресурсов. Requests упрощает процесс взаимодействия с веб-серверами. С ее помощью можно легко отправлять GET-, POST- и другие типы запросов, устанавливать заголовки, передавать параметры и обрабатывать ответы. Это особенно полезно при создании веб-скраперов, веб-приложений или при интеграции с внешними API.<br>
-Процесс использования библиотеки Requests начинается с отправки запроса к конкретному URL-адресу. Мы можем указать различные
-параметры запроса, такие как заголовки, параметры, данные формы и т.д. После отправки запроса мы получаем объект ответа, содержащий информацию о статусе запроса, заголовках и теле ответа.<br>
-Библиотека Requests также предоставляет удобные методы для работы с различными типами данных, такими как JSON или бинарные данные. Это позволяет легко взаимодействовать с веб-ресурсами, обмениваться данными и выполнять различные операции. Зная основы работы с библиотекой Requests, разработчики могут легко интегрировать HTTP-запросы в свои проекты, обеспечивая эффективное взаимодействие с веб-ресурсами.<br>
-Рассмотрим основные этапы работы с Requests:<br>
-1. Установка библиотеки Requests:
-<pre>
-pip install requests
-</pre>
-2. Импорт библиотеки:<br>
-После установки библиотеку нужно импортировать в свой скрипт или проект:
-<pre>
-import requests
-</pre>
-3. Отправка GET-запроса:<br>
-Для отправки GET-запроса к определенному URL-адресу используется метод `get()`:
-<pre>
-response = requests.get('https://example.com')
-</pre>
-4. Обработка ответа:<br>
-После отправки запроса, объект `response` содержит всю информацию о полученном ответе, такую как статус код, заголовки и
-содержимое:
-<pre>
-print(response.status_code)
-print(response.headers)
-print(response.text)
-</pre>
-5. Передача параметров:<br>
-Можно передавать параметры в запрос, например, при выполнении GET-запроса с параметрами:
-<pre>
-params = {'key1': 'value1', 'key2': 'value2'}
-response = requests.get('https://example.com/api', params=params)
-</pre>
-6. Отправка POST-запроса:<br>
-Для отправки POST-запроса с данными можно использовать метод `post()`:
-<pre>
-data = {'key1': 'value1', 'key2': 'value2'}
-response = requests.post('https://example.com/api', data=data)
-</pre>
-7. Работа с JSON:<br>
-Если сервер возвращает данные в формате JSON, можно легко обработать их с помощью метода `json()`:
-<pre>
-json_data = response.json()
-</pre>
-8. Обработка исключений:<br>
-Рекомендуется обрабатывать возможные исключения, такие как `requests.exceptions.RequestException`, которые могут возникнуть при
-неверных запросах или проблемах с сетью.<br>
-Эти основные шаги позволяют использовать библиотеку Requests для взаимодействия с веб-ресурсами, отправки запросов, передачи
-параметров и обработки полученных данных.
+<a name="io"><h3 align=center>Модуль io для работы с потоками</h3>
+Ссылки: <a href="https://docs.python.org/3/library/io.html">io — Core tools for working with streams</a>
 <p>
-Пример простого запроса в программе:
+Модуль io предоставляет основные возможности Python для работы с различными типами ввода-вывода. Существует три основных типа ввода-вывода:
+<ol>
+<li> text I/O (текстовый ввод-вывод)
+<li> binary I/O (двоичный ввод-вывод)
+<li> raw I/O (необработанный ввод-вывод)
+</ol>
+Это общие категории, и для каждой из них можно использовать различные хранилища. Конкретный объект, принадлежащий к любой из этих категорий, называется файловым объектом. Другие распространённые термины — stream (поток) и file-like object (файлоподобный объект).
+<p>
+Независимо от категории, каждый конкретный объект потока также обладает различными возможностями: он может быть доступен только для чтения, только для записи или для чтения и записи. Он также может обеспечивать произвольный доступ (поиск в прямом или обратном направлении в любой точке) или только последовательный доступ (например, в случае сокета (socket) или канала (pipe)).
+<p>
+Все потоки чувствительны к типу данных, которые вы им передаёте. Например, если вы передадите объект str методу write() двоичного потока, возникнет ошибка TypeError. То же самое произойдёт, если вы передадите объект bytes методу write() текстового потока.<br>
+<i>Изменения в версии 3.3: операции, которые раньше вызывали IOError, теперь вызывают OSError, поскольку IOError теперь является псевдонимом OSError.</i>
+<p>
+<b>Text I/O</b><br>
+При текстовом вводе-выводе используются и создаются объекты str. Это означает, что всякий раз, когда базовое хранилище изначально состоит из байтов (например, в случае с файлом), кодирование и декодирование данных выполняется прозрачно, а также выполняется необязательный перевод символов новой строки, зависящих от платформы. Самый простой способ создать текстовый поток — использовать функцию open(), при необходимости указав кодировку:
 <pre>
-import requests
-r = requests.get('htpp://example.com')  # простой get-запрос
-print(r.text) # вывод ответа от сервера</pre>
-<img src="./images/python_base8.png">
+f = open("myfile.txt", "r", encoding="utf-8")
+</pre>
+В памяти текстовые потоки также доступны в виде объектов StringIO:
+<pre>
+f = io.StringIO("some initial text data")
+</pre>
+API текстового потока подробно описано в документации <a href="https://docs.python.org/3/library/io.html#io.TextIOBase">TextIOBase</a>.
+<p>
+<b>Binary I/O</b><br>
+Двоичный ввод-вывод (также называемый буферизованным вводом-выводом (buffered I/O)) ожидает объекты, подобные байтам и создаёт байтовые объекты. Кодирование, декодирование или преобразование символов новой строки не выполняется. Эта категория потоков может использоваться для всех видов нетекстовых данных, а также в тех случаях, когда требуется ручной контроль над обработкой текстовых данных.
+<p>
+Самый простой способ создать двоичный поток — использовать функцию open() со строковым параметром 'b':
+<pre>
+f = open("myfile.jpg", "rb")
+</pre>
+Двоичные потоки в памяти также доступны как объекты класса BytesIO:
+<pre>
+f = io.BytesIO(b"some initial binary data: \x00\x01")
+</pre>
+API двоичного потока подробно описано в документации по <a href="https://docs.python.org/3/library/io.html#io.BufferedIOBase">BufferedIOBase</a>.
+<p>
+<b>Raw I/O</b><br>
+Необработанный ввод-вывод (также называемый небуферизованным вводом-выводом) обычно используется в качестве низкоуровневого строительного блока для двоичных и текстовых потоков; редко бывает полезно напрямую управлять необработанным потоком из пользовательского кода. Тем не менее, вы можете создать необработанный поток, открыв файл в двоичном режиме с отключённой буферизацией:
+<pre>
+f = open("myfile.jpg", "rb", buffering=0)
+</pre>
+<h4>Классы модуля io</h4>
+<a href="https://www.geeksforgeeks.org/stringio-and-bytesio-for-managing-data-as-file-object/">Stringio And Bytesio For Managing Data As File Object</a>
+<p>
+StringIO и BytesIO — это классы, предоставляемые модулем io в Python. Они позволяют работать со строками и байтами соответственно как с файлоподобными объектами. Это может быть полезно, если вы хотите работать с файлоподобными объектами в памяти, не записывая и не читая физические файлы. В этой статье мы рассмотрим, как можно использовать StringIO и BytesIO для управления данными в виде файлового объекта.
+<p>
+<b>BytestIO</b><br>
+BytesIO — это виртуальный файл, который существует в памяти компьютера, как и `StringIO`. Однако он предназначен для работы с двоичными данными (байтами), а не с текстом. Он позволяет выполнять операции с этими байтами, такие как чтение и запись, как если бы вы взаимодействовали с обычным файлом. Это удобно для управления двоичными данными в памяти без использования реальных файлов.
+<p>
+В этом примере создаётся новый объект BytesIO с именем binary_buffer, чтобы имитировать файл в памяти для двоичных данных. Шестнадцатеричное представление строки «Привет» записывается в буфер с помощью write. Затем содержимое буфера извлекается в виде байтов с помощью <b>getvalue()</b> и выводится в качестве результата
+<pre>
+from io import BytesIO
+
+# Create a new BytesIO object
+binary_buffer = BytesIO()
+
+# Hexadecimal representation of &quot;Hello&quot;
+binary_buffer.write(b'\x48\x65\x6C\x6C\x6F')
+
+# Get the contents of the buffer as bytes
+result_bytes = binary_buffer.<b>getvalue()</b>
+
+# Print the result
+print(result_bytes)
+</pre>
+Output: b'Hello'
+<p>
+<b>Чтение и запись байтов с помощью BytesIO в Python</b><br>
+В этом примере объект BytesIO с именем binary_buffer инициализируется начальным двоичным содержимым «Привет, GeeksforGeeks!». Метод read() используется для извлечения содержимого из буфера и выводится как «Read content:». Затем в буфер записывается дополнительное двоичное содержимое «I am adding New articles.» с помощью метода write.
+<pre>
+from io import BytesIO
+
+# Create a new BytesIO object with initial content
+binary_buffer = BytesIO(b'Hii GeeksforGeeks!')
+
+# Read from the buffer
+read_content = binary_buffer.<b>read()</b>
+print("Read content:", read_content)
+
+# Write new content to the buffer
+binary_buffer.<b>write</b>(b' I am adding New articles.')
+
+# Get the updated contents of the buffer as bytes
+updated_content = binary_buffer.getvalue()
+
+# Print the updated content
+print("Updated content:", updated_content)
+</pre>
+Output:<br>
+Read content: b'Hii GeeksforGeeks!'<br>
+Updated content: b'Hii GeeksforGeeks! I am adding New articles.'
 <pre>
 
+
+</pre>
+<a name="time"><h3 align=center>Измерение пройденного времени с модулем Time </h3>
+Для того чтобы узнать, сколько времени занимает выполнение кода на Python, нам пригодится модуль time. Нуобходимо зафиксировать текущее время перед началом и после выполнения блока кода; соответствующая разница будет указывать на затраченное время:
+<pre>
+import time
+start_time = time.time()  # Старт!
+# ...код начинает выполняться...
+end_time = time.time()    # Финиш!
+elapsed_time = end_time – start_time  # Время фиксировано
+
+print(f"Затрачено времени: {elapsed_time} сек")
+</pre>
+<p>
+<b>Увеличение точности пройденного времени</b><br>
+Если вам требуется более высокая точность измерения времени выполнения кода, модуль time предлагает функцию <b>time.perf_counter()</b>. Эта функция обеспечивает микросекундную точность и монотонность значений, благодаря которым она становится надёжным инструментом для измерения времени. Однако стоит отметить, что она не подходит для измерения интервалов времени, превышающих 100 дней.
+<pre>
+import time
+ 
+# function to test elapsed time for
+def print_square(x):
+    return x ** 2
+ 
+# records start time
+start = time.perf_counter()
+ 
+# calls the function
+print_square(3)
+ 
+# record end time
+end = time.perf_counter()
+ 
+# find elapsed time in seconds
+ms = (end-start) * 10**6
+print(f"Elapsed {ms:.03f} micro secs.")
+</pre>
+Выходной сигнал:
+<pre>
+Elapsed 1.014 micro secs.
+</pre>
+<p>
+Пример 2. Как измерить прошедшее время с помощью time.<b>time_ns()</b><br>
+Чтобы измерить прошедшее время или время выполнения блока кода в наносекундах, мы можем использовать функцию time.time_ns(). Она имеет тот же синтаксис, что и функция time.time(), например, записывает время до и после строк кода, а затем вычитает значения и выводит их на экран, но записывает в наносекундах, а не в секундах.
+<pre>
+import time
+ 
+# sample function for testing
+def print_square(x):
+    return (x**2)
+ 
+# record start time
+start = time.time_ns()
+ 
+# calls the function
+print_square(3)
+ 
+# record end time
+end = time.time_ns()
+ 
+# printing elapsed time in nanoseconds
+print("Time taken", end-start, "ns")
+</pre>
+Выходной сигнал:
+<pre>
+Time taken 2671 ns
+</pre>
+<p>
+<b>Использование модуля Python datetime для измерения прошедшего времени в Python</b><br>
+Мы также можем использовать модуль Python datetime, чтобы записывать время и определять время выполнения блока кода. Процесс такой же, как при использовании time.time(): измеряем время начала и окончания, а затем вычисляем разницу.
+<p>
+Пример: Как измерить прошедшее время с помощью datetime.datetime.now()
+<pre>
+from datetime import datetime
+ 
+# sample function for testing
+def print_square(x):
+    return x ** 2
+ 
+ 
+# record start time (in datetime format)
+start = datetime.now()
+ 
+# calls the function
+print_square(3)
+ 
+# record rnd time (in datetime format)
+end = datetime.now()
+ 
+# print elapsed time in microseconds
+print("Elapsed", (end - start).total_seconds() * 10**6, "µs")
+</pre>
+Выходной сигнал:
+<pre>
+Elapsed 12.0 µs
+</pre>
+<pre>
 
 </pre>
 <h3 align=center><a name="datetime">Модуль datetime</h3>
@@ -2339,6 +2043,72 @@ future_date = datetime.datetime.today() + datetime.timedelta(days=21)
 print(future_date)</pre>
 Результат:
 <pre>2020-12-05 16:14:09.718325</pre>
+<pre>
+
+
+
+</pre>
+<h2 align=center>Дополнительные библиотеки</h2>
+Python  может работать с дополнительными библиотеками, которые в состав python не входят и их нужно отдельно устанавливать в систему (pip install name_library) .
+<a name="requests"><h3 align=center>Библиотека requests</h3>
+В современном мире взаимодействие с веб-ресурсами через HTTP-запросы является неотъемлемой частью многих приложений и
+программ. Библиотека Requests в языке программирования Python предоставляет удобные средства для отправки HTTP-запросов и
+получения данных из веб-ресурсов. Requests упрощает процесс взаимодействия с веб-серверами. С ее помощью можно легко отправлять GET-, POST- и другие типы запросов, устанавливать заголовки, передавать параметры и обрабатывать ответы. Это особенно полезно при создании веб-скраперов, веб-приложений или при интеграции с внешними API.<br>
+Процесс использования библиотеки Requests начинается с отправки запроса к конкретному URL-адресу. Мы можем указать различные
+параметры запроса, такие как заголовки, параметры, данные формы и т.д. После отправки запроса мы получаем объект ответа, содержащий информацию о статусе запроса, заголовках и теле ответа.<br>
+Библиотека Requests также предоставляет удобные методы для работы с различными типами данных, такими как JSON или бинарные данные. Это позволяет легко взаимодействовать с веб-ресурсами, обмениваться данными и выполнять различные операции. Зная основы работы с библиотекой Requests, разработчики могут легко интегрировать HTTP-запросы в свои проекты, обеспечивая эффективное взаимодействие с веб-ресурсами.<br>
+Рассмотрим основные этапы работы с Requests:<br>
+1. Установка библиотеки Requests:
+<pre>
+pip install requests
+</pre>
+2. Импорт библиотеки:<br>
+После установки библиотеку нужно импортировать в свой скрипт или проект:
+<pre>
+import requests
+</pre>
+3. Отправка GET-запроса:<br>
+Для отправки GET-запроса к определенному URL-адресу используется метод `get()`:
+<pre>
+response = requests.get('https://example.com')
+</pre>
+4. Обработка ответа:<br>
+После отправки запроса, объект `response` содержит всю информацию о полученном ответе, такую как статус код, заголовки и
+содержимое:
+<pre>
+print(response.status_code)
+print(response.headers)
+print(response.text)
+</pre>
+5. Передача параметров:<br>
+Можно передавать параметры в запрос, например, при выполнении GET-запроса с параметрами:
+<pre>
+params = {'key1': 'value1', 'key2': 'value2'}
+response = requests.get('https://example.com/api', params=params)
+</pre>
+6. Отправка POST-запроса:<br>
+Для отправки POST-запроса с данными можно использовать метод `post()`:
+<pre>
+data = {'key1': 'value1', 'key2': 'value2'}
+response = requests.post('https://example.com/api', data=data)
+</pre>
+7. Работа с JSON:<br>
+Если сервер возвращает данные в формате JSON, можно легко обработать их с помощью метода `json()`:
+<pre>
+json_data = response.json()
+</pre>
+8. Обработка исключений:<br>
+Рекомендуется обрабатывать возможные исключения, такие как `requests.exceptions.RequestException`, которые могут возникнуть при
+неверных запросах или проблемах с сетью.<br>
+Эти основные шаги позволяют использовать библиотеку Requests для взаимодействия с веб-ресурсами, отправки запросов, передачи
+параметров и обработки полученных данных.
+<p>
+Пример простого запроса в программе:
+<pre>
+import requests
+r = requests.get('htpp://example.com')  # простой get-запрос
+print(r.text) # вывод ответа от сервера</pre>
+<img src="./images/python_base8.png">
 <pre>
 
 
@@ -2973,7 +2743,58 @@ divide(1, 0)
 </pre>
 <pre>
 
+</pre>
+<h3 align=center>Модуль pprint</h3>
+Модуль служит для красивого отформатированного вывода структур данных.<br>
+Импортируем весь модуль:
+<pre>
+import pprint
+</pre>
+Обычно используют из этого модуля одноимённую функцию pprint, поэтому лучше импортировать так:
+<pre>
+from pprint import pprint
+</pre>
+Пример:
+<pre>
+data = {
+    "name": "John",
+    "age": 30,
+    "city": "New York",
+    "hobbies": ["reading", "playing guitar", "travelling"],
+}
+ 
+pprint.pprint(data)
 
+#Вывод:
+
+{'age': 30,
+ 'city': 'New York',
+ 'hobbies': ['reading', 'playing guitar', 'travelling'],
+ 'name': 'John'}
+</pre>
+Функция pprint предоставляет несколько параметров для настройки вывода данных. Например, вы можете установить ширину строки вывода и количество отступов для вложенных структур данных. Рассмотрим пример:
+<pre>
+pprint.pprint(data, width=50, indent=4)
+
+#Вывод:
+
+{   'age': 30,
+    'city': 'New York',
+    'hobbies': [   'reading',
+                   'playing guitar',
+                   'travelling'],
+    'name': 'John'}
+</pre>
+В этом примере мы установили ширину строки вывода равной 50 символам и отступ для вложенных элементов равным 4 пробелам.
+<p>
+Использование класса PrettyPrinter<br>
+Модуль pprint также предоставляет класс PrettyPrinter, который позволяет создавать объекты с предопределенными настройками форматирования. Это может быть полезно, если вы хотите использовать одинаковые настройки для вывода разных структур данных. Пример использования класса PrettyPrinter:
+<pre>
+printer = pprint.PrettyPrinter(width=50, indent=4)
+printer.pprint(data)
+</pre>
+Вывод такой же, как и в предыдущем примере с настройкой параметров функции pprint.
+<pre>
 
 
 

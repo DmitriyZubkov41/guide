@@ -2,7 +2,7 @@
 <style>
 .menu {
        height: 100%;
-       width: 150px;
+       width: 175px;
        position: fixed; /* Фиксированная боковая панель (оставайтесь на месте при прокрутке) */
        background-color: Gray;  
       }
@@ -14,7 +14,7 @@
   display: block;
           }     
 .content {
-           margin-left: 150px; /* То же, что и ширина боковой панели */
+           margin-left: 180px; /* То же, что и ширина боковой панели */
            padding: 0px 0px 0px 16px;
            h2 {
                color: brown;
@@ -27,18 +27,18 @@
 <a href="index.html">Начальная</a>
 <a href="python_base.html">Основы</a>
 <a href="python_collection.html">Коллекции</a>
-<a href="python_funk.html">Функции</a>
-<a href="python_funk_progr.html">Функциональное программирование</a>
-<a href="python_oop.html">ООП в python</a>
 <a href="python_library.html">Библиотеки</a>
-<a href="python_gui.html">Графика</a>
-<a href="python_bot.html">Боты</a>
 <a href="python_example.html">Примеры</a>
-<p>
-&nbsp;&nbsp;&nbsp; Парсинг:
+<a href="python_example_file.html">Примеры с файлами</a>
+______________
+<a href="#file">Работа с файлами</a>
+<a href="#format_file">Форматы файлов</a>
+<a href="#image">Изображения с html-страницы</a>
 <a href="#urllib">urllib</a>
-<a href="#selenium">Модуль Selenium</a>
+Парсинг:
+<a href="python_selenium.html">пакет Selenium</a>
 <a href="#soup">Beautiful Soup</a>
+<a href="#scrapy">Scrapy</a>
 <table border=2><tr><td>
 Работа с excel-файлами
 <table><tr><td colspan=2>
@@ -60,44 +60,530 @@
 <td>
 <a href="#sort_pandas">&nbsp;&nbsp;&nbsp;&nbsp; Сортировка</a>
 </td></tr></table>
-
-
 <a href="#xlrd">Модуль xlrd</a>
 <a href="#openpyxl">Модуль openpyxl</a>
 </td></tr></table>
+<table border=2 style="border-collapse:collapse;"><tr><td>
+<a href="#xml">Работа с файлами xml:</a>
+<a href="#tree">xml.etree.ElementTree</a>
+<a href="#lxml">Библиотека lxml</a>
+</td></td></table>
 <a href="#numpy">Библиотека NumPy</a>
 </div>
-
-
 <div class="content">
+<a name="file"><h2 align=center>Работа с файлами: чтение, запись, редактирование</a></h2>
+В Python, как и в других языках программирования, можно работать с файлами: читать из файла и писать в файл. Это позволяет 
+легко манипулировать любыми файлами из Python.<br>
+Файловые объекты должны поддерживать основные методы: read(), write(), readline(), readlines(), seek(), tell(), close() и т.п.
+<p>
+Прежде, чем работать с файлом, его надо открыть. Открыть файл можно с помощью встроенной функции open:
+<pre>
+f = open('pyplanet.txt', 'r', encoding='utf-8')</pre>
+У функции open много параметров, нам пока важны 3 аргумента.
+<p>
+Первый, это путь к файлу. Путь к файлу может быть относительным или абсолютным.
+<p>
+В случае относительного пути поиск файла будет производиться относительно директории, из которой была запущена программа на Python. Как правило, это та папка, в которой находится сама программа.
+<p>
+Поэтому, чтобы приведённый выше код выполнился, необходимо создать файл pyplanet.txt в той же папке, что и программа, которую вы пишете.
+<p>
+Однако можно задать и абсолютный путь, например,
+<pre>
+f = open(r'D:\files\pyplanet.txt', 'r', encoding='utf-8')</pre>
+Второй аргумент, это режим, в котором мы будем открывать файл.
+<p>
+<img src="./images/python_base1.png">
+<p>
+Режимы могут (и должны) быть объединены, то есть, к примеру, 'rb' - чтение в двоичном режиме. По умолчанию режим равен 'rt'.
+<p>
+И последний аргумент, encoding, нужен только в текстовом режиме чтения файла. Этот аргумент задает кодировку.
+<p>
+Какая кодировка идёт по умолчанию? А неизвестно. Начиная с Python версии 3.15 (это примерно к 2026 году) кодировкой по умолчанию станет utf-8.
+<p>
+В какой же кодировке Ваш файл, зависит от редактора, в котором вы создавали / редактировали файл.
+<p>
+Как правило, это utf-8, или, в более редких случаях, windows-1251.
+<p>
+<b>Функция open возвращает объект файла или по-другому файловый дескриптор</b>.
+<h4>Чтение из файла</h4>
+Файл мы открыли, а теперь хотим прочитать из него информацию. Для этого есть несколько способов.
+<p>
+<b>Метод read</b><br>
+Метод read файла, читает весь файл целиком, если был вызван без аргументов, и n символов, если был вызван с аргументом (целым числом n). Возвращает объект типа строка.
+<pre>
+>>> f = open('pyplanet.txt', 'r', encoding='utf-8')
+>>> f.read(1)
+'H'
+>>> f.read()
+'ello world!\nThe end.\n\n'</pre>
+Каждый последующий вызов read продолжит читать с того места, на котором остановилось чтение.
+<h4>Цикл for для чтения файла</h4>
+Ещё один прочитать файл - сделать это построчно, воспользовавшись циклом for. Файловый объект в Python - тоже итерируемый объект, и в цикле for он возвращает содержимое файла построчно.
+<pre>
+>>> f = open('pyplanet.txt', 'r', encoding='utf-8')
+>>> for line in f:
+...     line
+...
+'Hello world!\n'
+'\n'
+'The end.\n'
+'\n'</pre>
+<h4>readlines</h4>
+Метод readlines файла, читает весь файл целиком, и в отличии от метода read возвращает не одну цельную строку, а список всех строк в нём. Этот способ более затратный по памяти, чем цикл for, однако иногда тоже может использоваться. Этот метод, как и read читает строки вместе с переводом строки \n .
+<pre>
+>>> f = open('pyplanet.txt', 'r', encoding='utf-8')
+>>> f.readlines()
+['Hello world!\n', '\n', 'The end.\n', '\n']</pre>
+<h4>readline()</h4>
+Синтаксис:
+<pre>
+<b>file.readline(size)</b>
+</pre>
+<p>
+Параметры:<br>
+size: (необязательно) Здесь вы можете указать число, целое значение для readline(). Он получит строку такого размера. По умолчанию значение размера равно -1, поэтому возвращается вся строка.
+<p>
+Возвращаемое значение<br>
+Метод readline() возвращает строку из заданного файла.
+это файловый метод, который помогает прочитать одну полную строку из заданного файла. В конце возвращаемой строки имеется завершающая новая строка («\n»).
+<p>
+Вы также можете использовать параметр размера, чтобы получить определенную длину строки. Параметр размера является необязательным, и по умолчанию будет возвращена вся строка.
+<p>
+Характеристики строки чтения Python:
+<ol>
+<li> Метод Python readline() считывает только одну полную строку из заданного файла.
+<li> Он добавляет новую строку («\n») в конце строки.
+<li> Если вы откроете файл в обычном режиме чтения, readline() вернет вам строку.
+<li> Если вы откроете файл в двоичном режиме, readline() вернет вам двоичный объект.
+<li> Вы можете указать размер в качестве аргумента функции readline(), и она получит строку указанного размера, включая новую строку. По умолчанию размер равен 0 (или -1 -?), и он возвращает всю строку.
+</ol>
+<p>
+Пример: Чтобы прочитать первую строку с помощью readline()<br>
+Мы собираемся использовать файл demo.txt для чтения содержимого. Содержимое файла demo.txt следующее:
+<pre>
+demo.txt
+
+Testing - FirstLine
+Testing - SecondLine
+Testing - Third Line
+Testing - Fourth Line
+Testing - Fifth Line
+</pre>
+Ниже приведены шаги для чтения строки из файла demo.txt.
+<ul>
+<li> Шаг 1) Сначала откройте файл с помощью метода open(), как показано ниже:
+<pre>
+myfile = open("demo.txt", "r")
+</pre>
+Метод open() принимает первый параметр в качестве имени файла, а второй параметр — это режим, в котором вы хотите открыть. Прямо сейчас мы использовали «r», что означает, что файл откроется в режиме чтения.
+<p>
+<li> Шаг 2) Используйте метод readline(), чтобы прочитать строку из файла demo.txt, как показано ниже:
+<pre>
+myline = myfile.readline()
+</pre>
+<li> Шаг 3) Прочитанная строка сохраняется внутри myline. Давайте теперь распечатаем строку, чтобы увидеть детали:<br>
+print(myline)
+<p>
+<li> Шаг 4) После завершения чтения закройте файл с помощью метода close(), как показано ниже:
+<pre>
+myfile.close()
+</pre>
+Весь код выглядит следующим образом:
+<pre>
+myfile = open("demo.txt", "r")
+myline = myfile.readline()
+print(myline)
+myfile.close()
+</pre>
+Выход:<br>
+Testing - FirstLine
+</ul>
+<h4>Закрытие файла</h4>
+После манипуляций с файлом, его необходимо закрыть, таким образом, освободив ресурсы файлового дескриптора.
+<pre>f.close()</pre>
+Все дескрипторы, конечно, будут освобождены автоматически при выходе из программы, но что, если программа работает долго? Или она открывает много файлов?
+<p>
+Количество одновременно открытых файлов в системе ограничено.
+<p>
+Здесь очень сильно может помочь конструкция try - finally, так как при возникновении и перехвате исключения можно забыть закрыть файл:
+<pre>
+f = open('pyplanet.txt', 'r', encoding='utf-8')
+try:
+    for line in f:
+        do_something(line)
+finally:
+    f.close()</pre>
+<h4>Запись в файл</h4>
+Как что-либо записать в файл?
+<p>
+Во-первых, необходимо открыть файл в режиме "для записи", иначе ничего не получится:
+<pre>f = open('pyplanet_output.txt', 'w', encoding='utf-8')</pre>
+<ol>
+<li> <b>Метод write</b><br>
+Метод write, записывает строку в файл:
+<pre>f.write("Hello pyplanet!\n")</pre>
+Метод write возвращает количество записанных символов. Не пугайтесь, если в интерактивном режиме увидите цифры - это они и есть.<br>
+Перенос строки не добавляется автоматически. Не забывайте добавлять его вручную, иначе строки "слипнутся".
+<p>
+<img src="./images/python_base6.png"><br>
+На рисунке показаы 2 способа записи в файл. Число не записывается напрямую, сначало нужно с помощью функции str() преобразовать число в строку.
+<p>
+<li> <b>Аргумент file функции print</b><br>
+Функция print может принимать в качестве аргумента файловый дескриптор для печати.
+<p>
+Из плюсов - символ переноса строки поставится за вас:
+<pre>print("Hello pyplanet!", file=f)</pre>
+<p>
+<li> <b>Метод writelines</b><br>
+Метод writelines, записывает список строк в файл:
+<pre>f.writelines(["1\n", "2\n", "3\n"])</pre>
+Перенос строки, как и в методе write, не добавляется автоматически. Не забывайте добавлять его вручную, иначе строки "слипнутся".<br>
+Для записи более сложных структур в Python есть такие средства, как pickle, json, csv, и многие другие.
+<p>
+Примеры:<br>
+Следующий пример показывает копирование файла:
+<pre>
+f1 = open("file1.txt", "r")
+f2 = open("file2.txt", "w")
+for line in f1.readlines():
+  f2.write(line)
+f2.close()
+f1.close()
+</pre>
+
+<li> Стоит заметить, что кроме собственно файлов в Python используются и файлоподобные объекты. В очень многих функциях просто 
+неважно, передан ли ей объект типа file или другого типа, если он имеет все те же методы (и в том же смысле). Например, 
+копирование содержимого по ссылке (URL) в файл file2.txt можно достигнуть, если заменить первую строку из предыдущего примера 
+на:
+<pre>
+import urllib
+f1 = urllib.urlopen("http://python.onego.ru")</pre>
+
+<li> <b>with open() as var</b><br>
+Открыть файл, выполнить с ним нужные операции и автоматически закрыть его после можно с помощью конструкции:
+<pre>
+with open('name_file') as var
+    s1 = var.readline()
+    s2 = var.readline()</pre>
+По выполнении блока, файловый дескриптор будет удален (файл закроется). Поэтому такая конструкция with open file as f является 
+более рекомендованной по сравнению с f = open file
+<li> <b>Полезные методы файлов</b>
+<ol>
+<li> strip()<br>
+Удаляет служебные символы при чтении строк файла.
+
+<li> os.path.join(arg1, arg2,...)<br>
+Создает из склеивания аргументов полный путь к файлу.<br>
+Для того чтобы выполнить этот метод, нужно импортировать модуль os (import as).
+<p>
+<img src="images/python_base5.png">
+</ol>
+<li> <b>Пример построчного чтения файла</b>
+<pre>with open('input.txt') as inf:
+  for line in inf:
+      line = line.strip()
+      print()</pre>
+</ol>
+<h4>Как скачать сайт или вебстраницу</h4>
+Код:
+<pre>
+from urlib.request import urlopen
+
+# html = urlopen("https://dzen.ru/").read().decode('utf-8')
+html = urlopen("https://ru.wikipedia.org/wiki/Python").read().decode('utf-8')
+print(html)
+</pre>
+urlib.request - это расширенная библиотека для открытия url адресов.
+<p>
+html имеет тип str, который будет равен коду веб-страницы.<br>
+Почему-то не на всех страницах работает, например на dzen.ru получаю пустой текст внутри тега body или вообще ошибку.
 <h2 align=center>Парсинг html xml страниц</h2>
 Ссылки: книга Митчелл Райан Парсинг с помощью Python 3-издание 2025 год
 <p>
 <b>Веб-скрапинг</b> - автоматизированный сбор данных в Интернете.<br>
-<b>веб-краулераы</b> - специализированные программы, которые позволяют просматривать несколько веб-страниц.<br>
+<b>веб-краулеры</b> - специализированные программы, которые позволяют просматривать несколько веб-страниц.<br>
 <b>Боты</b> - программы, предназначенные для веб-скрапинга.
 <p>
-Для автоматизации парсинга и сбора данных на Python часто используются две популярные библиотеки: BeautifulSoup и Scrapy.<br>
-Для парсинга веб-страниц (страниц содержащих теги) применяются в основном библиотеки selenium и beautifulsoup, а для их открытия библиотека urllib.request.
-<a name="urllib"><h3 align="Модуль urllib</h3>
-Модуль urllib в Python предоставляет полезные функции для работы с URL-адресами и веб-запросами.<br>
-Модуль urllib состоит из нескольких подмодулей, каждый из которых отвечает за определенные функции:
+В языке Python библиотеки (пакеты), предназначенные для анализа HTML-разметки, можно разделить на две группы:
+<ul>
+<li> Низкоуровневые процессоры. Компактные, но синтаксически запутанные пакеты со сложной реализацией, которые выполняют разбор синтаксиса HTML (или XML) и строят иерархическое дерево элементов.
+<p>
+<li> Высокоуровневые библиотеки и фреймворки. Обширные, но синтаксически лаконичные пакеты, обладающие широким набором функций для извлечения формализованных данных из сырых HTML-документов. В эту группу входят не только компактные HTML-парсеры, но и полноценные системы сборки. Зачастую такие пакеты в качестве ядра парсинга используют низкоуровневые пакеты (процессоры) из предыдущей группы.
+</ul>
+<p>
+Для Python написано несколько низкоуровневых библиотек:
+<ul>
+<li> lxml. Низкоуровневый процессор синтаксиса XML, который также используется для анализа HTML. В его основе лежит популярная библиотека libxml2, написанная на языке C.
+<p>
+<li> html5lib. Библиотека анализа синтаксиса HTML, написанная на чистом Python в соответствии с HTML-спецификацией от организации WHATWG (The Web Hypertext Application Technology Working Group), которой следуют все современные браузеры.
+</ul>
+<p>
+Тем не менее, использование высокоуровневых библиотек быстрее и проще — их синтаксис понятнее, а набор функций шире:
+<ul>
+<li> BeautifulSoup. Простая, но гибкая библиотека для Python, позволяющая парсить документы на HTML и XML путем создания полноценного DOM-дерева элементов с последующим извлечением необходимых данных.
+<p>
+<li> Scrapy. Полноценный фреймворк парсинга данных из HTML-страниц, представляющий собой набор автономных «пауков» (веб-краулеров) с заданными инструкциями.
+<p>
+<li> Selectolax. Довольно быстрый парсер HTML-страниц, использующий так называемые CSS-селекторы для извлечения информации из тегов.
+<p>
+<li> Parsel. Библиотека со специфическим синтаксисом селекторов, написанная на Python, позволяющая извлекать данные из документов на HTML, JSON и XML.
+<p>
+<li> requests-html. Удобная библиотека, написанная на Python, которая практически точь-в-точь имитирует браузерные CSS-селекторы языка JavaScript.
+</ul>
+Чаще всего используют библиотеки BeautifulSoup и Scrapy для парсинга статических сайтов, а для динамических сайтов библиотека selenium. Для открытия, отправки запросов модуль urllib.request.
+<pre>
+
+</pre>
+<a name="format_file"><h3 align=center>Форматы файлов</h3>
+<b>YAML</b><br>
+YAML (рекурсивный акроним: «YAML Ain't Markup Language» — «YAML — не язык разметки»).
+<ol>
+<li> отступы из пробелов (символы табуляции не допускаются) используются для обозначения структуры
+<p>
+<li> комментарии начинаются с символа «решётки» (#), могут начинаться в любом месте строки и продолжаются до конца строки
+<p>
+<li> списки обозначаются начальным дефисом (-) с одним членом списка на строку, либо члены списка заключаются в квадратные скобки ([ ]) и разделяются запятой и пробелом (, )
+<p>
+<li> ассоциативные массивы в виде key: value, по одной паре ключ-значение на строку, либо в виде пар, заключённых в { } и разделенных запятой и пробелом (, )
+</ol>
+<p>
+Пример:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+# comment
+database:
+  host: localhost
+  port: 5432 # comment
+  username: admin
+  password: "admin123"
+
+logging:
+  level: info
+  file: app.log
+
+modules:
+  data_processor:
+    batch_size: 100
+    retry_attempts: 3
+  machine_learning:
+    model: "xgboost"
+    learning_rate: 0.01
+
+ids: [1, 2, 3, 4, 5]
+users:
+  - { name: Alice, role: admin }
+  - { name: Bob, role: editor }
+  - { name: Charlie, role: viewer }
+</pre></td></tr></table>
+<p>
+Открытие и чтение файла:
+<pre>
+from yaml import load
+
+with open('config.yml', 'r') as f:
+  data = load(f)
+
+print(data['version'])
+</pre>
+Если получено сообщение: "YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe"<br>
+Функция load принимает строку в качестве аргумента. Вы передаете в load не текст из файла, а строку "config.yaml" . Поэтому лучше строку data = load(f) заменить на yaml.safe_load(f) , а импорт на from yaml import safe_load
+<p>
+<b>JSON</b>
+JavaScript Object Notation — текстовый формат обмена данными, основанный на JavaScript. Как и многие другие текстовые форматы, JSON легко читается людьми.<br>
+Плюсы:
+<ol>
+<li> Легко читается и поддерживается во всех ЯП.
+<p>
+<li> Строгий формат
+<p>
+<li> Лишён недостатков YAML в плане неоднозначности, разночтений и проблем с безопасностью
+</ol>
+<p>
+Минусы:
+<ol>
+</li> Не поддерживает комментарии.
+<p>
+<li> Не слишком удобен для «работы руками» (слишком строгий)
+<p>
+<li> Лучше подходит, когда с конфигом не работают напрямую «руками» а есть какой-то другой интерфейс для конфигурирования
+<p>
+<li> Больше подходит как формат обмена данными нежели для хранения конфигурации (на мой вкус)
+</ol>
+<p>
+<pre>
+{
+  "logs": {
+    "actions": "/var/log/myservice/action.log",
+    "errors": "/var/log/myservice/error.log",
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "username": "user",
+    "password": "pass"
+  },
+  "array": [1, 2, 3, 4, 5]
+}
+</pre>
+Чтение файла:
+<pre>
+import json
+
+with open('config.json', 'r') as f:
+  data = json.load(f)
+  
+print(data['version'])
+</pre>
+<pre>
+
+</pre>
+<a name="image"><h2 align=center>Работа с изображениями с html-страницы</h2>
+<b>Загрузка изображений</b><br>
+<a href="https://ru-brightdata.com/blog/how-tos-ru/scrape-images-from-websites">Как выполнять парсинг изображений с сайта на Python</a>
+<p>
+Имеем url изображения, нужно это изображение с url скачать в свою локальную папку images.<br>
+Самый простой способ скачать изображение в Python — использовать метод <b>urlretrieve()</b> из пакета url.request стандартной библиотеки. Эта функция копирует сетевой объект, указанный URL-адресом, в локальный файл.<br>
+Сначало импортируем модуль:
+<pre>
+import urllib.request
+</pre>
+Загружаем:
+<pre>
+name_file = f'images/{i}.png'
+urllib.request.urlretrieve(url, name_file)
+</pre>
+<h4>Запись изображений в xlsx файл</h4>
+Для импорта изображений в нашу таблицу мы будем использовать метод, который находится в библиотеке openpyxl под названием openpyxl.drawing.image.Image. Этот метод является оболочкой для метода PIL.Image, который находится в библиотеке PIL (pillow). Поэтому для использования этого метода необходимо установить библиотеку PIL (pillow).
+<pre>
+import openpyxl
+from openpyxl import Workbook
+from openpyxl.drawing.image import Image
+
+#Create a workbook object
+wb_image = Workbook()
+
+#Active sheet
+ws_image = wb_image.active
+
+#Specify image to be placed in the active sheet
+img = openpyxl.drawing.image.Image('logo.png')
+
+#Setting image height and width
+img.height = 50
+img.width = 50
+
+#Using add_image sheet attribute
+ws_image.add_image(img, 'C5')
+
+#Create a new Workbook and save the image
+wb_image.save("wb_image_ex.xlsx")
+</pre>
+<h4>Как записать изображение в excel таблицу с url сразу без локального сохранения</h4>
+<a href="https://xlsxwriter.readthedocs.io/example_images_bytesio.html">Example: Inserting images from a URL or byte stream into a worksheet</a>
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+from io import BytesIO
+from urllib.request import urlopen
+
+import xlsxwriter
+
+# Create the workbook and add a worksheet.
+workbook = xlsxwriter.Workbook("images_bytesio.xlsx")
+worksheet = workbook.add_worksheet()
+
+
+# Read an image from a remote url.
+url = (
+    "https://raw.githubusercontent.com/jmcnamara/XlsxWriter/"
+    + "master/examples/logo.png"
+)
+
+image_data = BytesIO(urlopen(url).read())
+
+# Write the byte stream image to a cell. Note, the filename must be
+# specified. In this case it will be read from url string.
+worksheet.insert_image("B2", url, {"image_data": image_data})
+
+
+# Read a local image file into a a byte stream. Note, the insert_image()
+# method can do this directly. This is for illustration purposes only.
+filename = "python.png"
+
+image_file = open(filename, "rb")
+image_data = BytesIO(image_file.read())
+image_file.close()
+
+
+# Write the byte stream image to a cell. The filename must  be specified.
+worksheet.insert_image("B8", filename, {"image_data": image_data})
+
+
+workbook.close()
+</pre></td></tr></table>
+<p>
+Другой способ:
+<pre>
+from urllib.request import urlopen
+
+url = "http://abcdef.com/picture.jpg"
+data = urlopen(url).read()
+file = open("image.jpg", "wb")
+file.write(data)
+file.close()
+worksheet.insert_image('B2', 'image.jpg')
+</pre>
+<p>
+<b>Мой рабочий пример:</b>
+<pre>
+from io import BytesIO
+from urllib.request import urlopen
+import openpyxl
+from openpyxl.drawing.image import Image
+
+
+wb = openpyxl.Workbook()
+sheet = wb.active
+
+
+# Read an image from a remote url.
+url = "http://myridia.com/assets/images/logo.png"
+
+image_data = BytesIO(urlopen(url).read())
+
+img = Image(image_data)
+sheet.add_image(img, 'A2')
+
+
+wb.save("test.xlsx")
+</pre>
+<pre>
+
+</pre>
+<a name="urllib"><h3 align=center>Библиотека urllib</h3>
+urllib - это пакет, который состоит из нескольких модулей для работы с URL-адресами::
 <ul>
 <li> urllib.request: для открытия и чтения URL-адресов;
 <li> urllib.parse: для работы с компонентами URL-адресов;
 <li> urllib.error: для обработки ошибок, возникающих при работе с URL-адресами;
 <li> urllib.robotparser: для анализа файла robots.txt.
 </ul>
-<h3 align=center><a href="https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen">urllib.request</a></h3>
-urllib.request - это расширенная библиотека для открытия url адресов.<br>
+<h3><a href="https://docs.python.org/3/library/urllib.request.html">Модуль urllib.request</a></h3>
 Модуль urllib.request содержит функции и классы, которые помогают открывать URL—адреса (в основном HTTP) в комплексе - базовая и дайджест-аутентификация, перенаправления, файлы cookie и многое другое. Содержит функции:
 <ol>
-<li> <pre>
-urllib.request.urlopen(url, data=None, [timeout, ]*, context=None)
+<li> <b>Функция urlopen</b><br>
+открывает удаленный объект по сети и читает его. Это универсальная функция, она одинаково легко читает НТМL­
+файлы, файлы изображений и другие файловые потоки. Синтаксис:
+<pre>
+<b>urllib.request.urlopen(url, data=None, [timeout, ]*, context=None)</b>
 </pre>
-url - строка, содержащая действительный, правильно закодированный URL-адрес, либо объект запроса.<br>
-data - объект, указывающий дополнительные данные для отправки на сервер, или отсутствовать, если такие данные не требуются.<br>
-Необязательный параметр timeout указывает время ожидания в секундах для блокировки таких операций, как попытка подключения (если не указано, будет использоваться глобальное значение времени ожидания по умолчанию). На самом деле это работает только для HTTP, HTTPS и FTP-подключений.<br>
+url - строка, содержащая действительный, правильно закодированный URL-адрес, либо объект запроса.
+<p>
+data - объект, указывающий дополнительные данные для отправки на сервер, или отсутствовать, если такие данные не требуются.
+<p>
+Необязательный параметр timeout указывает время ожидания в секундах для блокировки таких операций, как попытка подключения (если не указано, будет использоваться глобальное значение времени ожидания по умолчанию). На самом деле это работает только для HTTP, HTTPS и FTP-подключений.
+<p>
 context, если указан, то это должен быть экземпляр ssl.SSLContext, описывающий различные параметры SSL. Более подробную информацию смотрите в разделе HTTPSConnection.
 <p>
 Эта функция всегда возвращает объект, который может работать как контекстный менеджер и имеет свойства url, заголовки и статус.
@@ -117,10 +603,7 @@ print(response.read())
 print(response.read().decode('utf-8'))
 </pre>
 <p>
-<li>
-<pre>
-urllib.request.install_opener(opener)
-</pre>
+<li> <b>urllib.request.install_opener(opener)</b><br>
 Установит экземпляр OpenerDirector в качестве глобального средства открывания по умолчанию. Установка средства открывания необходима только в том случае, если вы хотите, чтобы urlopen использовал это средство открывания; в противном случае просто вызовите OpenerDirector.open() вместо urlopen(). Код не проверяет наличие реального OpenerDirector, и любой класс с соответствующим интерфейсом будет работать.
 <p>
 <li>
@@ -137,69 +620,35 @@ urllib.request.pathname2url(path)
 <pre>
 
 </pre>
-<a name="selenium"><h3 align=center>Модуль Selenium</h3>
-Ссылки: <a hre="https://sky.pro/wiki/python/avtomatizaciya-veb-testirovaniya-s-selenium/">Автоматизация веб-тестирования с Selenium</a>
-<p>
-Введение в Selenium и его возможности
-Selenium — это мощный и популярный инструмент для автоматизации веб-тестирования, который широко используется разработчиками и тестировщиками для автоматизации взаимодействия с веб-страницами. Этот инструмент поддерживает множество языков программирования, включая Python, Java, C#, Ruby и другие, что делает его универсальным и гибким решением для различных проектов. Selenium предоставляет возможность автоматизировать тестирование на различных браузерах, таких как Chrome, Firefox, Safari и Edge, а также на различных операционных системах, включая Windows, macOS и Linux.
-<p>
-Основные возможности Selenium включают:
-<ul>
-<li> Автоматизация взаимодействия с веб-элементами (клики, ввод текста, навигация и т.д.)
-<li> Поддержка различных браузеров и операционных систем
-<li> Интеграция с различными тестовыми фреймворками и CI/CD инструментами
-<li> Возможность выполнения тестов параллельно на нескольких машинах
-<li> Поддержка мобильного тестирования с помощью Appium
-<li> Возможность создания скриншотов веб-страниц
-<li> Работа с динамическими элементами и AJAX-запросами
-</ul>
-Selenium позволяет автоматизировать рутинные задачи, такие как заполнение форм, проверка функциональности кнопок и ссылок, а также тестирование сложных сценариев пользовательского взаимодействия. Это делает его незаменимым инструментом для обеспечения качества веб-приложений.
-<h4>Установка и настройка Selenium</h4>
-Для начала работы с Selenium необходимо установить несколько компонентов. Рассмотрим установку на примере языка Python.
-<p>
-<b>Установка Python и pip</b><br>
-Если у вас еще не установлен Python, скачайте и установите его с официального сайта. Убедитесь, что во время установки вы отметили опцию "Add Python to PATH". Это позволит вам запускать Python и pip из командной строки.
-<p>
-После установки Python, установите менеджер пакетов pip, если он еще не установлен. Обычно он идет в комплекте с Python, но если по каким-то причинам его нет, вы можете установить его вручную, следуя инструкциям на официальном сайте pip.
-<p>
-<b>Установка Selenium</b><br>
-Для установки Selenium используйте команду pip:
 <pre>
-pip install selenium
+
 </pre>
-Эта команда загрузит и установит последнюю версию Selenium из PyPI (Python Package Index). Убедитесь, что установка прошла успешно, запустив Python и импортировав Selenium:
+<h4>"Your browser does not support javascript"</h4>
+Большинство современных сайтов не отдают данные напрямую в виде статической HTML разметки. Страницы формируются «на лету» с использованием JavaScript.<br>
+Пытался парсить сайт https://pari.ru/live/tennis:
 <pre>
-import selenium
-print(selenium.__version__)
+import urllib.request
+from bs4 import BeautifulSoup
+
+url ='https://pari.ru/live/tennis'
+user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
+headers={'User-Agent':user_agent,} 
+request=urllib.request.Request(url,None,headers)
+html = urllib.request.urlopen(request)
+bs = BeautifulSoup(html, 'html.parser')
+print(bs)
 </pre>
-<b>Установка веб-драйвера</b><br>
-Selenium использует веб-драйверы для взаимодействия с браузерами. Например, для работы с Chrome необходимо скачать ChromeDriver с официального сайта. Аналогично, для Firefox используется GeckoDriver, который можно скачать с официального сайта.
+и ошибок нет, но содержимое страницы отсутствует. В html-коде можно прочитать: "Your browser does not support javascript" Это сообщение об ошибке означает, что веб-сайт, к которому вы пытаетесь получить доступ с помощью Python Requests, для корректной работы требует JavaScript. Поскольку Python Requests не поддерживает JavaScript, вам нужно будет найти другой способ получить доступ к данным веб-сайта. Есть несколько различных способов обойти эту ошибку:
+<ol>
+<li> <b>Используйте другую библиотеку.</b><br>
+Если вам нужно собирать данные с веб-сайтов, для которых требуется JavaScript, вы можете использовать другую библиотеку, например <b>Selenium</b>. Selenium — это библиотека Python, которая позволяет автоматизировать веб-браузеры и взаимодействовать с веб-сайтами, для которых требуется JavaScript.
 <p>
-После скачивания распакуйте файл и добавьте его в системный PATH. Это позволит Selenium автоматически находить драйвер и использовать его для запуска браузера.
+<li> <b>Использовать API на сайте</b>:<br>
+На некоторых веб-сайтах есть API, которые позволяют получить доступ к данным без использования JavaScript. Вы можете попытаться выполнить реверс-инжиниринг API, чтобы понять, как получить доступ к нужным вам данным.
 <p>
-<h4>Написание простого теста с использованием Selenium</h4>
-Теперь, когда мы установили и настроили Selenium, давайте напишем простой тест. Этот тест будет открывать страницу Google, вводить запрос в поисковую строку и нажимать кнопку поиска.
-<p>
-Пример кода:
-<pre>
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
-# Инициализация веб-драйвера
-driver = webdriver.Chrome()
-
-# Открытие страницы Google
-driver.get("https://www.google.com")
-
-# Поиск элемента по имени и ввод текста
-search_box = driver.find_element_by_name("q")
-search_box.send_keys("Selenium")
-search_box.send_keys(Keys.RETURN)
-
-# Закрытие браузера
-driver.quit()
-</pre>
-Этот код демонстрирует основные шаги для автоматизации теста: инициализация веб-драйвера, открытие веб-страницы, поиск элемента, взаимодействие с элементом и закрытие браузера. Вы можете расширить этот тест, добавив проверки результатов поиска или автоматизировав другие действия на странице.
+<li> <b>Попробуйте использовать браузер без графического интерфейса:</b><br>
+браузер без графического интерфейса — это веб-браузер, который работает без графического пользовательского интерфейса. Вы можете использовать браузер без графического интерфейса, например PhantomJS или Headless Chrome, для доступа к веб-сайтам, для которых требуется JavaScript.
+</ol>
 <pre>
 
 </pre>
@@ -2431,73 +2880,882 @@ for stolb_sh in range(0, <b>sh.ncols</b>):
 
 
 
-
-
 </pre>
-<a name="openpyxl"><h3 align=center>Модуль openpuxl</h3>
+<a name="openpyxl"><h2 align=center>Модуль openpuxl</h2>
+<a href="https://blog.skillfactory.ru/kak-ispolzovat-biblioteku-openpyxl-v-python-dlya-excel/">Как использовать библиотеку OpenPyxl в Python для работы с Excel</a>
+<p>
 Openpyxl – это еще одна библиотека Python для чтения файла .xlsx, и она также не идет по умолчанию вместе со стандартным пакетом Python. Чтобы установить этот модуль, выполните в терминале следующую команду:
 <pre>
 pip install openpyxl
 </pre>
+<h4 align=center>Работа с файлами</h4>
+<b> 1. Как создать новый Excel-файл</b>
 <p>
-<b>Функция load_workbook()</b> служит для открытия excel-файла для чтения. В качестве значения аргумента этой функции используется имя файла.
+В скрипте нужно импортировать библиотеку:
+<pre>
+import openpyxl
+</pre>
+<b>Как создать новый Excel-файл</b><br>
+Чтобы создать новый Excel-файл, нужно сначала создать рабочую книгу (Workbook), а затем добавлять листы и записывать данные в ячейки. 
 <p>
-<b>Объект wookbook.active</b> служит для чтения значений свойств max_row и max_column. Эти свойства используются во вложенных циклах for для чтения содержимого файла.xlsx.
+<b>Workbook</b> в библиотеке openpyxl — это класс, который используется для создания нового Excel-файла. 
 <p>
-Функцию range() используем для чтения строк таблицы, а функцию iter_cols() — для чтения столбцов.
+Для работы с Workbook, нужно импортировать специальные библиотеки:
+<pre>
+from openpyxl import Workbook
+</pre>
+Для работы с существующим файлом нужно использовать load_workbook:
+<pre>
+from openpyxl import load_workbook
+</pre>
+Можно обойтись и импортом библиотеки openpyxl, но тогда перед функциями придется писать openpyxl. Вместо load_workbook будет openpyxl.load_workbook , а вместо load_workbook писать openpyxl.load_workbook .
 <p>
 Пример:
+<pre>
+from openpyxl import Workbook
+# Создаем новую рабочую книгу (файл)
+wb = Workbook()
+# Получаем активный лист (по умолчанию создается один лист)
+sheet = wb.active
+# Устанавливаем имя листа
+sheet.title = "Лист1"
+# Записываем данные в ячейки
+sheet['A1'] = "Привет"
+sheet['A2'] = "Мир"
+# Сохраняем файл на диск
+wb.<b>save</b>('новый_файл.xlsx')
+</pre>
+В методе save() можно указать либо только имя файла, либо полный путь к нему.
+<p>
+Если указано только имя файла, как в примере («новый_файл.xlsx»), файл будет сохранен в текущей рабочей директории программы (папке, из которой запускается скрипт).
+<p>
+— Если нужно сохранить файл в определенной папке, то в кавычках стоит указать полный путь к файлу, например:<br>
+wb.save(r"C:\Users\User\Documents\новый_файл.xlsx")<br>
+Символ r перед строкой пути используют, чтобы избежать проблем с символами обратного слэша (\).
+<p>
+Итак, мы создали новый файл new_file.xlsx, добавили лист с данными в ячейки A1 и A2 и сохранили файл.
+<p>
+<b>2. Как открыть существующий файл</b>
+<p>
+Для открытия существующего файла используется метод <b>load_workbook</b>().<br>
+Пример:
+<pre>
+wb = load_workbook('file.xlsx')
+</pre>
+Эта строка откроет файл file.xlsx.
+<h4 align=center>Работа с листами</h4>
+<b>1. Получение активного листа</b>
+<p>
+Активный лист — это тот, который открыт по умолчанию, когда вы загружаете или создаете файл. Получить его можно с помощью метода active.
+<p>
+Пример:
+<pre>
+from openpyxl import load_workbook
+# Открываем существующий файл
+wb = load_workbook('file.xlsx')
+# Получаем активный лист
+sheet = wb.active
+# Выводим название активного листа
+print(f"Активный лист: {sheet.title}")
+</pre>
+<p>
+<b>2. Создание нового листа</b>
+<p>
+Можно создать новый лист с определенным именем при помощи функции <b>create_sheet</b>().
+<p>
+Пример:
+<pre>
+from openpyxl import Workbook
+# Создаем новую книгу
+wb = Workbook()
+# Или загружаем готовую
+wb = load_workbook('file.xlsx')
+# Добавляем новый лист
+new_sheet = wb.<b>create_sheet</b>(title="Новый Лист")
+# Сохраняем изменения
+wb.save("file_with_new_sheet.xlsx")
+</pre>
+<p>
+<b>3. Переименование листа</b>
+<p>
+Чтобы изменить название листа, просто присвойте новое имя в его свойство title.
+<p>
+Пример:
+<pre>
+# Открываем файл
+wb = load_workbook("file_with_new_sheet.xlsx")
+# Получаем лист по имени
+sheet = wb["Новый Лист"]
+# Меняем название листа
+sheet.<b>title</b> = "Переименованный Лист"
+# Сохраняем изменения
+wb.save("renamed_sheet.xlsx")
+</pre>
+<p>
+<b>4. Удаление листа</b>
+<p>
+Удалить лист можно с помощью метода <b>remove</b>().
+<p>
+Пример:
+<pre>
+# Открываем файл
+wb = load_workbook("renamed_sheet.xlsx")
+# Получаем лист для удаления
+sheet_to_remove = wb["Переименованный Лист"]
+# Удаляем лист
+wb.<b>remove</b>(sheet_to_remove)
+# Сохраняем изменения
+wb.save("sheet_removed.xlsx")
+</pre>
+<h4 align=center>Работа с данными</h4>
+<b>1. Чтение данных из одной ячейки</b>
+<p>
+Вы можете получить значение из конкретной ячейки, указав ее координаты (например, A1).
+<p>
+Пример:
+<pre>
+from openpyxl import load_workbook
+# Открываем существующий файл
+wb = load_workbook("file.xlsx")
+# Получаем активный лист
+sheet = wb.active
+# Читаем значение ячейки A1
+value = <b>sheet["A1"].value</b>
+print(f"Значение ячейки A1: {value}")
+</pre>
+<p>
+<b>2. Перебор всех ячеек в диапазоне</b>
+<p>
+Для чтения значений нескольких ячеек можно использовать перебор по диапазону.
+<p>
+Пример:
+<pre>
+from openpyxl import load_workbook
+# Открываем файл
+wb = load_workbook("file.xlsx")
+sheet = wb.active
+# Перебираем ячейки в диапазоне A1:C3
+for row in sheet["A1:C3"]:  # Указываем диапазон
+    for cell in row:
+        print(f"Ячейка {cell.coordinate}: {cell.value}")
+</pre>
+<p>
+<b>3. Запись данных в ячейки</b>
+<p>
+Для записи данных в ячейки используйте объект листа и укажите координаты ячейки.
+<p>
+Пример:
+<pre>
+from openpyxl import Workbook
+# Создаем новую книгу
+wb = Workbook()
+sheet = wb.active
+# Записываем текст и числа
+sheet["A1"] = "Текст"  # Записываем текст
+sheet["B1"] = 123      # Записываем число
+sheet["C1"] = 45.67    # Записываем дробное число
+# Сохраняем файл
+wb.save("file_with_data.xlsx")
+</pre>
+<p>
+<b>4. Изменение ширины столбцов и высоты строк</b>
+<p>
+Вы можете задать ширину столбцов и высоту строк для улучшения читаемости данных.
+<p>
+Пример:
+<pre>
+# Устанавливаем ширину столбца A = 20 и высоту строки 1 = 30
+sheet.<b>column_dimensions["A"].width</b> = 20
+sheet.<b>row_dimensions[1].height</b> = 30
+</pre>
+<p>
+В OpenPyXL для измерения ширины ячейки можно использовать символы или пиксели.
+<p>
+Символы — единица измерения по умолчанию, для установки ширины столбца используется метод set_column_width() класса Worksheet. Он принимает два аргумента: индекс столбца и ширину в символах.  2
+<p>
+Пиксели можно установить с помощью метода set_column_pixels(). Он также принимает два аргумента: индекс столбца и ширину в пикселях.
+<p>
+По умолчанию ширина столбца в OpenPyXL — 8,43 символа.
+<p>
+Пример кода, который устанавливает ширину столбца A в 100 пикселей: worksheet.set_column_pixels(0, 100)
+<p>
+<b>Openpyxl устанавливает ширину столбцов в зависимости от длины содержимого</b><br>
+<a href="https://www.iditect.com/faq/python/openpyxl--adjust-column-width-size.html">Автоматическая установка ширины высоты ячейки</a>
+<p>
+Этот скрипт предназначен для динамического изменения ширины столбцов в файле Excel в зависимости от длины содержимого ячеек с помощью openpyxl.
+<pre>
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+
+# Create a new workbook
+wb = Workbook()
+ws = wb.active
+
+# Example content
+data = ["Short", "This is a longer text", "Another example"]
+
+# Write data to column A
+for index, value in enumerate(data, start=1):
+    ws.cell(row=index, column=1, value=value)
+
+# Adjust column width based on content length
+for col in range(1, 2):  # Adjusting width for column A
+    max_length = 0
+    column = get_column_letter(col)
+    for cell in ws[column]:
+        try:
+            if len(str(cell.value)) > max_length:
+                max_length = len(cell.value)
+        except:
+            pass
+    adjusted_width = (max_length + 2) * 1.2
+    ws.column_dimensions[column].width = adjusted_width
+
+# Save the workbook
+wb.save("adjusted_columns.xlsx")
+</pre>
+<p>
+<b>Как автоматически изменить ширину столбца с помощью openpyxl?</b>
+<pre>
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment
+
+# Create a new workbook
+wb = Workbook()
+ws = wb.active
+
+# Example content
+data = ["Short", "This is a longer text", "Another example"]
+
+# Write data to column A
+for index, value in enumerate(data, start=1):
+    ws.cell(row=index, column=1, value=value).alignment = Alignment(wrap_text=True)
+
+# Auto-fit column width
+for col in range(1, 2):  # Adjusting width for column A
+    max_length = 0
+    column = get_column_letter(col)
+    for cell in ws[column]:
+        try:
+            if len(str(cell.value)) > max_length:
+                max_length = len(cell.value)
+        except:
+            pass
+    adjusted_width = (max_length + 2) * 1.2
+    ws.column_dimensions[column].width = adjusted_width
+
+# Save the workbook
+wb.save("adjusted_columns.xlsx")
+</pre>
+<p>
+<b>Openpyxl отрегулируйте ширину столбца, чтобы соответствовать содержимому?</b>
+<pre>
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+
+# Create a new workbook
+wb = Workbook()
+ws = wb.active
+
+# Example content
+data = ["Short", "This is a longer text", "Another example"]
+
+# Write data to column A
+for index, value in enumerate(data, start=1):
+    ws.cell(row=index, column=1, value=value)
+
+# Adjust column width to fit content
+for col in range(1, 2):  # Adjusting width for column A
+    ws.column_dimensions[get_column_letter(col)].auto_size = True
+
+# Save the workbook
+wb.save("adjusted_columns.xlsx")
+</pre>
+<p>
+<b>Openpyxl регулирует ширину столбца в зависимости от максимальной длины содержимого?</b>
+<pre>
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+
+# Create a new workbook
+wb = Workbook()
+ws = wb.active
+
+# Example content
+data = ["Short", "This is a longer text", "Another example"]
+
+# Write data to column A
+for index, value in enumerate(data, start=1):
+    ws.cell(row=index, column=1, value=value)
+
+# Adjust column width based on maximum length of content
+max_length = max(len(str(cell.value)) for cell in ws['A'])
+ws.column_dimensions['A'].width = max_length
+
+# Save the workbook
+wb.save("adjusted_columns.xlsx")
+</pre>
+<p>
+<b>Как настроить ширину нескольких столбцов в Excel с помощью openpyxl?</b>
+<pre>
+from openpyxl import Workbook
+
+# Create a new workbook
+wb = Workbook()
+ws = wb.active
+
+# Set column width for columns A and B to 20
+ws.column_dimensions['A'].width = 20
+ws.column_dimensions['B'].width = 20
+
+# Save the workbook
+wb.save("adjusted_columns.xlsx")
+</pre>
+<p>
+<b>Openpyxl задает ширину столбца в пикселях</b>
+<pre>
+from openpyxl import Workbook
+
+# Create a new workbook
+wb = Workbook()
+ws = wb.active
+
+# Set column width for column A to 100 pixels
+ws.column_dimensions['A'].width = 100
+
+# Save the workbook
+wb.save("adjusted_columns.xlsx")
+</pre>
+<b>5. Настройка стилей ячеек (жирный шрифт, цвет текста, выравнивание)</b>
+<p>
+Для форматирования используйте модуль openpyxl.styles.
+<p>
+Пример:
+<pre>
+from openpyxl.styles import Font, Alignment
+# Применяем жирный шрифт
+sheet["A1"].font = Font(bold=True)
+# Изменяем цвет текста (например, синий)
+sheet["B1"].font = Font(color="0000FF")
+# Выравнивание текста по центру
+sheet["C1"].alignment = Alignment(horizontal="center", vertical="center")
+</pre>
+<h4 align=center>Работа с таблицами и формулами</h4>
+<b>1. Создание таблицы данных</b>
+<p>
+Для создания таблицы данных используйте объект Table из модуля openpyxl.worksheet.table.
+<p>
+Пример:
+<pre>
+from openpyxl import Workbook
+from openpyxl.worksheet.table import Table, TableStyleInfo
+# Создаем новую книгу и активный лист
+wb = Workbook()
+sheet = wb.active
+# Заполняем данные
+data = [
+    ["Имя", "Возраст", "Город"],
+    ["Иван", 25, "Москва"],
+    ["Анна", 30, "Санкт-Петербург"],
+    ["Петр", 35, "Новосибирск"]
+]
+for row in data:
+    sheet.append(row)
+# Определяем диапазон для таблицы
+table = Table(displayName="MyTable", ref="A1:C4")
+# Настраиваем стиль таблицы
+style = TableStyleInfo(
+    name="TableStyleMedium9", showFirstColumn=False,
+    showLastColumn=False, showRowStripes=True, showColumnStripes=True
+)
+table.tableStyleInfo = style
+# Добавляем таблицу на лист
+sheet.add_table(table)
+# Сохраняем файл
+wb.save("file_with_table.xlsx")
+</pre>
+<p>
+<b>2. Использование формул</b>
+<p>
+Для работы с формулами просто задайте в ячейке формулу как строку (например, =SUM(A1:A10)).
+<p>
+Пример:
+<pre>
+from openpyxl import Workbook
+# Создаем новую книгу
+wb = Workbook()
+sheet = wb.active
+# Заполняем данные
+sheet["A1"] = 10
+sheet["A2"] = 20
+sheet["A3"] = 30
+# Добавляем формулу
+sheet["A4"] = "=SUM(A1:A3)"  # Сумма ячеек A1, A2 и A3
+# Сохраняем файл
+wb.save("file_with_formula.xlsx")
+</pre>
+<pre>
+
+
+</pre>
+<a name="xml"><h3 align=center>Пакет xml</h3>
+Ссылки: <a href="https://sky.pro/media/kak-ispolzovat-python-dlya-raboty-s-xml-2/">Как использовать Python для работы с XML</a><br>
+<a href="http://grep.cs.msu.ru/python3.8_RU/digitology.tech/docs/python_3/library/xml.etree.elementtree.html">Перевод 
+документации</a>
+<p>
+На 14.02.2025 самой современной и популярной библиотекой для работы с xml-файлами является библиотека xml.etree.ElementTree
+<a name="tree"><h3 align=center>xml.etree.ElementTree</h3>
+Ссылки: <a href="https://docs.python.org/3/library/xml.etree.elementtree.html">Документация</a>
+<p>
+XML по своей сути является иерархическим форматом данных, и наиболее естественным способом его представления является дерево. Для этой цели в ET есть два класса - <b>ElementTree</b> представляет весь XML-документ в виде дерева, а <b>Element</b> представляет отдельный узел в этом дереве. Взаимодействие со всем документом (чтение и запись в файлы и из них) обычно выполняется на уровне ElementTree. Взаимодействие с отдельным XML-элементом и его подэлементами выполняется на уровне Element.
+<p>
+<b>Парсинг XML</b><br>
+Будем использовать country_data.xml для примеров:
 <p>
 <table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
 <pre>
-import openpyxl
-
-# Define variable to load the wookbook
-wookbook = openpyxl.load_workbook("salaries.xlsx")
-# Define variable to read the active sheet:
-worksheet = wookbook.active
-
-'''
-# Iterate the loop to read the cell values
-for i in range(0, worksheet.max_row):
-    for col in worksheet.iter_cols(1, worksheet.max_column):
-        print(col[i].value, end="\t")
-    print('')
-'''
-
-for i in range(0, 9):
-    for col in worksheet.iter_cols(1, 5):
-        print(col[i].value, end="\t\t")
-    print('')
+&lt;?xml version="1.0"?&gt;
+&lt;data&gt;
+    &lt;country name="Liechtenstein"&gt;
+        &lt;rank&gt;1&lt;/rank&gt;
+        &lt;year&gt;2008&lt;/year&gt;
+        &lt;gdppc&gt;141100&lt;/gdppc&gt;
+        &lt;neighbor name="Austria" direction="E"/&gt;
+        &lt;neighbor name="Switzerland" direction="W"/&gt;
+    &lt;/country&gt;
+    &lt;country name="Singapore"&gt;
+        &lt;rank&gt;4&lt;/rank&gt;
+        &lt;year&gt;2011&lt;/year&gt;
+        &lt;gdppc&gt;59900&lt;/gdppc&gt;
+        &lt;neighbor name="Malaysia" direction="N"/&gt;
+    &lt;/country&gt;
+    &lt;country name="Panama"&gt;
+        &lt;rank&gt;68&lt;/rank&gt;
+        &lt;year&gt;2011&lt;/year&gt;
+        &lt;gdppc&gt;13600&lt;/gdppc&gt;
+        &lt;neighbor name="Costa Rica" direction="W"/&gt;
+        &lt;neighbor name="Colombia" direction="E"/&gt;
+    &lt;/country&gt;
+&lt;/data&gt;
 </pre></td></tr></table>
+<p>
+Мы можем импортировать эти данные, считав их из файла:
+<p>
+<table border=1 style="border-collapse:collapse;" cellpadding=10><tr><td>
+<pre>
+import xml.etree.ElementTree as ET
+tree = ET.parse('country_data.xml')
+root = tree.getroot()
+</pre></td></tr></table>
+<p>
+Или непосредственно из строки:
+<pre>
+root = ET.fromstring(country_data_as_string)
+</pre>
+Функция fromstring() преобразует XML из строки непосредственно в Element, который является корневым элементом анализируемого дерева. Другие функции синтаксического анализа могут создавать ElementTree.
+<p>
+Как Element, root имеет тег и словарь атрибутов:
+<pre>
+>>> root.tag
+'data'
+>>> root.attrib
+{}
+</pre>
+root также имеет дочерние узлы, по которым мы можем выполнять итерации:
+<pre>
+for child in root:
+    print(child.tag, child.attrib)
+</pre>
+Вывод:
+<pre>
+country {'name': 'Liechtenstein'}
+country {'name': 'Singapore'}
+country {'name': 'Panama'}
+</pre>
+Дочерние узлы являются вложенными, и мы можем получить доступ к определенным дочерним узлам по индексу:
+<pre>
+print(root[0][0].text)
+print(root[0][1].text)
+print(root[0][2].text)
+print(root[0][3].text)
+print(root[0][4].text)
+print(root[1][3].text)
+</pre>
+Вывод:
+<pre>
+1
+2008
+141100
+None
+None
+None
+</pre>
+<p>
+<h4>Чтобы прочитать XML-документ с URL-адреса с помощью xml.etree.ElementTree</h4>
+нужно:
+<ol>
+<li> Импортировать модули urllib и xml.etree.ElementTree:
+<pre>
+import urllib.request
+import xml.etree.ElementTree as ET
+</pre>
+<li> Определить URL, с которого нужно получить XML-данные:
+<pre>
+url = 'http://example.com/data.xml'
+</pre>
+<li> Открыть URL с помощью urllib.request.urlopen и получить XML-данные в виде объекта bytes:
+<pre>
+with urllib.request.urlopen(url) as response:
+    xml_data = response.read()
+</pre>
+<li> Разобрать XML-данные с помощью xml.etree.ElementTree.fromstring и создать объект Element:
+<pre>
+root = ET.fromstring(xml_data)
+</pre>
+<li> Проработать корневой объект, чтобы извлечь нужную информацию.
+</ol>
+Если XML-документ использует кодировку, отличную от UTF-8, при разборе данных нужно указать кодировку. 
+<h4>Поиск интересных элементов</h4>
+В Element есть несколько полезных методов, которые помогают выполнять рекурсивную итерацию по всему поддереву под ним (его дочерним элементам, их дочерним элементам и т.д.). Например, Element.iter():
+<pre>
+for neighbor in root.iter('neighbor'):
+    print(neighbor.attrib)
+</pre>
+Вывод:
+<pre>
+{'name': 'Austria', 'direction': 'E'}
+{'name': 'Switzerland', 'direction': 'W'}
+{'name': 'Malaysia', 'direction': 'N'}
+{'name': 'Costa Rica', 'direction': 'W'}
+{'name': 'Colombia', 'direction': 'E'}
+</pre>
+<b>Element.findall()</b> находит только элементы с тегом, которые являются прямыми дочерними элементами текущего элемента.<br> <b>Element.find()</b> находит первый дочерний элемент с определенным тегом, а <b>Element.text</b> получает доступ к текстовому содержимому элемента.<br>
+<b>Element.get()</b> получает доступ к атрибутам элемента:
+<pre>
+for country in root.findall('country'):
+    rank = country.find('rank').text
+    name = country.get('name')
+    print(name, rank)
+</pre>
+Вывод:
+<pre>
+Liechtenstein 1
+Singapore 4
+Panama 68
+</pre>
+Более сложное определение того, какие элементы следует искать, возможно с помощью <a href="https://docs.python.org/3/library/xml.etree.elementtree.html#elementtree-xpath">XPath</a>.
+<h4>Изменение XML-файла</h4>
+ElementTree предоставляет простой способ создания XML-документов и записи их в файлы.<br>
+Метод <b>ElementTree.write()</b> служит для этой цели.
+<p>
+После создания объектом Element можно манипулировать, непосредственно изменяя его поля (например, Element.text), добавляя и модифицируя атрибуты (метод Element.set()), а также добавляя новые дочерние элементы (например, с помощью Element.append()).
+<p>
+Допустим, мы хотим добавить по одному атрибуту к рейтингу каждой страны и добавить обновленный атрибут к элементу rank:
+<pre>
+for rank in root.iter('rank'):
+    new_rank = int(rank.text) + 1
+    rank.text = str(new_rank)
+    rank.set('updated', 'yes')
+
+tree.write('output.xml')
+</pre>
+Создастся новый файл output.xml в каталоге из которого выполняется скрипт.
+<pre>
+&lt;data&gt;
+&lt;country name="Liechtenstein"&gt;
+&lt;rank updated="yes"&gt;2&lt;/rank&gt;
+&lt;year&gt;2008&lt;/year&gt;
+&lt;gdppc&gt;141100&lt;/gdppc&gt;
+&lt;neighbor name="Austria" direction="E"/&gt;
+&lt;neighbor name="Switzerland" direction="W"/&gt;
+&lt;/country&gt;
+&lt;country name="Singapore"&gt;
+&lt;rank updated="yes"&gt;5&lt;/rank&gt;
+&lt;year&gt;2011&lt;/year&gt;
+&lt;gdppc&gt;59900&lt;/gdppc&gt;
+&lt;neighbor name="Malaysia" direction="N"/&gt;
+&lt;/country&gt;
+&lt;country name="Panama"&gt;
+&lt;rank updated="yes"&gt;69&lt;/rank&gt;
+&lt;year&gt;2011&lt;/year&gt;
+&lt;gdppc&gt;13600&lt;/gdppc&gt;
+&lt;neighbor name="Costa Rica" direction="W"/&gt;
+&lt;neighbor name="Colombia" direction="E"/&gt;
+&lt;/country&gt;
+&lt;/data&gt;
+</pre>
+Мы можем удалить элементы, используя <b>Element.remove()</b>. Допустим, мы хотим удалить все страны с рейтингом выше 50:
+<pre>
+for country in root.findall('country'):
+    # используем root.findall(), чтобы избежать удаления во время обхода
+    rank = int(country.find('rank').text)
+    if rank > 50:
+        root.remove(country)
+
+tree.write('output.xml')
+</pre>
+Обратите внимание, что одновременное изменение во время итерации может привести к проблемам, точно так же, как при итерации и изменении списков Python или dicts. Поэтому в примере сначала собираются все совпадающие элементы с помощью root.findall(), и только затем выполняется итерация по списку совпадений.
+<h4>Создание XML-документов</h4>
+Функция SubElement() предоставляет удобный способ создания новых подэлементов для данного элемента:
+<pre>
+a = ET.Element('a')
+b = ET.SubElement(a, 'b')
+c = ET.SubElement(a, 'c')
+d = ET.SubElement(c, 'd')
+ET.dump(a)
+</pre>
+<p>
+<a href="https://docs.python.org/3/library/xml.etree.elementtree.html#parsing-xml-with-namespaces">Синтаксический анализ XML с использованием пространств имен</a>
+<p>
+XML - это язык разметки текста в текстовых файлах с помощью тегов. Для работы с такими файлами служит пакет XML.
+<p>
+<b>Чтение строки xml-формата</b><br>
+<pre>
+xml_string = '''
+&lt;data&gt;
+    &lt;country name="Russia"&gt;
+        &lt;city&gt;Moscow&lt;/city&gt;
+    &lt;/country&gt;
+    &lt;country name="USA"&gt;
+        &lt;city&gt;New York&lt;/city&gt;
+    &lt;/country&gt;
+&lt;/data&gt;
+'''
+ 
+# Загрузка XML-строки в объект ElementTree
+root = ET.fromstring(xml_string)
+ 
+# Итерация по элементам
+for country in root.findall('country'):
+    name = country.get('name')
+    city = country.find('city').text
+    print(f'{name}: {city}')
+</pre>
+<b>Функция fromstring()</b>: создать элемент из строки<br>
+Вы можете создать элемент или дерево элементов из строки, содержащей XML, с помощью этой функции; она возвращает новый 
+экземпляр Element, представляющий весь этот XML.
+
+etree.fromstring(s)
+где s - строка.
+<p>
+<b>Посмотреть определенный тег по индексу:</b><br>
+Нумерация тегов начинается с нуля.
+<pre>
+print(root[0])
+<Element 'student' at 0x7f4acf4cf770>
+>>> print(root[0].text)
+first studentt
+</pre>
+Здесь root[0] - это первый тег внутри корневого. Им является тег 'student'. Чтобы посмотреть содержимое этого тега, 
+используется метод text.
+<p>
+<pre>
+>>> print(root[0][1])
+&lt;Element 'lastName' at 0x7f4acf4e31d0&gt;
+>>> print(root[0][1].text)
+Pascal
+</pre>
+Сначало смотрим второй тег внутри первого от корневого, а потом смотрим его содержимое.
+
+<h4>Обход элементов XML</h4>
+Мы можем обойти все элементы XML-дерева, используя метод iter():
+<table border=1 style="border-collapse:collapse;"  cellpadding=10><tr><td>
+<pre>
+for elem in root.iter():
+    print(elem.tag, elem.attrib)
+Вывод:
+studentsList {}
+student {'id': '1'}
+firstName {}
+lastName {}
+certificate {}
+scores {}
+modele1 {}
+modele2 {}
+modele3 {}
+student {'id': '1'}
+firstName {}
+lastName {}
+certificate {}
+scores {}
+modele1 {}
+modele2 {}
+modele3 {}
+</pre>
+</td></tr></table>
+Это выведет название и атрибуты каждого элемента в дереве.
+<p>
+<b>Увидеть только теги с атрибутами:</b>
+<pre>
+>>> for elem in root:
+...     print(elem.tag, elem.attrib)
+... 
+student {'id': '1'}
+student {'id': '1'}
+</pre>
+<b>Узнать количество определенных элементов (тегов):</b>
+<pre>
+>>> for elem in root.iter('scores'):
+...     print(elem)
+... 
+&lt;Element 'scores' at 0x7f4ace04da40&gt;
+&lt;Element 'scores' at 0x7f4ace05b9a0&gt;
+</pre>
+Внутри нашего example.xml находится два тега 'scores'
+<p>
+<b>Операции с содержимым тегов:</b>
+<pre>
+>>> for element in root.iter('scores'):
+...     score_sum = 0
+...     for child in element:
+...          score_sum += float(child.text)
+...     print(score_sum)
+... 
+240.0
+240.0
+</pre>
+Узнали суммарную сумму баллов для каждого студента.
+<h4>Поиск элементов по тегу</h4>
+Чтобы найти все элементы с определенным тегом, можно использовать метод findall():
+<pre>
+for elem in root.findall('tag_name'):
+    print(elem.attrib)
+</pre>
+Это выведет атрибуты всех элементов с тегом tag_name.
+<h4>Изменение атрибутов и текста элементов</h4>
+Мы можем изменить атрибуты и текст элементов следующим образом:
+<pre>
+for elem in root.iter('tag_name'):
+    elem.set('attribute_name', 'new_value')
+    elem.text = 'new_text'
+</pre>
+Это изменит атрибут attribute_name и текст у всех элементов с тегом tag_name.
+
+<h4>Создание новых элементов (тегов)</h4>
+<pre>
+from xml.etree import ElementTree                    # импорт необходимого ElementTree
+description = ElementTree.Element('description')     # создаем тег description
+description.text = 'Это содержимое тега description' # содержимое этого тега
+root[1].append(description)                          # этот тег будет помещен внутри 2 тега от корневого
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml') # записываем изменения
+</pre>
+Результат:
+<p>
+<img src="./images/python_library1.png">
+
+<h4 align=center>Удаление</h4>
+<p>
+<b>Удаление атрибута</b><br>
+Допустим я хочу удалить из тега student его атрибут 'id = "1"' и содержимое  "first student".
+<pre>
+root[0].attrib.pop('id', None)
+'1'
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Результат:
+<p>
+<img src="./images/python_library2.png">
+<p>
+Удалили из root[0] (первый тег от корня) атрибут.
+<p>
+<pre>
+>>> root[1].attrib.pop('id', None)
+'1'
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Удалили атрибут у второго тега student.
+<p>
+<b>Удаление одного подэлемента</b><br>
+Один конкретный подэлемент можно удалить с помощью remove функции. Эта функция должна указать узел, который мы хотим 
+удалить.
+<p>
+Удалим тег description у второго тега student, это root[1][4]:
+<pre>
+root[1].remove(root[1][4])
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Результат:
+<p>
+<img src="./images/python_library3.png">
+<p>
+<b>root[0].clear()</b> - удалит все теги внутри root[0]
+<p>
+<b>Удаление текстового содержимого</b>:<br>
+Удалить у тегов root[0] и root[1] текстовое содержимое:
+<pre>
+root[0].text = None
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+root[1].text = None
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+Результат:
+<p>
+<img src="./images/python_library4.png">
+<p>
+<h4>Сохранение изменений в файл</h4>
+Чтобы сохранить изменения в файл, мы можем использовать метод write():
+<pre>
+tree.write('/home/dmitriy/Python/mypython/example.xml')
+</pre>
+Это сохранит измененное дерево XML в файл example.xml.
+<p>
+Сделал изменения в example.xml, обновил страницу в браузере '/home/dmitriy/Python/mypython/example.xml', ничего не изменилось. 
+Тогда
+<pre>
+>>> tree.write('/home/dmitriy/Python/mypython/example.xml')</pre>
+и снова обновил страницу, страница изменилась.
+<p>
+<b>Создать копию файла example.xml</b>:
+<pre>
+tree.write('/home/dmitriy/Python/mypython/copy_example.xml')
+</pre>
+По указанному пути будет создан файл copy_example.xml - копия example.xml
 <pre>
 
 </pre>
-<a name="files"><h3 align=center>Получение списка файлов в каталоге</h3>
-Для получения списка всех файлов в директории можно использовать функцию os.listdir(). Эта функция возвращает список имен всех файлов и поддиректорий в указанной директории.<br>
-Пример использования:
+<a name="lxml"><h3 align=center>Библиотека lxml</h3>
+Еще одна популярная библиотека для работы с XML в Python — это lxml. Она предоставляет более быстрый и гибкий интерфейс для 
+работы с XML-данными.
+<p>
+Для установки библиотеки lxml, выполните следующую команду:
 <pre>
-import os
+pip install lxml
+</pre>
+Основы работы с lxml аналогичны xml.etree.ElementTree. Однако, библиотека lxml также предоставляет дополнительные возможности, 
+такие как поддержка XPath и валидация схемы.
+<pre>
+from lxml import etree
  
-# Указываем путь к директории
-directory = "/path/to/directory"
+tree = etree.parse('example.xml')
+root = tree.getroot()
  
-# Получаем список файлов
-files = os.listdir(directory)
- 
-# Выводим список файлов
-print(files)
+result = root.xpath('//tag_name[@attribute_name="value"]')
+</pre>
+Здесь мы используем метод xpath() для поиска всех элементов с тегом tag_name, у которых атрибут attribute_name равен «value».
+<p>
+Пример:
+<pre>
+from lxml import etree
+import requests
+
+res = requests.get("http://docs.python.org/3/") 
+print(res.status_code) #статус-код страницы
+print(res.headres["Content-Type"]) #тип данных, чтобы убедиться, что работаем с HTML
+
+#Парсер - ПО, выделяющее определенные части информации из массива данных по заданным правилам
+parser = etree.HTMLParser() #parcer позволит работать с теми данными в виде HTML, которые плохо сформированы
+root = etree.fromstring(res.text, parser) #передача данных в формате HTML в переменную
+
+#print(root)
+for element in root.iter("a"): #перебираем все элементы в поддереве корня, которые являются атрибутом "a"
+    print(element, element.attrib) #вывод элементов и их атрибутов
 </pre>
 <pre>
 
 
-
-
-
-
-
 </pre>
-<a name="numpy"><h3 align=center>Библиотека NumPy</h3>
+<a name="numpy"><h2 align=center>Библиотека NumPy</h2>
 Ссылки: <a href="https://sky.pro/wiki/python/populyarnye-biblioteki-python-obzor/">NumPy: работа с массивами и матрицами</a>
 <p>
 NumPy (Numerical Python) — это фундаментальная библиотека для научных вычислений в Python. Она предоставляет поддержку для многомерных массивов и матриц, а также функции для выполнения математических операций над этими структурами. NumPy является основой для многих других библиотек, таких как SciPy и Pandas, и часто используется в машинном обучении и анализе данных. <b>Она позволяет существенно ускорить вычисления в Python</b>. 
@@ -2610,8 +3868,34 @@ b.show()
 настроено рабочее окружение питона, т.е. какие библиотеки у него прописаны, а какие установлены, но по каким-то причинам не 
 попадают в поле зрения. Например, данный вариант будет работать на Ubuntu Linux 17.10, но заставить его работать в Slackware 
 Linux окажется весьма не просто.</i>
+<h4>Чтение многомерной матрицы</h4>
+Синтаксис:
+<pre>
+import numpy as np
+
+matrix = np.array(table)
+</pre>
+где table - 2D таблица (список списков)<br>
+matrix - полученный numpy объект к которому можем применять методы библиотеки numpy.<br>
+Можем от этой матрицы вырезать нужный нам кусок.<br>
+matrix[row, col]<br>
+вместо row, col можем использовать срез или если срез нельзя из-за пропуска посередине какого-нибудь ряда, столбца, то используем список, включающий все нужные ряды или столбцы.
+<h4>Методы библиотеки numpy:</h4>
+numpy.linalg — это модуль библиотеки NumPy, содержащий алгоритмы линейной алгебры.
 <p>
-<li> matplotlob - построение графиков<br>
+Некоторые функции из этого модуля:
+<ul>
+<li> numpy.linalg.cond(). Вычисление числа обусловленности матрицы.
+<li> numpy.linalg.matrix_rank(). Принимает матрицу в качестве входных данных и возвращает скалярное значение, представляющее ранг матрицы.
+<li> numpy.linalg.cholesky(). Вычисление разложения Холецкого эрмитовой положительно определённой матрицы.
+<li>  numpy.linalg.qr(). Вычисление QR-факторизации матрицы.
+<li>  numpy.linalg.svd(). Вычисление разложения по сингулярным значениям (SVD) матрицы.
+<li> numpy.linalg.det() — функция в Python, которая вычисляет определитель матрицы. Функция возвращает число с плавающей точкой.
+</ul>
+<pre>
+
+</pre>
+<h3 align=center>matplotlob - построение графиков</h3>
 Ссылки: <a href="https://stepik.org/lesson/7629/step/1?unit=1285">библиотека matplotlob</a><br>
 <a href="https://stepik.org/lesson/196432/step/1?auth=registration&unit=172894">matplotlib</a>
 <p>

@@ -26,7 +26,7 @@ permissions, когда создавал токен, выбрал contents = onl
 оно не менялось.
 <li> После этого выполнил команду <b>git push -u origin master</b>. Результат получен, на гитхаб в мой репозиторий скачались 
 локальные файлы.
-
+</ol>
 
 
 <h2 align="center"><a href="https://github.com/DmitriyZubkov41/guide">Удаленный репозиторий guide</a></h2>
@@ -371,7 +371,7 @@ Branch 'master' set up to track remote branch 'master' from 'origin'.
 Также возможно и обратное: создать новый репозиторий на GitHub и клонировать его на ваш компьютер. Создайте новый репозиторий на веб-сайте GitHub, но на этот раз установите флажок Initialize this repository with a README . Чтобы клонировать этот репозиторий на локальный компьютер, перейдите на страницу репозитория на GitHub и щелкните на кнопке Clone или Download ; откроется окно с URL-адресом вида https://github.com/&lt;пользователь_github>/wizcoin.git.<br>
 Используйте URL-адрес своего репозитория с командой git clone , чтобы загрузить его на ваш компьютер:
 <pre>
-C:\Users\Al><b>git clone https://github.com/&lt;пользователь_github>/wizcoin.git
+C:\Users\Al><b>git clone https://github.com/&lt;пользователь_github>/wizcoin.git</b>
 Cloning into 'wizcoin'...
 remote: Enumerating objects: 5, done.
 remote: Counting objects: 100% (5/5), done.
@@ -382,6 +382,51 @@ Unpacking objects: 100% (5/5), done.
 Теперь вы сможете сохранять и отправлять изменения, используя этот репозиторий Git, точно так же, как если бы он был создан командой git init .<br>
 Команда git clone также пригодится в том случае, если ваш локальный репозиторий оказался в состоянии, когда вы просто не знаете, что с ним делать и как отказаться от последних изменений. И хотя такое решение далеко не идеально, вы всегда
 можете сохранить копию файлов в вашем рабочем каталоге, удалить локальный репозиторий и воспользоваться командой git clone для повторного создания репозитория.
+<pre>
+
+</pre>
+<h3 align=center>17.04.2025: Создание репозитория на гитхабе projects</h3>
+<ol>
+<li> Сначало на гитхабе создал новый публичный репозиторий projects
+<li> Хотел использовать его как хранилище без создания локального, но не понял как. Возможно никак. Тогда создал ~/projects . В нем ещё одну папку для первого проекта: Парсинг https:_pari.ru_live_tennis<br>
+В ней файлы readme.md , pari.ru_live.py и confyg.yml
+<li> Далее в терминале:<br>
+<pre>
+dmitriy@945G-M3:~/projects$ git remote add origin git@github.com:DmitriyZubkov41/projects.git
+<font color=red>fatal: не найден git репозиторий (или один из родительских каталогов): .git</font>
+dmitriy@945G-M3:~/projects$ <b>git init</b>
+Инициализирован пустой репозиторий Git в /home/dmitriy/projects/.git/
+dmitriy@945G-M3:~/projects$ <b>git remote add origin git@github.com:DmitriyZubkov41/projects.git</b>
+dmitriy@945G-M3:~/projects$ <font color=red>git branch -M main</font>
+error: refname refs/heads/master not found
+fatal: Сбой переименования ветки
+dmitriy@945G-M3:~/projects$ git push -u origin main
+error: src refspec main ничему не соответствует
+error: не удалось отправить некоторые ссылки в «git@github.com:DmitriyZubkov41/projects.git»
+dmitriy@945G-M3:~/projects$ <font color=green><b>git add *</b></font>
+dmitriy@945G-M3:~/projects$ <b>git commit -m "17.04.2025"</b>
+[master (корневой коммит) c0f12c7] 17.04.2025
+ 3 files changed, 107 insertions(+)
+ create mode 100644 "\320\237\320\260\321\200\321\201\320\270\320\275\320\263 https:_pari.ru_live_tennis/config.yml"
+ create mode 100644 "\320\237\320\260\321\200\321\201\320\270\320\275\320\263 https:_pari.ru_live_tennis/pari.ru_live.py"
+ create mode 100644 "\320\237\320\260\321\200\321\201\320\270\320\275\320\263 https:_pari.ru_live_tennis/readme.md"
+dmitriy@945G-M3:~/projects$ git push -u origin main
+error: src refspec main ничему не соответствует
+error: не удалось отправить некоторые ссылки в «git@github.com:DmitriyZubkov41/projects.git»
+dmitriy@945G-M3:~/projects$ <font color=green><b>git branch -M main</b></font>
+dmitriy@945G-M3:~/projects$ <b>git push -u origin main</b>
+X11 forwarding request failed on channel 0
+Перечисление объектов: 6, готово.
+Подсчет объектов: 100% (6/6), готово.
+При сжатии изменений используется до 2 потоков
+Сжатие объектов: 100% (5/5), готово.
+Запись объектов: 100% (6/6), 2.65 КиБ | 339.00 КиБ/с, готово.
+Всего 6 (изменения 0), повторно использовано 0 (изменения 0)
+To github.com:DmitriyZubkov41/projects.git
+ * [new branch]      main -> main
+Ветка «main» отслеживает внешнюю ветку «main» из «origin».
+dmitriy@945G-M3:~/projects$
+</pre>
 <pre>
 
 
